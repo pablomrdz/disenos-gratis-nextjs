@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { 
-  Download, 
-  ExternalLink, 
-  Crown, 
-  Calendar, 
-  Tag, 
+import {
+  Download,
+  ExternalLink,
+  Crown,
+  Calendar,
+  Tag,
   ArrowLeft,
   ChevronRight,
   Type,
@@ -15,10 +15,14 @@ import {
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { AdSlot } from '@/components/ad-slot'
+import { AdPlaceholder } from '@/components/ad-placeholder'
 import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
-import { getDesignBySlug, getDesigns, getTutorials } from '@/lib/data'
+import { StickySidebar } from '@/components/sticky-sidebar'
+import { getDesignBySlug, getDesigns, getTutorials, getRelatedDesignsByTags, getPopularCategories } from '@/lib/data'
+import { detectContentType, extractDownloadLink, splitContentForAd } from '@/lib/content-utils'
 import { DownloadSection } from './download-section'
+import { cn } from '@/lib/utils'
 
 // Force SSR for SEO
 export const dynamic = 'force-dynamic'
@@ -60,10 +64,11 @@ export async function generateMetadata({ params }: DesignPageProps): Promise<Met
 
 export default async function DesignPage({ params }: DesignPageProps) {
   const { slug } = await params
-  const [design, allDesigns, tutorials] = await Promise.all([
+  const [design, allDesigns, tutorials, popularCategories] = await Promise.all([
     getDesignBySlug(slug),
     getDesigns({ limit: 20 }),
     getTutorials({ limit: 3 }),
+    getPopularCategories(6)
   ])
 
   if (!design) {
@@ -80,15 +85,26 @@ export default async function DesignPage({ params }: DesignPageProps) {
   const isVip = Boolean(design.premium_url) || design.is_vip
   const createdAt = design.created_at ? new Date(design.created_at) : new Date()
 
-  // Related designs (same category)
-  const relatedDesigns = allDesigns
-    .filter((d) => d.category === category && d.id !== design.id)
-    .slice(0, 4)
-  
-  // Related fonts
-  const relatedFonts = allDesigns
-    .filter((d) => d.type === 'font' && d.id !== design.id)
-    .slice(0, 4)
+  // Detect content type
+  const contentType = detectContentType(design)
+  const isBlog = contentType === 'blog'
+
+  // Extract external download link if exists
+  const externalLink = extractDownloadLink(description)
+  const finalDownloadUrl = externalLink || design.download_url || design.external_url
+
+  // Split content for ad insertion
+  const { before: descBefore, after: descAfter } = splitContentForAd(description)
+
+  // Related designs - try tag-based first, then fall back to category-based
+  let relatedDesigns = await getRelatedDesignsByTags(design.id, tags, 4)
+
+  // If no tag-based matches found, fall back to category-based
+  if (relatedDesigns.length === 0) {
+    relatedDesigns = allDesigns
+      .filter((d) => d.category === category && d.id !== design.id)
+      .slice(0, 4)
+  }
 
   const getTypeLabel = () => {
     switch (designType) {
@@ -128,14 +144,14 @@ export default async function DesignPage({ params }: DesignPageProps) {
       <section className="border-b border-border/40 bg-muted/30">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-muted-foreground transition-colors hover:text-foreground"
             >
               Home
             </Link>
             <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
-            <Link 
+            <Link
               href={`/category/${category}`}
               className="capitalize text-muted-foreground transition-colors hover:text-foreground"
             >
@@ -144,7 +160,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
             {primaryTag && (
               <>
                 <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
-                <Link 
+                <Link
                   href={`/designs?tag=${encodeURIComponent(primaryTag)}`}
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
@@ -160,23 +176,29 @@ export default async function DesignPage({ params }: DesignPageProps) {
         </div>
       </section>
 
-      {/* Main Content */}
+      {/* Main Content Layout */}
       <section className="py-8 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-8 lg:flex-row">
-            {/* Main Column */}
-            <div className="flex-1 min-w-0">
+          <div className="grid grid-cols-12 gap-8">
+            {/* Main Column (8 or 9 columns) */}
+            <div className={cn(
+              "col-span-12 lg:col-span-8 xl:col-span-9",
+              isBlog && "max-w-3xl mx-auto lg:mx-0"
+            )}>
               <Link
                 href="/designs"
                 className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Back to all designs
+                Volver a diseños
               </Link>
 
               {/* Design Preview */}
               <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
-                <div className="relative aspect-[4/3] sm:aspect-video">
+                <div className={cn(
+                  "relative",
+                  isBlog ? "aspect-[16/9]" : "aspect-[4/3] sm:aspect-video"
+                )}>
                   <Image
                     src={design.thumbnail_url || "/placeholder.svg"}
                     alt={title}
@@ -189,7 +211,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
                     <div className="absolute left-4 top-4">
                       <Badge className="gap-1.5 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-white shadow-lg">
                         <Crown className="h-3.5 w-3.5" />
-                        VIP Content
+                        Contenido VIP
                       </Badge>
                     </div>
                   )}
@@ -201,231 +223,114 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 </div>
               </div>
 
-              {/* Design Info Header */}
+              {/* Header Info */}
               <div className="mt-8">
-                <h1 className="text-balance text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
+                <h1 className={cn(
+                  "text-balance font-bold text-foreground",
+                  isBlog ? "text-3xl sm:text-4xl lg:text-5xl font-serif" : "text-2xl sm:text-3xl lg:text-4xl"
+                )}>
                   {title}
                 </h1>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Badge variant="outline" className="bg-transparent capitalize">
                     {category.replace('-', ' ')}
                   </Badge>
-                  <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <Download className="h-4 w-4" />
-                    {downloads.toLocaleString()} downloads
-                  </span>
+                  {!isBlog && (
+                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <Download className="h-4 w-4" />
+                      {downloads.toLocaleString()} descargas
+                    </span>
+                  )}
                   <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    {createdAt.toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
+                    {createdAt.toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
                     })}
                   </span>
                 </div>
               </div>
 
-              {/* Download Section - Client Component for VIP Logic */}
-              <div className="mt-8">
-                <DownloadSection design={design} isVip={isVip} />
-              </div>
+              {/* Call to Action for Resources */}
+              {!isBlog && (
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <Button asChild size="lg" className="h-14 gap-2 bg-orange-500 px-8 text-lg font-bold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600">
+                    <a href={finalDownloadUrl || '#'} target="_blank" rel="noopener noreferrer">
+                      <Download className="h-5 w-5" />
+                      Descargar Ahora
+                    </a>
+                  </Button>
+                  <DownloadSection design={design} isVip={isVip} />
+                </div>
+              )}
 
-              {/* Full Description */}
-              <div className="mt-10">
-                <h2 className="text-xl font-semibold text-foreground">Description</h2>
-                <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
-                  {description.split('\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+              {/* Description Content */}
+              <div className={cn(
+                "mt-10",
+                isBlog ? "font-serif text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
+              )}>
+                <h2 className="sr-only">Descripción</h2>
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  {descBefore.split('\n').map((paragraph, index) => (
+                    <p key={`before-${index}`} className="mb-4">{paragraph}</p>
+                  ))}
+
+                  {/* Internal Ad placeholder */}
+                  {descAfter && (
+                    <div className="my-8 flex justify-center">
+                      <AdPlaceholder variant="horizontal" />
+                    </div>
+                  )}
+
+                  {descAfter && descAfter.split('\n').map((paragraph, index) => (
+                    <p key={`after-${index}`} className="mb-4">{paragraph}</p>
                   ))}
                 </div>
               </div>
 
-              {/* Tags Section */}
-              {tags.length > 0 && (
-                <div className="mt-10">
-                  <h2 className="text-xl font-semibold text-foreground">Tags</h2>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {tags.map((tag) => (
-                      <Link 
-                        key={tag} 
-                        href={`/designs?tag=${encodeURIComponent(tag)}`}
-                        className="group"
-                      >
-                        <Badge 
-                          variant="outline" 
-                          className="bg-transparent transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
-                        >
-                          <Tag className="mr-1.5 h-3 w-3" />
-                          {tag}
-                        </Badge>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* In-Content Ad */}
-              <div className="mt-10">
-                <AdSlot type="inline" />
-              </div>
-
               {/* Related Designs */}
               {relatedDesigns.length > 0 && (
-                <div className="mt-12">
+                <div className="mt-16 border-t border-border/40 pt-12">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-foreground">Related Designs</h2>
-                    <Link 
+                    <h2 className="text-2xl font-bold text-foreground">También te puede gustar</h2>
+                    <Link
                       href={`/category/${category}`}
-                      className="text-sm text-primary hover:underline"
+                      className="text-sm font-medium text-primary hover:underline"
                     >
-                      View all
+                      Ver todos
                     </Link>
                   </div>
-                  <div className="mt-6">
+                  <div className="mt-8">
                     <DesignGrid designs={relatedDesigns} showAds={false} />
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Sidebar - Moves below main content on mobile */}
-            <aside className="w-full space-y-6 lg:w-[320px]">
-              {/* Sidebar Ad */}
-              <AdSlot type="sidebar" />
-
-              {/* Related Fonts Section */}
-              {relatedFonts.length > 0 && (
-                <div className="rounded-xl border border-border/50 bg-card p-5">
-                  <div className="flex items-center gap-2">
-                    <Type className="h-5 w-5 text-primary" />
-                    <h3 className="font-semibold text-foreground">Related Fonts</h3>
-                  </div>
-                  <div className="mt-4 space-y-3">
-                    {relatedFonts.map((font) => (
-                      <Link
-                        key={font.id}
-                        href={`/designs/${font.slug || font.id}`}
-                        className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
-                      >
-                        <div className="relative h-12 w-12 overflow-hidden rounded-md bg-muted">
-                          <Image
-                            src={font.thumbnail_url || "/placeholder.svg"}
-                            alt={font.title || 'Font preview'}
-                            fill
-                            className="object-cover"
-                            sizes="48px"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="line-clamp-1 text-sm font-medium text-foreground group-hover:text-primary">
-                            {font.title || 'Untitled Font'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {(font.downloads ?? 0).toLocaleString()} downloads
-                          </p>
-                        </div>
-                        <Download className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                      </Link>
-                    ))}
-                  </div>
-                  <Link
-                    href="/fonts"
-                    className="mt-4 block text-center text-sm text-primary hover:underline"
-                  >
-                    Browse all fonts
-                  </Link>
-                </div>
-              )}
-
-              {/* YouTube Tutorial Embed Section */}
-              <div className="rounded-xl border border-border/50 bg-card p-5">
-                <div className="flex items-center gap-2">
-                  <Play className="h-5 w-5 text-red-500" />
-                  <h3 className="font-semibold text-foreground">Learn How to Use</h3>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Watch our tutorials to get the most out of this design.
-                </p>
-                
-                {tutorials.length > 0 ? (
-                  <div className="mt-4 space-y-3">
-                    {tutorials.slice(0, 2).map((tutorial) => (
-                      <Link
-                        key={tutorial.id}
-                        href={`/tutorials/${tutorial.slug}`}
-                        className="group block overflow-hidden rounded-lg border border-border/50 transition-colors hover:border-primary/50"
-                      >
-                        <div className="relative aspect-video">
-                          <Image
-                            src={tutorial.thumbnail_url || "/placeholder.svg"}
-                            alt={tutorial.title || 'Tutorial thumbnail'}
-                            fill
-                            className="object-cover"
-                            sizes="280px"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white">
-                              <Play className="h-5 w-5 fill-current" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-3">
-                          <p className="line-clamp-2 text-sm font-medium text-foreground group-hover:text-primary">
-                            {tutorial.title || 'Tutorial'}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="mt-4 aspect-video overflow-hidden rounded-lg bg-muted">
-                    <iframe
-                      src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                      title="Design Tutorial"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="h-full w-full"
-                    />
-                  </div>
-                )}
-                
-                <Link
-                  href="/tutorials"
-                  className="mt-4 block text-center text-sm text-primary hover:underline"
-                >
-                  View all tutorials
-                </Link>
-              </div>
-
-              {/* Social Proof / E-E-A-T */}
-              <div className="rounded-xl border border-border/50 bg-gradient-to-br from-primary/5 to-primary/10 p-5">
-                <h3 className="font-semibold text-foreground">Why Choose Us?</h3>
-                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                    <span>Professionally designed by experts</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                    <span>Regular updates and new content</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                    <span>Trusted by 50,000+ creators</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                    <span>Free and premium options</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Another Sidebar Ad */}
-              <AdSlot type="sidebar" />
+            {/* Sidebar (4 or 3 columns) */}
+            <aside className="col-span-12 lg:col-span-4 xl:col-span-3">
+              <StickySidebar
+                popularCategories={popularCategories}
+                tags={tags}
+              />
             </aside>
           </div>
         </div>
       </section>
     </>
+  )
+}
+
+function Button({ asChild, size, className, children }: any) {
+  const Comp = asChild ? 'span' : 'button'
+  return (
+    <Comp className={cn(
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+      size === 'lg' ? "h-10 px-8" : "h-9 px-4 py-2",
+      className
+    )}>
+      {children}
+    </Comp>
   )
 }

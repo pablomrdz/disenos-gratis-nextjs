@@ -39,10 +39,10 @@ export function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <Sparkles className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-foreground">DesignHub</span>
+              <span className="text-xl font-bold tracking-tight text-foreground">DiseñosGratis.com</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Premium design resources for creators, marketers, and brands. Free and VIP templates for every project.
+              Recursos de diseño premium para creadores, marketers y marcas. Plantillas gratuitas y VIP para cada proyecto.
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-border/40 pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            {new Date().getFullYear()} DesignHub. All rights reserved.
+            {new Date().getFullYear()} DiseñosGratis.com. Todos los derechos reservados.
           </p>
         </div>
       </div>

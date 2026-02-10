@@ -6,7 +6,7 @@ import type { Design, Tutorial, BlogPost, Category } from './types'
 const USE_MOCK = false
 
 // Designs
-export async function getDesigns(options?: { 
+export async function getDesigns(options?: {
   category?: string
   type?: string
   limit?: number
@@ -47,12 +47,12 @@ export async function getDesigns(options?: {
     }
 
     const { data, error } = await query.order('created_at', { ascending: false })
-    
+
     if (error) {
       console.error('Error fetching designs:', error)
       return mockDesigns
     }
-    
+
     return data || []
   } catch (err) {
     console.error('Error fetching designs:', err)
@@ -230,4 +230,105 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
   }
 
   return data
+}
+
+// Get top categories by design count
+export async function getTopCategories(limit: number = 6): Promise<Array<{ category: string; count: number }>> {
+  if (USE_MOCK) {
+    // Mock data for top categories
+    return [
+      { category: 'social-media', count: 245 },
+      { category: 'video-templates', count: 167 },
+      { category: 'presentations', count: 128 },
+      { category: 'print-design', count: 112 },
+      { category: 'fonts', count: 89 },
+      { category: 'brand-kits', count: 56 },
+    ].slice(0, limit)
+  }
+
+  try {
+    const supabase = createServerSupabaseClient()
+
+    // Get all designs and count by category
+    const { data, error } = await supabase
+      .from('designs')
+      .select('category')
+
+    if (error) {
+      console.error('Error fetching categories:', error)
+      return []
+    }
+
+    // Count designs per category
+    const categoryCounts = (data || []).reduce((acc, design) => {
+      const category = (design as { category: string }).category || 'uncategorized'
+      acc[category] = (acc[category] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    // Convert to array and sort by count
+    return Object.entries(categoryCounts)
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit)
+  } catch (err) {
+    console.error('Error fetching top categories:', err)
+    return []
+  }
+}
+
+// Get related designs by tags
+export async function getRelatedDesignsByTags(
+  designId: string,
+  tags: string[],
+  limit: number = 4
+): Promise<Design[]> {
+  if (USE_MOCK || tags.length === 0) {
+    return []
+  }
+
+  try {
+    const supabase = createServerSupabaseClient()
+
+    // Get all designs except the current one
+    const { data, error } = await supabase
+      .from('designs')
+      .select('*')
+      .neq('id', designId)
+      .limit(50) // Get more to filter by tags
+
+    if (error) {
+      console.error('Error fetching related designs:', error)
+      return []
+    }
+
+    if (!data || data.length === 0) {
+      return []
+    }
+
+    // Filter and score designs by matching tags
+    const scoredDesigns = data
+      .map(design => {
+        const designTags = Array.isArray((design as Design).tags) ? (design as Design).tags : []
+        const matchingTags = designTags.filter((tag: string) => tags.includes(tag))
+        return {
+          design,
+          score: matchingTags.length
+        }
+      })
+      .filter(item => item.score > 0) // Only designs with at least one matching tag
+      .sort((a, b) => b.score - a.score) // Sort by most matching tags
+      .slice(0, limit)
+      .map(item => item.design)
+
+    return scoredDesigns
+  } catch (err) {
+    console.error('Error fetching related designs by tags:', err)
+    return []
+  }
+}
+
+// Get popular categories for sidebar (alias for getTopCategories)
+export async function getPopularCategories(limit: number = 5): Promise<Array<{ category: string; count: number }>> {
+  return getTopCategories(limit)
 }

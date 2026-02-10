@@ -58,7 +58,7 @@ export function Header() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">DesignHub</span>
+          <span className="text-xl font-bold tracking-tight text-foreground">DiseñosGratis.com</span>
         </Link>
 
         {/* Desktop Navigation */}
