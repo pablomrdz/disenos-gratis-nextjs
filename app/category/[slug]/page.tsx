@@ -1,124 +1,88 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
-import { getDesigns, getCategoryBySlug, getCategories } from '@/lib/data'
-import { Share2, Presentation, Type, Video, Palette, Printer } from 'lucide-react'
+import { getDesigns } from '@/lib/data'
+import { Skeleton } from '@/components/ui/skeleton'
+import { createServerSupabaseClient } from '@/lib/supabase'
 
-// Force SSR for SEO
 export const dynamic = 'force-dynamic'
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>
 }
 
-const categoryIcons: Record<string, typeof Share2> = {
-  'social-media': Share2,
-  'presentations': Presentation,
-  'fonts': Type,
-  'video-templates': Video,
-  'brand-kits': Palette,
-  'print-design': Printer,
+function DesignGridSkeleton() {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 9 }).map((_, i) => (
+        <div key={i} className="space-y-3">
+          <Skeleton className="aspect-square w-full rounded-lg" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-3 w-1/2" />
+        </div>
+      ))}
+    </div>
+  )
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const { slug } = await params
-  const category = await getCategoryBySlug(slug)
-  
-  if (!category) {
-    return { title: 'Category Not Found' }
+async function CategoryContent({ slug }: { slug: string }) {
+  const supabase = createServerSupabaseClient()
+
+  // Fetch designs where category or category_seo matches the slug (fuzzy/case-insensitive)
+  // Special case for 'tipografias' -> look for 'Tipografías' or 'Fonts'
+  let query = supabase.from('designs').select('*')
+
+  if (slug === 'tipografias') {
+    query = query.or('category.ilike.%Tipografías%,category.ilike.%Fonts%,category_seo.ilike.%Tipografias%')
+  } else {
+    query = query.or(`category.ilike.%${slug}%,category_seo.ilike.%${slug}%`)
   }
 
-  return {
-    title: `${category.name} Templates & Resources`,
-    description: `Browse our collection of ${category.name.toLowerCase()} templates and resources. ${category.description}`,
-    openGraph: {
-      title: `${category.name} Templates | DesignHub`,
-      description: category.description,
-    },
-  }
-}
+  const { data: designs, error } = await query.order('created_at', { ascending: false })
 
-export async function generateStaticParams() {
-  const categories = await getCategories()
-  return categories.map((category) => ({
-    slug: category.slug,
-  }))
+  if (error || !designs || designs.length === 0) {
+    return (
+      <div className="rounded-lg border border-dashed p-12 text-center">
+        <h2 className="text-xl font-semibold">No se encontraron diseños</h2>
+        <p className="mt-2 text-muted-foreground">No hemos encontrado diseños para esta categoría todavía.</p>
+      </div>
+    )
+  }
+
+  return <DesignGrid designs={designs} showAds={true} adFrequency={6} />
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params
-  const [category, designs, allDesigns] = await Promise.all([
-    getCategoryBySlug(slug),
-    getDesigns({ category: slug }),
-    getDesigns({ limit: 10 }),
-  ])
 
-  if (!category) {
-    notFound()
-  }
+  const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
+  const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
 
-  const Icon = categoryIcons[slug] || Share2
-  const popularDesigns = [...allDesigns].sort((a, b) => b.downloads - a.downloads).slice(0, 5)
+  const categoryName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 
   return (
-    <>
-      {/* Category Header */}
-      <section className="border-b border-border/40 bg-muted/30">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-              <Icon className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                {category.name}
-              </h1>
-              <p className="mt-1 text-lg text-muted-foreground">
-                {category.description}
-              </p>
-            </div>
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-8 lg:flex-row">
+        <div className="flex-1">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Categoría: {categoryName}
+            </h1>
+            <p className="mt-2 text-lg text-muted-foreground">
+              Explora nuestra colección de diseños para {categoryName}
+            </p>
           </div>
-          <div className="mt-6">
-            <span className="text-sm text-muted-foreground">
-              {designs.length} templates available
-            </span>
-          </div>
-        </div>
-      </section>
 
-      {/* Hero Ad */}
-      <section className="py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AdSlot variant="hero" />
+          <Suspense fallback={<DesignGridSkeleton />}>
+            <CategoryContent slug={slug} />
+          </Suspense>
         </div>
-      </section>
 
-      {/* Main Content */}
-      <section className="py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr,300px]">
-            {/* Design Grid */}
-            <div>
-              {designs.length > 0 ? (
-                <DesignGrid designs={designs} showAds={true} adFrequency={8} />
-              ) : (
-                <div className="rounded-lg border border-dashed border-border p-12 text-center">
-                  <p className="text-muted-foreground">
-                    No designs found in this category yet.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Sidebar */}
-            <div className="hidden lg:block">
-              <Sidebar popularDesigns={popularDesigns} />
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+        <aside className="w-full lg:w-[300px]">
+          <Sidebar popularDesigns={popularDesigns} />
+        </aside>
+      </div>
+    </div>
   )
 }

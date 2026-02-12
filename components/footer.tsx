@@ -3,16 +3,13 @@ import { Sparkles } from 'lucide-react'
 
 const footerLinks = {
   resources: [
-    { name: 'All Designs', href: '/designs' },
-    { name: 'Fonts', href: '/fonts' },
-    { name: 'Tutorials', href: '/tutorials' },
     { name: 'Blog', href: '/blog' },
   ],
   categories: [
-    { name: 'Social Media', href: '/category/social-media' },
-    { name: 'Presentations', href: '/category/presentations' },
-    { name: 'Video Templates', href: '/category/video-templates' },
-    { name: 'Brand Kits', href: '/category/brand-kits' },
+    { name: 'Sublimación', href: '/category/sublimacion' },
+    { name: 'DTF', href: '/category/dtf' },
+    { name: 'Vinilo', href: '/category/vinilo' },
+    { name: 'Tipografías', href: '/category/tipografias' },
   ],
   company: [
     { name: 'About Us', href: '/about' },

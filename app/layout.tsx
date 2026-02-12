@@ -7,12 +7,12 @@ import { Footer } from '@/components/footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/json-ld'
 import './globals.css'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: '--font-sans',
 })
 
-const spaceGrotesk = Space_Grotesk({ 
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: '--font-heading',
 })
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-icon.png',
   },
-    generator: 'v0.app'
+  generator: 'v0.app'
 }
 
 export const viewport: Viewport = {
@@ -105,6 +105,13 @@ export default function RootLayout({
       <head>
         <OrganizationJsonLd />
         <WebsiteJsonLd />
+        {/* Google AdSense - Auto Ads (Descomentar cuando esté listo)
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADS_CLIENT}`}
+          crossOrigin="anonymous"
+        />
+        */}
       </head>
       <body className="font-sans antialiased">
         <div className="flex min-h-screen flex-col">

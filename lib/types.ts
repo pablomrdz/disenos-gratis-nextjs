@@ -6,6 +6,7 @@ export interface Design {
   description: string
   slug: string
   thumbnail_url: string
+  image_url?: string
   category: string
   type: DesignType
   download_url?: string | null

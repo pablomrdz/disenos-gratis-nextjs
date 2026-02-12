@@ -24,7 +24,7 @@ export function DesignCard({ design }: DesignCardProps) {
   const showLock = isVip && !isUnlocked
 
   const designType = design.type || 'internal'
-  
+
   const getTypeLabel = () => {
     switch (designType) {
       case 'canva':
@@ -78,86 +78,61 @@ export function DesignCard({ design }: DesignCardProps) {
 
   return (
     <>
-      <Card 
-        className="group overflow-hidden border-border/50 bg-card transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5"
+      <Card
+        className="group overflow-hidden border-border/50 bg-card transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+        <div className="relative aspect-square overflow-hidden bg-muted">
           <Image
-            src={design.thumbnail_url || "/placeholder.svg"}
+            src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
             alt={design.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
           />
-          
-          {/* Overlay on hover */}
-          <div className={`absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="absolute bottom-4 left-4 right-4 flex gap-2">
-              <Button
-                size="sm"
-                className="flex-1 gap-2"
-                onClick={handleDownload}
-              >
-                {showLock ? (
-                  <>
-                    <Lock className="h-4 w-4" />
-                    Unlock
-                  </>
-                ) : design.external_url ? (
-                  <>
-                    <ExternalLink className="h-4 w-4" />
-                    Open
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-4 w-4" />
-                    Download
-                  </>
-                )}
-              </Button>
-              <Button size="sm" variant="secondary" asChild>
-                <Link href={`/designs/${design.slug || design.id}`}>
-                  <Eye className="h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
+
+          {/* Overlay on hover - Compact */}
+          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <Button
+              size="sm"
+              variant="default"
+              className="h-8 rounded-full px-3 text-xs"
+              onClick={handleDownload}
+            >
+              <Download className="mr-1 h-3.5 w-3.5" />
+              Bajar
+            </Button>
+            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0" asChild>
+              <Link href={`/designs/${design.slug || design.id}`}>
+                <Eye className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </div>
 
-          {/* VIP Badge */}
+          {/* VIP Badge - Smaller */}
           {isVip && (
-            <div className="absolute left-3 top-3">
-              <Badge className="gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
-                <Crown className="h-3 w-3" />
+            <div className="absolute left-2 top-2">
+              <Badge className="h-5 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[10px] text-white px-1.5 font-bold">
+                <Crown className="h-2.5 w-2.5" />
                 VIP
               </Badge>
             </div>
           )}
-
-          {/* Type Badge */}
-          <div className="absolute right-3 top-3">
-            <Badge variant="outline" className={`${getTypeColor()} backdrop-blur-sm`}>
-              {getTypeLabel()}
-            </Badge>
-          </div>
         </div>
 
-        <CardContent className="p-4">
+        <CardContent className="p-2.5">
           <Link href={`/designs/${design.slug || design.id}`} className="group/link">
-            <h3 className="line-clamp-1 font-semibold text-foreground transition-colors group-hover/link:text-primary">
+            <h3 className="line-clamp-1 text-sm font-bold text-foreground transition-colors group-hover/link:text-primary">
               {design.title || 'Untitled Design'}
             </h3>
           </Link>
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-            {design.description || 'No description available'}
-          </p>
-          <div className="mt-3 flex items-center justify-between">
-            <Badge variant="secondary" className="text-xs">
-              {(design.category || 'general').replace('-', ' ')}
-            </Badge>
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Download className="h-3 w-3" />
+          <div className="mt-1.5 flex items-center justify-between gap-2">
+            <span className="truncate text-[10px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted px-1.5 py-0.5 rounded">
+              {(design.category || 'general').split(',')[0].trim().replace('-', ' ')}
+            </span>
+            <span className="flex items-center gap-1 text-[10px] text-muted-foreground whitespace-nowrap">
+              <Download className="h-2.5 w-2.5" />
               {(design.downloads ?? 0).toLocaleString()}
             </span>
           </div>

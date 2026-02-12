@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Crown, TrendingUp, Clock, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AdSlot } from '@/components/ad-slot'
+import { GoogleAd } from '@/components/google-ad'
 import type { Design } from '@/lib/types'
 
 interface SidebarProps {
@@ -13,6 +13,8 @@ interface SidebarProps {
 export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProps) {
   return (
     <aside className="space-y-6">
+      <GoogleAd adUnitName="sidebar" height={600} />
+
       {/* VIP Banner */}
       <Card className="overflow-hidden border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
         <CardContent className="p-6">
@@ -35,9 +37,6 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
           </Link>
         </CardContent>
       </Card>
-
-      {/* Sidebar Ad */}
-      <AdSlot variant="sidebar" />
 
       {/* Popular Downloads */}
       {popularDesigns.length > 0 && (

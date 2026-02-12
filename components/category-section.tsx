@@ -6,7 +6,8 @@ import { getTopCategories } from '@/lib/data'
 // Helper function to format category names
 function formatCategoryName(slug: string): string {
   return slug
-    .split('-')
+    .split(',')[0]
+    .split(/[- ]/)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 }
@@ -49,28 +50,30 @@ export async function CategorySection() {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {topCategories.map((item, index) => (
-            <Link key={item.category} href={`/category/${item.category}`}>
-              <Card className="group h-full border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
-                <CardContent className="flex items-center gap-4 p-6">
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-bold text-lg ${getCategoryColor(index)}`}>
-                    {formatCategoryName(item.category).charAt(0)}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground group-hover:text-primary">
-                      {formatCategoryName(item.category)}
-                    </h3>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {item.count} diseños
-                    </p>
-                  </div>
-                  <span className="text-sm font-medium text-muted-foreground">
-                    {item.count}
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+          {topCategories
+            .filter(item => item.category.toLowerCase() !== 'blog')
+            .map((item, index) => (
+              <Link key={item.category} href={`/category/${item.category}`}>
+                <Card className="group h-full border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
+                  <CardContent className="flex items-center gap-4 p-6">
+                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-bold text-lg ${getCategoryColor(index)}`}>
+                      {formatCategoryName(item.category).charAt(0)}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-foreground group-hover:text-primary">
+                        {formatCategoryName(item.category)}
+                      </h3>
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {item.count} diseños
+                      </p>
+                    </div>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {item.count}
+                    </span>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
         </div>
       </div>
     </section>

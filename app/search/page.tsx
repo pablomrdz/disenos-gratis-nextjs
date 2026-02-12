@@ -15,14 +15,16 @@ interface SearchPageProps {
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
   const { q } = await searchParams
   const query = q?.trim() || ''
-  
+
   return {
     title: query ? `Search: ${query}` : 'Search Designs',
-    description: query 
+    description: query
       ? `Search results for "${query}" - Find design templates, fonts, and resources`
       : 'Search our collection of premium design templates, fonts, and resources',
   }
 }
+
+import { normalizeString } from '@/lib/utils'
 
 async function searchDesigns(query: string) {
   if (!query || query.length < 2) {
@@ -31,21 +33,35 @@ async function searchDesigns(query: string) {
 
   try {
     const supabase = createServerSupabaseClient()
-    
-    // Search by title using ilike for case-insensitive search
+
+    // 1. Broad fetch from Supabase
     const { data, error } = await supabase
       .from('designs')
       .select('*')
-      .ilike('title', `%${query}%`)
+      .or(`title.ilike.%${query}%,description.ilike.%${query}%,category.ilike.%${query}%`)
       .order('downloads', { ascending: false })
-      .limit(30)
+      .limit(100)
 
     if (error) {
       console.error('Search error:', error)
       return []
     }
 
-    return data || []
+    if (!data) return []
+
+    // 2. Client-side fuzzy/accent-insensitive filtering
+    const normalizedQuery = normalizeString(query)
+
+    return data.filter(design => {
+      const normalizedTitle = normalizeString(design.title || '')
+      const normalizedDesc = normalizeString(design.description || '')
+      const normalizedCat = normalizeString(design.category || '')
+
+      return normalizedTitle.includes(normalizedQuery) ||
+        normalizedDesc.includes(normalizedQuery) ||
+        normalizedCat.includes(normalizedQuery)
+    }).slice(0, 40)
+
   } catch (err) {
     console.error('Unexpected search error:', err)
     return []
@@ -55,7 +71,7 @@ async function searchDesigns(query: string) {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q } = await searchParams
   const query = q?.trim() || ''
-  
+
   const [searchResults, allDesigns] = await Promise.all([
     searchDesigns(query),
     getDesigns({ limit: 10 }),
@@ -77,9 +93,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 {query ? `Results for "${query}"` : 'Search Designs'}
               </h1>
               <p className="mt-1 text-lg text-muted-foreground">
-                {searchResults.length > 0 
+                {searchResults.length > 0
                   ? `Found ${searchResults.length} design${searchResults.length === 1 ? '' : 's'}`
-                  : query 
+                  : query
                     ? 'No designs found'
                     : 'Enter a search term to find designs'}
               </p>

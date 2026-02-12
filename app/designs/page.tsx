@@ -29,13 +29,14 @@ interface DesignsPageProps {
 
 export default async function DesignsPage({ searchParams }: DesignsPageProps) {
   const { type, vip } = await searchParams
-  
+
   const designs = await getDesigns({
     type: type && type !== 'all' ? type : undefined,
     isVip: vip === 'true' ? true : undefined,
+    excludeCategory: 'blog',
   })
 
-  const allDesigns = await getDesigns({ limit: 10 })
+  const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
   const popularDesigns = [...allDesigns].sort((a, b) => b.downloads - a.downloads).slice(0, 5)
 
   return (
@@ -49,7 +50,7 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
           <p className="mt-2 text-lg text-muted-foreground">
             Browse our complete collection of templates and resources
           </p>
-          
+
           {/* Filters */}
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Filter className="h-4 w-4 text-muted-foreground" />

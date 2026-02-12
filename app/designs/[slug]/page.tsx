@@ -14,7 +14,7 @@ import {
   Play
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { AdSlot } from '@/components/ad-slot'
+import { GoogleAd } from '@/components/google-ad'
 import { AdPlaceholder } from '@/components/ad-placeholder'
 import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
@@ -231,6 +231,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 )}>
                   {title}
                 </h1>
+                <GoogleAd adUnitName="despúes de cada h1" height={90} className="mt-4" />
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Badge variant="outline" className="bg-transparent capitalize">
                     {category.replace('-', ' ')}

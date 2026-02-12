@@ -11,6 +11,7 @@ export async function getDesigns(options?: {
   type?: string
   limit?: number
   isVip?: boolean
+  excludeCategory?: string
 }): Promise<Design[]> {
   if (USE_MOCK) {
     let designs = [...mockDesigns]
@@ -44,6 +45,9 @@ export async function getDesigns(options?: {
     }
     if (options?.limit) {
       query = query.limit(options.limit)
+    }
+    if (options?.excludeCategory) {
+      query = query.neq('category', options.excludeCategory)
     }
 
     const { data, error } = await query.order('created_at', { ascending: false })
@@ -253,16 +257,22 @@ export async function getTopCategories(limit: number = 6): Promise<Array<{ categ
     const { data, error } = await supabase
       .from('designs')
       .select('category')
+      .neq('category', 'blog')
 
     if (error) {
       console.error('Error fetching categories:', error)
       return []
     }
 
-    // Count designs per category
+    // Count designs per category, handling multiple categories if present
     const categoryCounts = (data || []).reduce((acc, design) => {
-      const category = (design as { category: string }).category || 'uncategorized'
-      acc[category] = (acc[category] || 0) + 1
+      const categoryRaw = (design as { category: string }).category || 'uncategorized'
+      // Take the first category in case of comma-separated list
+      const category = categoryRaw.split(',')[0].trim().toLowerCase()
+
+      if (category !== 'blog') {
+        acc[category] = (acc[category] || 0) + 1
+      }
       return acc
     }, {} as Record<string, number>)
 

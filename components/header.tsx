@@ -18,12 +18,12 @@ import {
 } from '@/components/ui/navigation-menu'
 
 const categories = [
-  { name: 'Social Media', slug: 'social-media', description: 'Instagram, TikTok, and more' },
-  { name: 'Presentations', slug: 'presentations', description: 'Professional templates' },
-  { name: 'Fonts', slug: 'fonts', description: 'Premium and free fonts' },
-  { name: 'Video Templates', slug: 'video-templates', description: 'CapCut and video editing' },
-  { name: 'Brand Kits', slug: 'brand-kits', description: 'Complete branding packages' },
-  { name: 'Print Design', slug: 'print-design', description: 'Flyers, posters, and more' },
+  { name: 'Sublimación', slug: 'sublimacion', description: 'Plantillas para sublimar tazas, remeras y más' },
+  { name: 'DTF', slug: 'dtf', description: 'Diseños listos para impresión DTF' },
+  { name: 'Vinilo', slug: 'vinilo', description: 'Vectores para corte en vinilo' },
+  { name: 'Tipografías', slug: 'tipografias', description: 'Fuentes premium y gratuitas' },
+  { name: 'Corte Láser', slug: 'corte-laser', description: 'Vectores para MDF y acrílico' },
+  { name: 'Plantillas', slug: 'plantillas', description: 'Agendas, invitaciones y más' },
 ]
 
 export function Header() {
@@ -67,7 +67,7 @@ export function Header() {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-transparent">Categories</NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent className="z-[100] bg-white text-slate-900 shadow-xl border border-slate-200 ring-1 ring-black/5 !opacity-100 !visible">
                   <ul className="grid w-[500px] gap-2 p-4 md:grid-cols-2">
                     {categories.map((category) => (
                       <li key={category.slug}>
@@ -76,7 +76,7 @@ export function Header() {
                             href={`/category/${category.slug}`}
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">{category.name}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{category.name}</div>
                             <p className="mt-1 line-clamp-1 text-sm leading-snug text-muted-foreground">
                               {category.description}
                             </p>
@@ -89,12 +89,9 @@ export function Header() {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          
-          <Link href="/fonts" className="px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground">
+
+          <Link href="/category/tipografias" className="px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground">
             Fonts
-          </Link>
-          <Link href="/tutorials" className="px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground">
-            Tutorials
           </Link>
           <Link href="/blog" className="px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground">
             Blog
@@ -162,10 +159,10 @@ export function Header() {
         <div className="border-t border-border/40 bg-background lg:hidden">
           <div className="mx-auto max-w-7xl space-y-1 px-4 py-4">
             <form onSubmit={handleMobileSearch} className="mb-4 flex gap-2">
-              <Input 
-                type="search" 
-                placeholder="Search designs..." 
-                className="flex-1" 
+              <Input
+                type="search"
+                placeholder="Search designs..."
+                className="flex-1"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -190,18 +187,11 @@ export function Header() {
             </div>
             <div className="space-y-1 pt-4">
               <Link
-                href="/fonts"
+                href="/category/tipografias"
                 className="block rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-accent hover:text-foreground"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Fonts
-              </Link>
-              <Link
-                href="/tutorials"
-                className="block rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-accent hover:text-foreground"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Tutorials
               </Link>
               <Link
                 href="/blog"
