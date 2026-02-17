@@ -79,6 +79,22 @@ export interface Database {
         Insert: Omit<Category, 'id'>
         Update: Partial<Omit<Category, 'id'>>
       }
+      downloads_stats: {
+        Row: {
+          id: string
+          design_id: string
+          category: string
+          created_at: string
+        }
+        Insert: {
+          design_id: string
+          category: string
+        }
+        Update: Partial<{
+          design_id: string
+          category: string
+        }>
+      }
     }
   }
 }
