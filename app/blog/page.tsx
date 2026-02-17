@@ -5,6 +5,7 @@ import { TutorialCard } from '@/components/tutorial-card'
 import { DesignCard } from '@/components/design-card'
 import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
+import { GoogleAd } from '@/components/google-ad'
 import { Button } from '@/components/ui/button'
 import { getTutorials, getDesigns } from '@/lib/data'
 
@@ -82,12 +83,7 @@ export default async function TutorialsPage() {
         </div>
       </section>
 
-      {/* Hero Ad */}
-      <section className="py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AdSlot variant="hero" />
-        </div>
-      </section>
+
 
       {/* Main Content */}
       <section className="py-12">
@@ -96,7 +92,7 @@ export default async function TutorialsPage() {
             {/* Tutorial Grid */}
             <div>
               <div className="mb-8">
-                <AdSlot variant="horizontal" />
+                <GoogleAd adUnitName="in feed para listas" height={250} />
               </div>
 
               {blogPosts.length > 0 ? (
@@ -108,20 +104,22 @@ export default async function TutorialsPage() {
               ) : (
                 <div className="rounded-lg border border-dashed border-border p-12 text-center">
                   <p className="text-muted-foreground">
-                    No tutorials available yet.
+                    Cargando artículos...
                   </p>
                 </div>
               )}
 
               {/* Bottom Ad */}
               <div className="mt-8">
-                <AdSlot variant="horizontal" />
+                <GoogleAd adUnitName="in feed para listas" height={250} />
               </div>
             </div>
 
             {/* Sidebar */}
             <div className="hidden lg:block">
-              <Sidebar popularDesigns={popularDesigns} />
+              <div className="mx-auto max-w-[300px]">
+                <Sidebar popularDesigns={popularDesigns} />
+              </div>
             </div>
           </div>
         </div>

@@ -13,7 +13,9 @@ interface SidebarProps {
 export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProps) {
   return (
     <aside className="space-y-6">
-      <GoogleAd adUnitName="sidebar" height={600} />
+      <div className="mx-auto max-w-[300px]">
+        <GoogleAd adUnitName="sidebar" height={600} />
+      </div>
 
       {/* VIP Banner */}
       <Card className="overflow-hidden border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-500/10">

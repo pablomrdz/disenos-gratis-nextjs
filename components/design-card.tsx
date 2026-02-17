@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ShareToUnlockModal } from '@/components/share-to-unlock-modal'
 import type { Design } from '@/lib/types'
+import { slugify } from '@/lib/utils'
 
 interface DesignCardProps {
   design: Design
@@ -84,26 +85,31 @@ export function DesignCard({ design }: DesignCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative aspect-square overflow-hidden bg-muted">
-          <Image
-            src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
-            alt={design.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
-          />
+          <Link href={`/designs/${design.slug || design.id}`}>
+            <Image
+              src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
+              alt={design.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          </Link>
 
           {/* Overlay on hover - Compact */}
-          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-2 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <Button
               size="sm"
               variant="default"
-              className="h-8 rounded-full px-3 text-xs"
-              onClick={handleDownload}
+              className="h-8 rounded-full px-3 text-xs pointer-events-auto"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent triggering the card link
+                handleDownload();
+              }}
             >
               <Download className="mr-1 h-3.5 w-3.5" />
-              Bajar
+              Descargar
             </Button>
-            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0" asChild>
+            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto" asChild onClick={(e) => e.stopPropagation()}>
               <Link href={`/designs/${design.slug || design.id}`}>
                 <Eye className="h-3.5 w-3.5" />
               </Link>
@@ -112,7 +118,7 @@ export function DesignCard({ design }: DesignCardProps) {
 
           {/* VIP Badge - Smaller */}
           {isVip && (
-            <div className="absolute left-2 top-2">
+            <div className="absolute left-2 top-2 z-10">
               <Badge className="h-5 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[10px] text-white px-1.5 font-bold">
                 <Crown className="h-2.5 w-2.5" />
                 VIP
@@ -121,16 +127,24 @@ export function DesignCard({ design }: DesignCardProps) {
           )}
         </div>
 
-        <CardContent className="p-2.5">
-          <Link href={`/designs/${design.slug || design.id}`} className="group/link">
-            <h3 className="line-clamp-1 text-sm font-bold text-foreground transition-colors group-hover/link:text-primary">
-              {design.title || 'Untitled Design'}
-            </h3>
-          </Link>
+        <CardContent className="p-2.5 relative">
+          <div className="group/link block relative z-10">
+            {/* Title needs to decode entities like &#8211; */}
+            <Link href={`/designs/${design.slug || design.id}`}>
+              <h3
+                className="line-clamp-1 text-sm font-bold text-foreground transition-colors group-hover/link:text-primary"
+                dangerouslySetInnerHTML={{ __html: design.title || 'Untitled Design' }}
+              />
+            </Link>
+          </div>
           <div className="mt-1.5 flex items-center justify-between gap-2">
-            <span className="truncate text-[10px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted px-1.5 py-0.5 rounded">
+            <Link
+              href={`/category/${slugify((design.category || 'general').split(',')[0])}`}
+              className="relative z-20 truncate text-[10px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary"
+              onClick={(e) => e.stopPropagation()}
+            >
               {(design.category || 'general').split(',')[0].trim().replace('-', ' ')}
-            </span>
+            </Link>
             <span className="flex items-center gap-1 text-[10px] text-muted-foreground whitespace-nowrap">
               <Download className="h-2.5 w-2.5" />
               {(design.downloads ?? 0).toLocaleString()}

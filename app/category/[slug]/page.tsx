@@ -2,9 +2,11 @@ import { Suspense } from 'react'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
+import { GoogleAd } from '@/components/google-ad'
 import { getDesigns } from '@/lib/data'
 import { Skeleton } from '@/components/ui/skeleton'
 import { createServerSupabaseClient } from '@/lib/supabase'
+import type { Design } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,28 +31,59 @@ function DesignGridSkeleton() {
 async function CategoryContent({ slug }: { slug: string }) {
   const supabase = createServerSupabaseClient()
 
-  // Fetch designs where category or category_seo matches the slug (fuzzy/case-insensitive)
-  // Special case for 'tipografias' -> look for 'Tipografías' or 'Fonts'
-  let query = supabase.from('designs').select('*')
+  // Fetch a broad set of designs to filter client-side (Hardcoded solution)
+  // We fetch standard designs (excluding blog if needed, but here we fetch * to be safe as per instructions)
+  const { data: allDesigns, error } = await supabase
+    .from('designs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1000); // Reasonable limit to avoid crashing, but large enough to cover most
 
-  if (slug === 'tipografias') {
-    query = query.or('category.ilike.%Tipografías%,category.ilike.%Fonts%,category_seo.ilike.%Tipografias%')
-  } else {
-    query = query.or(`category.ilike.%${slug}%,category_seo.ilike.%${slug}%`)
+  if (error || !allDesigns) {
+    return (
+      <div className="rounded-lg border border-dashed p-12 text-center">
+        <p>Error loading designs.</p>
+      </div>
+    );
   }
 
-  const { data: designs, error } = await query.order('created_at', { ascending: false })
+  // Helper to clean strings for comparison
+  const normalize = (str: string) =>
+    decodeURIComponent(str || '')
+      .toLowerCase()
+      .replace(/-/g, ' ')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
 
-  if (error || !designs || designs.length === 0) {
+  const targetSlug = normalize(slug);
+
+  const designs = (allDesigns as Design[]).filter(d => {
+    const cat = normalize(d.category);
+    const catSeo = normalize(d.category_seo);
+
+    // Check if the normalized target slug is included in the normalized category string
+    // This handles cases like "Fondos y Texturas" vs "fondos y texturas"
+    // Also handles "DTF" matching "DTF, Sublimacion"
+    return cat.includes(targetSlug) || catSeo.includes(targetSlug);
+  });
+
+  if (designs.length === 0) {
     return (
       <div className="rounded-lg border border-dashed p-12 text-center">
         <h2 className="text-xl font-semibold">No se encontraron diseños</h2>
-        <p className="mt-2 text-muted-foreground">No hemos encontrado diseños para esta categoría todavía.</p>
+        <p className="mt-2 text-muted-foreground">No hemos encontrado diseños para esta categoría todavía ({slug}).</p>
       </div>
     )
   }
 
-  return <DesignGrid designs={designs} showAds={true} adFrequency={6} />
+  return (
+    <div className="space-y-8">
+      <GoogleAd adUnitName="in feed para listas" height={250} />
+      <DesignGrid designs={designs} showAds={true} adFrequency={6} />
+      <GoogleAd adUnitName="in feed para listas" height={250} />
+    </div>
+  )
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -59,7 +92,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
   const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
 
-  const categoryName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  const categoryName = decodeURIComponent(slug).split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

@@ -35,7 +35,26 @@ export async function getDesigns(options?: {
     let query = supabase.from('designs').select('*')
 
     if (options?.category) {
-      query = query.eq('category', options.category)
+      // Handle both hyphenated and space-separated versions of the category
+      // This fixes issues where 'fondos-y-texturas' in URL doesn't match 'Fondos y Texturas' in DB
+      const slug = options.category;
+      const spaceVariation = slug.replace(/-/g, ' ');
+
+      // Use ilike logic to match either variation
+      // Simplest robust way: 
+      // category.ilike.%slug% OR category.ilike.%spaceVariation%
+
+      const searchTerms = [slug, spaceVariation];
+
+      // Add accented variations for known categories
+      if (slug === 'recursos-graficos') searchTerms.push('recursos gráficos');
+      if (slug === 'sublimacion') searchTerms.push('sublimación');
+      if (slug === 'tipografias') searchTerms.push('tipografías');
+      if (slug === 'corte-laser') searchTerms.push('corte láser');
+
+      // Construct the OR query string
+      const orQuery = searchTerms.map(term => `category.ilike.%${term}%`).join(',');
+      query = query.or(orQuery);
     }
     if (options?.type) {
       query = query.eq('type', options.type)
@@ -197,6 +216,20 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 }
 
 // Categories
+// Strict list of allowed categories (from WP migration)
+export const ALLOWED_SLUGS = [
+  'blog',
+  'corte-laser',
+  'dtf',
+  'fondos-y-texturas',
+  'plantillas',
+  'recursos-graficos',
+  'sublimacion',
+  'tipografias',
+  'vectores',
+  'vinil-textil'
+];
+
 export async function getCategories(): Promise<Category[]> {
   if (USE_MOCK) {
     return mockCategories
@@ -210,7 +243,68 @@ export async function getCategories(): Promise<Category[]> {
 
   if (error) {
     console.error('Error fetching categories:', error)
-    return mockCategories
+    // Return empty or valid static structure based on ALLOWED_SLUGS instead of mockCategories
+    return ALLOWED_SLUGS
+      .filter(slug => slug !== 'blog') // EXCLUDE BLOG FROM FALLBACK
+      .map((slug, index) => ({
+        id: `fallback-${index}`,
+        name: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // capitalized
+        slug: slug,
+        description: 'Category',
+        icon: 'Folder'
+      }))
+  }
+
+  // Filter out any categories not in the allowed list and any that contain commas (dirty data)
+  const cleanCategories = (data || []).filter(cat => {
+    // Basic clean checks
+    if (!cat.slug || cat.slug === 'uncategorized' || cat.slug.includes(',')) return false;
+
+    // Strict Clean: Must be in our allowed list
+    const normalizedSlug = cat.slug.toLowerCase().trim().replace(/\s+/g, '-');
+    return ALLOWED_SLUGS.includes(normalizedSlug) && normalizedSlug !== 'blog';
+  });
+
+  return cleanCategories;
+}
+
+// Helper to extract a single valid category from a potentially dirty comma-separated string
+export function getPrimaryCategory(rawCategory: string | undefined | null): string {
+  if (!rawCategory) return 'uncategorized';
+
+  // 1. Try exact match first (normalized)
+  const normalized = rawCategory.toLowerCase().trim().replace(/\s+/g, '-');
+  if (ALLOWED_SLUGS.includes(normalized)) return normalized;
+
+  // 2. Split by comma and find the first valid one
+  const parts = rawCategory.split(',').map(p => p.trim());
+  for (const part of parts) {
+    const partSlug = part.toLowerCase().replace(/\s+/g, '-');
+    if (ALLOWED_SLUGS.includes(partSlug)) return partSlug;
+  }
+
+  // 3. Fallback: if no valid strict match, just return the first part cleaned
+  return parts[0].toLowerCase().replace(/\s+/g, '-');
+}
+
+export async function getDesignsByTag(tag: string, limit: number = 20): Promise<Design[]> {
+  if (USE_MOCK) {
+    return mockDesigns.filter(d => d.tags && d.tags.includes(tag)).slice(0, limit)
+  }
+
+  const supabase = createServerSupabaseClient()
+
+  // Using the 'contains' operator for array columns in Supabase
+  const { data, error } = await supabase
+    .from('designs')
+    .select('*')
+    .contains('tags', [tag])
+    .limit(limit)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching designs by tag:', error)
+    return []
   }
 
   return data || []

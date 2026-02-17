@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { getTopCategories } from '@/lib/data'
+import { slugify } from '@/lib/utils'
 
 // Helper function to format category names
 function formatCategoryName(slug: string): string {
@@ -53,7 +54,7 @@ export async function CategorySection() {
           {topCategories
             .filter(item => item.category.toLowerCase() !== 'blog')
             .map((item, index) => (
-              <Link key={item.category} href={`/category/${item.category}`}>
+              <Link key={item.category} href={`/category/${slugify(item.category)}`}>
                 <Card className="group h-full border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
                   <CardContent className="flex items-center gap-4 p-6">
                     <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-bold text-lg ${getCategoryColor(index)}`}>

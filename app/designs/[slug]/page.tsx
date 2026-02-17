@@ -19,10 +19,10 @@ import { AdPlaceholder } from '@/components/ad-placeholder'
 import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
 import { StickySidebar } from '@/components/sticky-sidebar'
-import { getDesignBySlug, getDesigns, getTutorials, getRelatedDesignsByTags, getPopularCategories } from '@/lib/data'
+import { getDesignBySlug, getDesigns, getTutorials, getRelatedDesignsByTags, getPopularCategories, getPrimaryCategory } from '@/lib/data'
 import { detectContentType, extractDownloadLink, splitContentForAd } from '@/lib/content-utils'
 import { DownloadSection } from './download-section'
-import { cn } from '@/lib/utils'
+import { cn, slugify } from '@/lib/utils'
 
 // Force SSR for SEO
 export const dynamic = 'force-dynamic'
@@ -78,7 +78,8 @@ export default async function DesignPage({ params }: DesignPageProps) {
   // Safe field access with fallbacks
   const title = design.title || 'Untitled Design'
   const description = design.description || 'No description available'
-  const category = design.category || 'general'
+  const rawCategory = design.category || 'general'
+  const category = getPrimaryCategory(rawCategory)
   const tags = Array.isArray(design.tags) ? design.tags : []
   const downloads = design.downloads ?? 0
   const designType = design.type || 'internal'
@@ -152,16 +153,16 @@ export default async function DesignPage({ params }: DesignPageProps) {
             </Link>
             <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
             <Link
-              href={`/category/${category}`}
+              href={`/category/${slugify(category)}`}
               className="capitalize text-muted-foreground transition-colors hover:text-foreground"
             >
-              {category.replace('-', ' ')}
+              {category.replace(/-/g, ' ')}
             </Link>
             {primaryTag && (
               <>
                 <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
                 <Link
-                  href={`/designs?tag=${encodeURIComponent(primaryTag)}`}
+                  href={`/tags/${encodeURIComponent(primaryTag)}`}
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {primaryTag}
@@ -200,7 +201,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
                   isBlog ? "aspect-[16/9]" : "aspect-[4/3] sm:aspect-video"
                 )}>
                   <Image
-                    src={design.thumbnail_url || "/placeholder.svg"}
+                    src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
                     alt={title}
                     fill
                     className="object-cover"
@@ -225,17 +226,20 @@ export default async function DesignPage({ params }: DesignPageProps) {
 
               {/* Header Info */}
               <div className="mt-8">
-                <h1 className={cn(
-                  "text-balance font-bold text-foreground",
-                  isBlog ? "text-3xl sm:text-4xl lg:text-5xl font-serif" : "text-2xl sm:text-3xl lg:text-4xl"
-                )}>
-                  {title}
-                </h1>
+                <h1
+                  className={cn(
+                    "text-balance font-bold text-foreground",
+                    isBlog ? "text-3xl sm:text-4xl lg:text-5xl font-serif" : "text-2xl sm:text-3xl lg:text-4xl"
+                  )}
+                  dangerouslySetInnerHTML={{ __html: title }}
+                />
                 <GoogleAd adUnitName="despúes de cada h1" height={90} className="mt-4" />
                 <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Badge variant="outline" className="bg-transparent capitalize">
-                    {category.replace('-', ' ')}
-                  </Badge>
+                  <Link href={`/category/${slugify(category)}`} className="transition-opacity hover:opacity-80">
+                    <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
+                      {category.replace('-', ' ')}
+                    </Badge>
+                  </Link>
                   {!isBlog && (
                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Download className="h-4 w-4" />
@@ -256,12 +260,6 @@ export default async function DesignPage({ params }: DesignPageProps) {
               {/* Call to Action for Resources */}
               {!isBlog && (
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <Button asChild size="lg" className="h-14 gap-2 bg-orange-500 px-8 text-lg font-bold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600">
-                    <a href={finalDownloadUrl || '#'} target="_blank" rel="noopener noreferrer">
-                      <Download className="h-5 w-5" />
-                      Descargar Ahora
-                    </a>
-                  </Button>
                   <DownloadSection design={design} isVip={isVip} />
                 </div>
               )}
@@ -296,7 +294,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-foreground">También te puede gustar</h2>
                     <Link
-                      href={`/category/${category}`}
+                      href={`/category/${slugify(category)}`}
                       className="text-sm font-medium text-primary hover:underline"
                     >
                       Ver todos

@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { getDesigns } from '@/lib/data'
+import type { Design } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   }
 }
 
-import { normalizeString } from '@/lib/utils'
+import { normalizeText } from '@/lib/utils'
 
 async function searchDesigns(query: string) {
   if (!query || query.length < 2) {
@@ -34,13 +35,12 @@ async function searchDesigns(query: string) {
   try {
     const supabase = createServerSupabaseClient()
 
-    // 1. Broad fetch from Supabase
+    // 1. Broad fetch from Supabase (Fetch all/many to filter client side as requested)
     const { data, error } = await supabase
       .from('designs')
       .select('*')
-      .or(`title.ilike.%${query}%,description.ilike.%${query}%,category.ilike.%${query}%`)
       .order('downloads', { ascending: false })
-      .limit(100)
+      .limit(500) // Increased limit for broader client-side search
 
     if (error) {
       console.error('Search error:', error)
@@ -50,12 +50,12 @@ async function searchDesigns(query: string) {
     if (!data) return []
 
     // 2. Client-side fuzzy/accent-insensitive filtering
-    const normalizedQuery = normalizeString(query)
-
-    return data.filter(design => {
-      const normalizedTitle = normalizeString(design.title || '')
-      const normalizedDesc = normalizeString(design.description || '')
-      const normalizedCat = normalizeString(design.category || '')
+    return (data as Design[]).filter(design => {
+      // Normalize both the query and the fields to remove accents
+      const normalizedQuery = normalizeText(query)
+      const normalizedTitle = normalizeText(design.title || '')
+      const normalizedDesc = normalizeText(design.description || '')
+      const normalizedCat = normalizeText(design.category || '')
 
       return normalizedTitle.includes(normalizedQuery) ||
         normalizedDesc.includes(normalizedQuery) ||

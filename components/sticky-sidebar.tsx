@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { Folder, Tag as TagIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { AdPlaceholder } from '@/components/ad-placeholder'
+import { GoogleAd } from '@/components/google-ad'
 import { formatCategoryName } from '@/lib/content-utils'
+import { slugify } from '@/lib/utils'
 
 interface StickySidebarProps {
     popularCategories: Array<{ category: string; count: number }>
@@ -13,6 +15,11 @@ interface StickySidebarProps {
 export function StickySidebar({ popularCategories, tags, className }: StickySidebarProps) {
     return (
         <div className={`sticky top-8 space-y-6 ${className || ''}`}>
+            {/* Top Ad - 300x250 */}
+            <div className="flex justify-center">
+                <GoogleAd adUnitName="sidebar-top" height={250} width={300} />
+            </div>
+
             {/* Bloque 1: Categorías Populares */}
             <div className="rounded-xl border border-border/50 bg-card p-5">
                 <div className="flex items-center gap-2 mb-4">
@@ -23,7 +30,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                     {popularCategories.map((item) => (
                         <li key={item.category}>
                             <Link
-                                href={`/category/${item.category}`}
+                                href={`/category/${slugify(item.category)}`}
                                 className="group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
                             >
                                 <span className="text-foreground/80 group-hover:text-foreground">
@@ -44,9 +51,9 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                 </Link>
             </div>
 
-            {/* Bloque 2: Ad Skyscraper */}
+            {/* Bottom Ad - 300x250 */}
             <div className="flex justify-center">
-                <AdPlaceholder variant="skyscraper" />
+                <GoogleAd adUnitName="sidebar-bottom" height={250} width={300} />
             </div>
 
             {/* Bloque 3: Etiquetas Relacionadas */}
@@ -60,7 +67,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                         {tags.map((tag) => (
                             <Link
                                 key={tag}
-                                href={`/designs?tag=${encodeURIComponent(tag)}`}
+                                href={`/tags/${encodeURIComponent(tag)}`}
                                 className="group"
                             >
                                 <Badge

@@ -8,14 +8,14 @@ const footerLinks = {
   categories: [
     { name: 'Sublimación', href: '/category/sublimacion' },
     { name: 'DTF', href: '/category/dtf' },
-    { name: 'Vinilo', href: '/category/vinilo' },
+    { name: 'Vinil Textil', href: '/category/vinil-textil' },
     { name: 'Tipografías', href: '/category/tipografias' },
   ],
   company: [
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Privacy Policy', href: '/privacy' },
-    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Sobre Nosotros', href: '/about' },
+    { name: 'Contacto', href: '/contact' },
+    { name: 'Política de Privacidad', href: '/privacy' },
+    { name: 'Términos de Servicio', href: '/terms' },
   ],
   social: [
     { name: 'Pinterest', href: 'https://pinterest.com' },
@@ -45,7 +45,7 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Resources</h3>
+            <h3 className="text-sm font-semibold text-foreground">Recursos</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
@@ -62,7 +62,7 @@ export function Footer() {
 
           {/* Categories */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Categories</h3>
+            <h3 className="text-sm font-semibold text-foreground">Categorías</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.categories.map((link) => (
                 <li key={link.name}>
@@ -79,7 +79,7 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Company</h3>
+            <h3 className="text-sm font-semibold text-foreground">Compañía</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
@@ -96,7 +96,7 @@ export function Footer() {
 
           {/* Social */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Follow Us</h3>
+            <h3 className="text-sm font-semibold text-foreground">Síguenos</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.social.map((link) => (
                 <li key={link.name}>
