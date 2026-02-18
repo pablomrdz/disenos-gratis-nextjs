@@ -4,7 +4,7 @@ import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
 import { GoogleAd } from '@/components/google-ad'
 import { getDesigns } from '@/lib/data'
-import { Skeleton } from '@/components/ui/skeleton'
+import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { Design } from '@/lib/types'
 
@@ -14,19 +14,7 @@ interface CategoryPageProps {
   params: Promise<{ slug: string }>
 }
 
-function DesignGridSkeleton() {
-  return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} className="space-y-3">
-          <Skeleton className="aspect-square w-full rounded-lg" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-3 w-1/2" />
-        </div>
-      ))}
-    </div>
-  )
-}
+
 
 async function CategoryContent({ slug }: { slug: string }) {
   const supabase = createServerSupabaseClient()

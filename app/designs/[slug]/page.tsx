@@ -40,24 +40,38 @@ export async function generateMetadata({ params }: DesignPageProps): Promise<Met
   }
 
   const title = design.title || 'Untitled Design'
-  const description = design.description || 'Download this premium design template'
+  const rawDescription = design.description || 'Descarga gratis este recurso gráfico de alta calidad'
+  const description = rawDescription.replace(/<[^>]*>/g, '').slice(0, 160)
   const tags = Array.isArray(design.tags) ? design.tags : []
+  const ogImage = design.image_url || design.thumbnail_url || ''
+  const canonicalUrl = `https://disenosgratis.com/designs/${slug}`
 
   return {
     title,
     description,
     keywords: tags,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description,
-      images: design.thumbnail_url ? [design.thumbnail_url] : [],
+      url: canonicalUrl,
+      siteName: 'Diseños Gratis',
+      images: ogImage ? [{
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: title,
+      }] : [],
       type: 'article',
+      locale: 'es_MX',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: design.thumbnail_url ? [design.thumbnail_url] : [],
+      images: ogImage ? [ogImage] : [],
     },
   }
 }

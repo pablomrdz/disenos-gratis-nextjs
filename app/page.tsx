@@ -6,25 +6,13 @@ import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
 import { GoogleAd } from '@/components/google-ad'
+import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
-import { Skeleton } from '@/components/ui/skeleton'
 
 // Force SSR for SEO
 export const dynamic = 'force-dynamic'
 
-function DesignGridSkeleton() {
-  return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="space-y-3">
-          <Skeleton className="aspect-[4/5] w-full rounded-lg" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-3 w-1/2" />
-        </div>
-      ))}
-    </div>
-  )
-}
+
 
 async function FeaturedDesigns() {
   const designs = await getDesigns({ limit: 16, excludeCategory: 'blog' })
