@@ -27,28 +27,32 @@ export function DesignCard({ design }: DesignCardProps) {
   const designType = design.type || 'internal'
 
   const getTypeLabel = () => {
+    if (isVip) return 'Acceso VIP'
+
     switch (designType) {
       case 'canva':
-        return 'Canva Template'
+        return 'Plantilla Canva'
       case 'capcut':
-        return 'CapCut Template'
+        return 'Plantilla CapCut'
       case 'font':
-        return 'Font Download'
+        return 'Descarga de Fuente'
       default:
-        return 'Direct Download'
+        return 'Descarga Directa'
     }
   }
 
   const getTypeColor = () => {
+    if (isVip) return 'bg-amber-500/10 text-amber-600 border-amber-500/30'
+
     switch (designType) {
       case 'canva':
-        return 'bg-[#00C4CC]/10 text-[#00C4CC] border-[#00C4CC]/20'
+        return 'bg-[#00C4CC]/10 text-[#00C4CC] border-[#00C4CC]/30'
       case 'capcut':
-        return 'bg-[#FF0050]/10 text-[#FF0050] border-[#FF0050]/20'
+        return 'bg-[#FF0050]/10 text-[#FF0050] border-[#FF0050]/30'
       case 'font':
-        return 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+        return 'bg-amber-500/10 text-amber-600 border-amber-500/30'
       default:
-        return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+        return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
     }
   }
 
@@ -97,18 +101,17 @@ export function DesignCard({ design }: DesignCardProps) {
 
           {/* Overlay on hover - Compact */}
           <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-2 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <Button
-              size="sm"
-              variant="default"
-              className="h-8 rounded-full px-3 text-xs pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent triggering the card link
-                handleDownload();
-              }}
-            >
-              <Download className="mr-1 h-3.5 w-3.5" />
-              Descargar
-            </Button>
+            {showLock ? (
+              <>
+                <Lock className="mr-1 h-3.5 w-3.5" />
+                Desbloquear
+              </>
+            ) : (
+              <>
+                <Download className="mr-1 h-3.5 w-3.5" />
+                Descargar
+              </>
+            )}
             <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto" asChild onClick={(e) => e.stopPropagation()}>
               <Link href={`/designs/${design.slug || design.id}`}>
                 <Eye className="h-3.5 w-3.5" />

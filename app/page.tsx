@@ -76,23 +76,23 @@ export default function HomePage() {
       <section className="border-t border-border/40 bg-muted/30 py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Stay Updated
+            Mantente al Día
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Get notified about new templates, fonts, and exclusive VIP content.
-            Join our community of 25,000+ creators.
+            Recibe notificaciones sobre nuevas plantillas, fuentes y contenido VIP exclusivo.
+            Únete a nuestra comunidad de más de 25,000 creadores.
           </p>
           <form className="mx-auto mt-8 flex max-w-md gap-3">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="Tu correo electrónico"
               className="flex-1 rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button
               type="submit"
-              className="rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="rounded-lg bg-primary-dark px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary"
             >
-              Subscribe
+              Suscribirse
             </button>
           </form>
         </div>

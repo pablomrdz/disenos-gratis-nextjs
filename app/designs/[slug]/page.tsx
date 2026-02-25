@@ -19,10 +19,11 @@ import { AdPlaceholder } from '@/components/ad-placeholder'
 import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
 import { StickySidebar } from '@/components/sticky-sidebar'
+import { FontPreviewInteractive } from '@/components/font-preview-interactive'
 import { getDesignBySlug, getDesigns, getTutorials, getRelatedDesignsByTags, getPopularCategories, getPrimaryCategory } from '@/lib/data'
 import { detectContentType, extractDownloadLink, splitContentForAd } from '@/lib/content-utils'
 import { DownloadSection } from './download-section'
-import { cn, slugify } from '@/lib/utils'
+import { cn, slugify, normalizeText } from '@/lib/utils'
 
 // Force SSR for SEO
 export const dynamic = 'force-dynamic'
@@ -100,6 +101,12 @@ export default async function DesignPage({ params }: DesignPageProps) {
   const isVip = Boolean(design.premium_url) || design.is_vip
   const createdAt = design.created_at ? new Date(design.created_at) : new Date()
 
+  // Detect if it's a typography design
+  const normalizedCat = normalizeText(rawCategory);
+  const isFont = designType === 'font' ||
+    normalizedCat.includes('tipografia') ||
+    normalizedCat.includes('fuente');
+
   // Detect content type
   const contentType = detectContentType(design)
   const isBlog = contentType === 'blog'
@@ -124,13 +131,13 @@ export default async function DesignPage({ params }: DesignPageProps) {
   const getTypeLabel = () => {
     switch (designType) {
       case 'canva':
-        return 'Canva Template'
+        return 'Plantilla de Canva'
       case 'capcut':
-        return 'CapCut Template'
+        return 'Plantilla de CapCut'
       case 'font':
-        return 'Font Download'
+        return 'Tipografía Gratis'
       default:
-        return 'Direct Download'
+        return 'Descarga Directa'
     }
   }
 
@@ -209,33 +216,53 @@ export default async function DesignPage({ params }: DesignPageProps) {
               </Link>
 
               {/* Design Preview */}
-              <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
-                <div className={cn(
-                  "relative",
-                  isBlog ? "aspect-[16/9]" : "aspect-[4/3] sm:aspect-video"
-                )}>
-                  <Image
-                    src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
-                    alt={title}
-                    fill
-                    className="object-cover"
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                  />
-                  {isVip && (
-                    <div className="absolute left-4 top-4">
-                      <Badge className="gap-1.5 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-white shadow-lg">
-                        <Crown className="h-3.5 w-3.5" />
-                        Contenido VIP
+              <div className="space-y-6">
+                <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
+                  <div className={cn(
+                    "relative",
+                    isBlog ? "aspect-[16/9]" : "aspect-[4/3] sm:aspect-video"
+                  )}>
+                    <Image
+                      src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
+                      alt={title}
+                      fill
+                      className="object-cover"
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 66vw"
+                    />
+                    {isVip && (
+                      <div className="absolute left-4 top-4">
+                        <Badge className="gap-1.5 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-white shadow-lg">
+                          <Crown className="h-3.5 w-3.5" />
+                          Contenido VIP
+                        </Badge>
+                      </div>
+                    )}
+                    <div className="absolute right-4 top-4">
+                      <Badge className={`border ${getTypeColor()}`}>
+                        {getTypeLabel()}
                       </Badge>
                     </div>
-                  )}
-                  <div className="absolute right-4 top-4">
-                    <Badge className={`border ${getTypeColor()}`}>
-                      {getTypeLabel()}
-                    </Badge>
                   </div>
                 </div>
+
+                {/* Interactive Preview for Fonts (Extra tool) */}
+                {isFont && (
+                  <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-6 sm:p-8">
+                    <h3 className="mb-4 text-sm font-medium text-primary flex items-center gap-2">
+                      <Type className="h-4 w-4" />
+                      Probador de texto (Simulación)
+                    </h3>
+                    <FontPreviewInteractive
+                      isLarge={false}
+                      className="w-full"
+                      initialText={title.includes('Halloween') ? 'Trick or Treat - Noche de Brujas' : undefined}
+                    />
+                    <p className="mt-4 text-[10px] text-muted-foreground italic">
+                      Nota: Esta es una vista previa del diseño. La tipografía real se obtiene al descargar el archivo.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Header Info */}

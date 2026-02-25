@@ -16,8 +16,8 @@ function formatCategoryName(slug: string): string {
 // Helper function to get category color based on index
 function getCategoryColor(index: number): string {
   const colors = [
-    'text-pink-500 bg-pink-500/10',
     'text-blue-500 bg-blue-500/10',
+    'text-primary-dark bg-primary/10', // Brand color
     'text-amber-500 bg-amber-500/10',
     'text-red-500 bg-red-500/10',
     'text-emerald-500 bg-emerald-500/10',

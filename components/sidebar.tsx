@@ -25,9 +25,9 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
               <Crown className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground">Go VIP</h3>
+              <h3 className="font-semibold text-foreground">Hazte VIP</h3>
               <p className="text-sm text-muted-foreground">
-                Unlock all premium content
+                Desbloquea todo el contenido premium
               </p>
             </div>
           </div>
@@ -35,7 +35,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
             href="/vip"
             className="mt-4 flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-medium text-white transition-all hover:from-amber-600 hover:to-orange-600"
           >
-            Get VIP Access
+            Obtener Acceso VIP
           </Link>
         </CardContent>
       </Card>
@@ -46,7 +46,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <TrendingUp className="h-4 w-4 text-primary" />
-              Popular Downloads
+              Descargas Populares
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -64,7 +64,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
                     {design.title}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {design.downloads.toLocaleString()} downloads
+                    {design.downloads.toLocaleString()} descargas
                   </p>
                 </div>
                 {design.is_vip && (
@@ -85,7 +85,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <Clock className="h-4 w-4 text-primary" />
-              Recent Additions
+              Recién Agregados
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">

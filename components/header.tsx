@@ -150,7 +150,7 @@ export function Header() {
               <form onSubmit={handleSearch} className="flex items-center gap-2">
                 <Input
                   type="search"
-                  placeholder="Search designs..."
+                  placeholder="Buscar diseños..."
                   className="w-[200px] text-black bg-white border-slate-300"
                   autoFocus
                   value={searchQuery}
@@ -177,11 +177,11 @@ export function Header() {
             )}
           </div>
 
-          {/* VIP Button */}
-          <Button asChild className="hidden gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 sm:flex">
+          {/* VIP Button - Using brand colors now? No, the user wants to maintain the "VIP vibe" but maybe sync the dark part with our brand dark */}
+          <Button asChild className="hidden gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 sm:flex shadow-sm">
             <Link href="/vip">
               <Sparkles className="h-4 w-4" />
-              VIP Access
+              Acceso VIP
             </Link>
           </Button>
 
@@ -205,7 +205,7 @@ export function Header() {
             <form onSubmit={handleMobileSearch} className="mb-6 flex gap-2">
               <Input
                 type="search"
-                placeholder="Search designs..."
+                placeholder="Buscar diseños..."
                 className="flex-1 bg-white text-black border-slate-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

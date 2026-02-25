@@ -38,7 +38,7 @@ export function HeroSection() {
 
             <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               Encuentra el diseño{' '}
-              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-dark via-primary to-primary-light bg-clip-text text-transparent">
                 perfecto
               </span>
             </h1>
@@ -64,7 +64,7 @@ export function HeroSection() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-12 gap-2 px-6"
+                  className="h-12 gap-2 px-6 bg-primary-dark hover:bg-primary"
                   disabled={searchQuery.trim().length < 2}
                 >
                   Buscar
