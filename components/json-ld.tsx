@@ -20,6 +20,7 @@ export function JsonLd({ type, data }: JsonLdProps) {
     const isTemplate = design.type === 'canva' || design.type === 'capcut'
     const isVip = Boolean(design.premium_url) || design.is_vip
     const imageUrl = design.image_url || design.thumbnail_url || undefined
+    const absoluteImageUrl = imageUrl && !imageUrl.startsWith('http') ? `${BASE_URL}${imageUrl}` : imageUrl
 
     // Use SoftwareApplication for templates, Product for other designs
     if (isTemplate) {
@@ -28,11 +29,11 @@ export function JsonLd({ type, data }: JsonLdProps) {
         '@type': 'SoftwareApplication',
         name: title,
         description: description,
-        image: imageUrl ? {
+        image: absoluteImageUrl ? {
           '@type': 'ImageObject',
-          url: imageUrl,
+          url: absoluteImageUrl,
           name: title,
-          contentUrl: imageUrl,
+          contentUrl: absoluteImageUrl,
         } : undefined,
         url: `${BASE_URL}/designs/${slug}`,
         applicationCategory: 'DesignApplication',
@@ -41,14 +42,14 @@ export function JsonLd({ type, data }: JsonLdProps) {
         dateModified: design.updated_at || design.created_at || undefined,
         offers: {
           '@type': 'Offer',
-          price: isVip ? '9.99' : '0',
+          price: '0',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
         },
         aggregateRating: (design.downloads ?? 0) > 0 ? {
           '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          reviewCount: design.downloads ?? 1,
+          ratingValue: '4.9',
+          reviewCount: Math.max(design.downloads ?? 1, 1),
           bestRating: '5',
           worstRating: '1',
         } : undefined,
@@ -64,11 +65,11 @@ export function JsonLd({ type, data }: JsonLdProps) {
         '@type': 'Product',
         name: title,
         description: description,
-        image: imageUrl ? {
+        image: absoluteImageUrl ? {
           '@type': 'ImageObject',
-          url: imageUrl,
+          url: absoluteImageUrl,
           name: title,
-          contentUrl: imageUrl,
+          contentUrl: absoluteImageUrl,
         } : undefined,
         url: `${BASE_URL}/designs/${slug}`,
         category: design.category || 'Recursos Gráficos',
@@ -76,15 +77,15 @@ export function JsonLd({ type, data }: JsonLdProps) {
         dateModified: design.updated_at || design.created_at || undefined,
         offers: {
           '@type': 'Offer',
-          price: isVip ? '9.99' : '0',
+          price: '0',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
           url: `${BASE_URL}/designs/${slug}`,
         },
         aggregateRating: (design.downloads ?? 0) > 0 ? {
           '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          reviewCount: design.downloads ?? 1,
+          ratingValue: '4.9',
+          reviewCount: Math.max(design.downloads ?? 1, 1),
           bestRating: '5',
           worstRating: '1',
         } : undefined,
@@ -102,12 +103,15 @@ export function JsonLd({ type, data }: JsonLdProps) {
     const slug = post.slug || post.id
     const tags = Array.isArray(post.tags) ? post.tags : []
 
+    const blogImageUrl = post.featured_image || undefined
+    const absoluteBlogImageUrl = blogImageUrl && !blogImageUrl.startsWith('http') ? `${BASE_URL}${blogImageUrl}` : blogImageUrl
+
     structuredData = {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: title,
       description: excerpt,
-      image: post.featured_image || undefined,
+      image: absoluteBlogImageUrl || undefined,
       url: `${BASE_URL}/blog/${slug}`,
       datePublished: post.created_at || undefined,
       dateModified: post.updated_at || post.created_at || undefined,
@@ -132,12 +136,15 @@ export function JsonLd({ type, data }: JsonLdProps) {
     }
   } else {
     const tutorial = data as Tutorial
+    const tutorialImageUrl = tutorial.thumbnail_url
+    const absoluteTutorialImageUrl = tutorialImageUrl && !tutorialImageUrl.startsWith('http') ? `${BASE_URL}${tutorialImageUrl}` : tutorialImageUrl
+
     structuredData = {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: tutorial.title,
       description: tutorial.description,
-      image: tutorial.thumbnail_url,
+      image: absoluteTutorialImageUrl,
       url: `${BASE_URL}/tutorials/${tutorial.slug}`,
       datePublished: tutorial.created_at,
       dateModified: tutorial.updated_at,
@@ -189,7 +196,7 @@ export function OrganizationJsonLd() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer support',
-      email: 'hola@disenosgratis.com',
+      email: 'hola.disenosgratis@gmail.com',
     },
   }
 

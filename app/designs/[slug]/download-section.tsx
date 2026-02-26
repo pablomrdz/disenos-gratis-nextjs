@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import Link from 'next/link'
 import {
   Download,
   ExternalLink,
@@ -10,6 +11,7 @@ import {
   Check,
   MessageCircle,
   Loader2,
+  Pencil,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -309,6 +311,18 @@ export function DownloadSection({ design, isVip }: DownloadSectionProps) {
                   )}
                 </div>
               )}
+
+              {/* Edit Design Button */}
+              <Link href={`/edit/${design.slug || design.id}`}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="gap-2 rounded-xl border-primary/30 bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all"
+                >
+                  <Pencil className="h-5 w-5" />
+                  Editar Diseño
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -317,7 +331,7 @@ export function DownloadSection({ design, isVip }: DownloadSectionProps) {
             <div className="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
               <h4 className="flex items-center gap-2 font-medium text-foreground">
                 <Crown className="h-4 w-4 text-amber-500" />
-                Beneficios VIP:
+                Beneficios Premium:
               </h4>
               <ul className="mt-2 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
                 <li className="flex items-center gap-2">
@@ -334,7 +348,7 @@ export function DownloadSection({ design, isVip }: DownloadSectionProps) {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="h-4 w-4 text-emerald-500" />
-                  Soporte prioritario
+                  Acceso a contenido exclusivo
                 </li>
               </ul>
             </div>

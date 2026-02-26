@@ -13,7 +13,7 @@ export default function ContactPage() {
             <div className="text-center max-w-2xl mx-auto">
                 <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Hablemos</h1>
                 <p className="mt-6 text-lg leading-8 text-muted-foreground text-balance">
-                    En <strong>Diseños Gratis</strong> valoramos tu feedback. Ya sea que tengas una pregunta sobre tu membresía VIP, una sugerencia de contenido o necesites soporte técnico, estamos aquí para ayudarte.
+                    En <strong>Diseños Gratis</strong> valoramos tu feedback. Ya sea que tengas una consulta comercial, una sugerencia de contenido o necesites ayuda técnica, estamos aquí para escucharte.
                 </p>
             </div>
 
@@ -25,22 +25,9 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-foreground">Email</h3>
                     <p className="mt-2 text-sm text-muted-foreground">Consultas generales y alianzas</p>
-                    <a href="mailto:hola@disenosgratis.com" className="mt-4 block font-medium text-primary hover:underline">
-                        hola@disenosgratis.com
+                    <a href="mailto:hola.disenosgratis@gmail.com" className="mt-4 block font-medium text-primary hover:underline">
+                        hola.disenosgratis@gmail.com
                     </a>
-                </div>
-
-                {/* WhatsApp Card */}
-                <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-muted/30 p-8 text-center transition-all hover:bg-muted/50 hover:shadow-lg">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 transition-colors group-hover:bg-emerald-500/20">
-                        <MessageSquare className="h-6 w-6 text-emerald-500" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground">WhatsApp</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">Soporte rápido para VIPs</p>
-                    <p className="mt-4 font-medium text-emerald-600 cursor-help" title="Número pendiente de verificación">
-                        [Número Privado VIP]
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">Disponible en tu área de miembro</p>
                 </div>
 
                 {/* DMCA Card */}
@@ -50,8 +37,8 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-foreground">DMCA / Copyright</h3>
                     <p className="mt-2 text-sm text-muted-foreground">Reportar infracciones</p>
-                    <a href="mailto:dmca@disenosgratis.com" className="mt-4 block font-medium text-amber-600 hover:underline">
-                        dmca@disenosgratis.com
+                    <a href="mailto:hola.disenosgratis@gmail.com" className="mt-4 block font-medium text-amber-600 hover:underline">
+                        hola.disenosgratis@gmail.com
                     </a>
                 </div>
             </div>

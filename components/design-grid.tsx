@@ -30,7 +30,7 @@ export function DesignGrid({
 
   return (
     <div className={cn(
-      "grid gap-4 sm:grid-cols-2",
+      "grid gap-6 grid-cols-2",
       columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"
     )}>
       {items.map((item) => {

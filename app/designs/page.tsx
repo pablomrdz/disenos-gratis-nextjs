@@ -3,36 +3,22 @@ import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
 import { getDesigns, getCategories } from '@/lib/data'
-import { Filter } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { redirect } from 'next/navigation'
 
 // Force SSR for SEO
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'All Design Templates & Resources',
-  description: 'Browse our complete collection of design templates, fonts, and resources. Free and premium downloads available.',
+  title: 'Todos los Diseños y Plantillas',
+  description: 'Explora nuestra colección completa de plantillas, fuentes y recursos de diseño. Descargas gratuitas y premium disponibles.',
 }
-
-// Static filters for Type (can correspond to types in DB or hardcoded subsets)
-const typeFilters = [
-  { label: 'All Types', value: 'all' },
-  { label: 'Canva', value: 'canva' },
-  { label: 'CapCut', value: 'capcut' },
-  { label: 'Fonts', value: 'font' },
-  { label: 'Direct Download', value: 'internal' },
-]
 
 interface DesignsPageProps {
   searchParams: Promise<{ type?: string; vip?: string; category?: string; tag?: string }>
 }
-
-import { redirect } from 'next/navigation'
-
-// ... (imports remain)
 
 export default async function DesignsPage({ searchParams }: DesignsPageProps) {
   const { type, vip, category, tag } = await searchParams
@@ -60,7 +46,7 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
   ]
 
   const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
-  const popularDesigns = [...allDesigns].sort((a, b) => b.downloads - a.downloads).slice(0, 5)
+  const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
 
   return (
     <>
@@ -68,21 +54,15 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
       <section className="border-b border-border/40 bg-muted/30">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            All Designs
+            Todos los Diseños
           </h1>
           <p className="mt-2 text-lg text-muted-foreground">
-            Browse our complete collection of templates and resources
+            Explora nuestra colección completa de plantillas y recursos
           </p>
 
-          {/* Type Filters (Static) - Removed as requested */}
-          {/* 
-            User requested to remove "All Types", "Canva", "Capcut" pills.
-            Only keeping the dynamic Category filters below.
-          */}
-
           {/* Category Filters (Dynamic Pills) */}
-          <div className="mt-4">
-            <h3 className="mb-2 text-sm font-medium text-muted-foreground">Filtrar por categoría:</h3>
+          <div className="mt-6">
+            <h3 className="mb-3 text-sm font-medium text-muted-foreground">Filtrar por categoría:</h3>
             <div className="flex flex-wrap gap-2 pb-2">
               {categoryFilters.map((cat) => {
                 const isActive = category === cat.slug || (!category && cat.slug === 'all');
@@ -122,33 +102,35 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
       {/* Main Content */}
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr,300px]">
+          <div className="grid gap-16 lg:grid-cols-[1fr_300px]">
             {/* Design Grid */}
-            <div>
+            <div className="min-w-0">
               <div className="mb-4 text-sm text-muted-foreground flex items-center justify-between">
-                <span>Showing {designs.length} designs</span>
+                <span>Mostrando {designs.length} diseños</span>
                 {(category || type || vip) && (
-                  <Link href="/designs" className="text-xs text-blue-600 hover:underline">Clear all filters</Link>
+                  <Link href="/designs" className="text-xs text-blue-600 hover:underline">Limpiar filtros</Link>
                 )}
               </div>
               {designs.length > 0 ? (
-                <DesignGrid designs={designs} showAds={true} adFrequency={8} />
+                <DesignGrid designs={designs} showAds={true} adFrequency={8} columns={3} />
               ) : (
                 <div className="rounded-lg border border-dashed border-border p-12 text-center">
                   <p className="text-muted-foreground">
-                    No designs found with the selected filters.
+                    No se encontraron diseños con los filtros seleccionados.
                   </p>
                   <Link href="/designs">
-                    <Button variant="link" className="mt-2">View all designs</Button>
+                    <Button variant="link" className="mt-2">Ver todos los diseños</Button>
                   </Link>
                 </div>
               )}
             </div>
 
-            {/* Sidebar */}
-            <div className="hidden lg:block">
-              <Sidebar popularDesigns={popularDesigns} />
-            </div>
+            {/* Sidebar - Sticky */}
+            <aside className="hidden lg:block relative">
+              <div className="sticky top-24">
+                <Sidebar popularDesigns={popularDesigns} />
+              </div>
+            </aside>
           </div>
         </div>
       </section>

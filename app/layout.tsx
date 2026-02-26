@@ -19,40 +19,40 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: 'DesignHub - Premium Digital Assets Marketplace',
-    template: '%s | DesignHub',
+    default: 'Diseños Gratis - Recursos Gráficos Premium & Gratis',
+    template: '%s | Diseños Gratis',
   },
-  description: 'Discover thousands of premium design templates, fonts, and resources for social media, presentations, and branding. Free and VIP downloads available.',
-  keywords: ['design templates', 'canva templates', 'capcut templates', 'fonts', 'social media templates', 'branding', 'digital assets'],
-  authors: [{ name: 'DesignHub Team' }],
-  creator: 'DesignHub',
-  publisher: 'DesignHub',
+  description: 'Descubre miles de plantillas de Canva, CapCut, fuentes y recursos de diseño para redes sociales y branding. Descargas gratis y VIP disponibles.',
+  keywords: ['plantillas de diseño', 'canva gratis', 'capcut gratis', 'tipografías', 'redes sociales', 'recursos gráficos'],
+  authors: [{ name: 'Equipo Diseños Gratis' }],
+  creator: 'Diseños Gratis',
+  publisher: 'Diseños Gratis',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://designhub.com'),
+  metadataBase: new URL('https://disenosgratis.com'),
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    url: 'https://designhub.com',
-    siteName: 'DesignHub',
-    title: 'DesignHub - Premium Digital Assets Marketplace',
-    description: 'Discover thousands of premium design templates, fonts, and resources.',
+    locale: 'es_MX',
+    url: 'https://disenosgratis.com',
+    siteName: 'Diseños Gratis',
+    title: 'Diseños Gratis - Recursos Gráficos Premium & Gratis',
+    description: 'Descubre miles de plantillas editables, fuentes y recursos de diseño gratis.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'DesignHub - Premium Digital Assets',
+        alt: 'Diseños Gratis',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DesignHub - Premium Digital Assets Marketplace',
-    description: 'Discover thousands of premium design templates, fonts, and resources.',
+    title: 'Diseños Gratis - Recursos Gráficos Premium & Gratis',
+    description: 'Descubre miles de plantillas editables, fuentes y recursos de diseño gratis.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -67,23 +67,10 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/favicon.png',
+    apple: '/logo.png',
   },
-  generator: 'v0.app'
+  generator: 'Next.js'
 }
 
 export const viewport: Viewport = {
@@ -101,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="es" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
         <OrganizationJsonLd />
         <WebsiteJsonLd />

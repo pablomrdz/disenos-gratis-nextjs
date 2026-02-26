@@ -88,7 +88,7 @@ export function DesignCard({ design }: DesignCardProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        <div className="relative aspect-[3/2] overflow-hidden bg-muted">
           <Link href={`/designs/${design.slug || design.id}`}>
             <Image
               src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
@@ -99,22 +99,17 @@ export function DesignCard({ design }: DesignCardProps) {
             />
           </Link>
 
-          {/* Overlay on hover - Compact */}
-          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-2 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            {showLock ? (
-              <>
-                <Lock className="mr-1 h-3.5 w-3.5" />
-                Desbloquear
-              </>
-            ) : (
-              <>
-                <Download className="mr-1 h-3.5 w-3.5" />
+          {/* Overlay on hover - Compact & Simplified */}
+          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-3 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            {!showLock && (
+              <div className="flex items-center text-white text-[10px] font-bold uppercase tracking-wider">
+                <Download className="mr-1.5 h-3.5 w-3.5" />
                 Descargar
-              </>
+              </div>
             )}
-            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto" asChild onClick={(e) => e.stopPropagation()}>
+            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto shadow-sm" asChild onClick={(e) => e.stopPropagation()}>
               <Link href={`/designs/${design.slug || design.id}`}>
-                <Eye className="h-3.5 w-3.5" />
+                <Eye className="h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -122,36 +117,47 @@ export function DesignCard({ design }: DesignCardProps) {
           {/* VIP Badge - Smaller */}
           {isVip && (
             <div className="absolute left-2 top-2 z-10">
-              <Badge className="h-5 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[10px] text-white px-1.5 font-bold">
-                <Crown className="h-2.5 w-2.5" />
+              <Badge className="h-4 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] text-white px-1.5 font-bold">
+                <Crown className="h-2 w-2" />
                 VIP
               </Badge>
             </div>
           )}
         </div>
 
-        <CardContent className="p-2.5 relative">
-          <div className="group/link block relative z-10">
-            {/* Title needs to decode entities like &#8211; */}
-            <Link href={`/designs/${design.slug || design.id}`}>
-              <h3
-                className="line-clamp-1 text-sm font-bold text-foreground transition-colors group-hover/link:text-primary"
-                dangerouslySetInnerHTML={{ __html: design.title || 'Untitled Design' }}
-              />
-            </Link>
+        <CardContent className="p-2 relative flex flex-col justify-between min-h-[90px]">
+          <div>
+            <div className="group/link block relative z-10">
+              {/* Title needs to decode entities like &#8211; */}
+              <Link href={`/designs/${design.slug || design.id}`}>
+                <h3
+                  className="line-clamp-1 text-xs font-bold text-foreground transition-colors group-hover/link:text-primary sm:text-[13px]"
+                  dangerouslySetInnerHTML={{ __html: design.title || 'Untitled Design' }}
+                />
+              </Link>
+            </div>
+            <div className="mt-1">
+              <Link
+                href={`/category/${slugify((design.category || 'general').split(',')[0])}`}
+                className="relative z-20 truncate text-[8px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {(design.category || 'general').split(',')[0].trim().replace('-', ' ')}
+              </Link>
+            </div>
           </div>
-          <div className="mt-1.5 flex items-center justify-between gap-2">
-            <Link
-              href={`/category/${slugify((design.category || 'general').split(',')[0])}`}
-              className="relative z-20 truncate text-[10px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {(design.category || 'general').split(',')[0].trim().replace('-', ' ')}
-            </Link>
-            <span className="flex items-center gap-1 text-[10px] text-muted-foreground whitespace-nowrap">
-              <Download className="h-2.5 w-2.5" />
+          <div className="flex items-center justify-between gap-1.5 mt-auto pt-1">
+            <span className="flex items-center gap-0.5 text-[9px] text-muted-foreground whitespace-nowrap shrink-0">
+              <Download className="h-2 w-2" />
               {(design.downloads ?? 0).toLocaleString()}
             </span>
+            <div className="relative z-10">
+              <Link href={`/designs/${design.slug || design.id}`}>
+                <Button size="sm" className="h-7 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white border-none text-[10px] font-bold px-4 transition-all duration-300">
+                  Descargar
+                </Button>
+              </Link>
+            </div>
           </div>
         </CardContent>
       </Card>

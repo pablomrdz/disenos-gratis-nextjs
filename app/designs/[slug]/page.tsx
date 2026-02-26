@@ -26,7 +26,8 @@ import { DownloadSection } from './download-section'
 import { cn, slugify, normalizeText } from '@/lib/utils'
 
 // Force SSR for SEO
-export const dynamic = 'force-dynamic'
+// ISR: Static with 1 hour revalidation
+export const revalidate = 3600
 
 interface DesignPageProps {
   params: Promise<{ slug: string }>

@@ -7,50 +7,13 @@ import { getDesigns } from '@/lib/data'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { Design } from '@/lib/types'
-import {
-  Printer,
-  Scissors,
-  Type,
-  Box,
-  Palette,
-  Layout,
-  Video,
-  Zap,
-  Search,
-  Image as ImageIcon,
-  FolderOpen
-} from 'lucide-react'
+import { getCategoryIcon, getCategoryColor } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
+// ISR: Static with 1 hour revalidation
+export const revalidate = 3600
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>
-}
-
-const getCategoryIcon = (slug: string) => {
-  const s = slug.toLowerCase()
-  if (s.includes('dtf') || s.includes('impresion')) return <Printer className="h-8 w-8 text-blue-500" />
-  if (s.includes('vinil') || s.includes('corte')) return <Scissors className="h-8 w-8 text-purple-500" />
-  if (s.includes('tipografia') || s.includes('fuente')) return <Type className="h-8 w-8 text-amber-500" />
-  if (s.includes('3d')) return <Box className="h-8 w-8 text-indigo-500" />
-  if (s.includes('recurso') || s.includes('vector')) return <Palette className="h-8 w-8 text-pink-500" />
-  if (s.includes('plantilla')) return <Layout className="h-8 w-8 text-emerald-500" />
-  if (s.includes('blog') || s.includes('tutorial')) return <Video className="h-8 w-8 text-red-500" />
-  if (s.includes('sublimacion')) return <Zap className="h-8 w-8 text-orange-500" />
-  return <FolderOpen className="h-8 w-8 text-primary" />
-}
-
-const getCategoryColor = (slug: string) => {
-  const s = slug.toLowerCase()
-  if (s.includes('dtf')) return 'bg-blue-500/10'
-  if (s.includes('vinil')) return 'bg-purple-500/10'
-  if (s.includes('tipografia')) return 'bg-amber-500/10'
-  if (s.includes('3d')) return 'bg-indigo-500/10'
-  if (s.includes('recurso')) return 'bg-pink-500/10'
-  if (s.includes('plantilla')) return 'bg-emerald-500/10'
-  if (s.includes('blog')) return 'bg-red-500/10'
-  if (s.includes('sublimacion')) return 'bg-orange-500/10'
-  return 'bg-primary/10'
 }
 
 async function CategoryContent({ slug }: { slug: string }) {

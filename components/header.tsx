@@ -16,8 +16,8 @@ const megaMenuCategories = [
     items: [
       { name: 'Sublimación', href: '/category/sublimacion', description: 'Plantillas y diseños para sublimar tazas, playeras y más.' },
       { name: 'DTF', href: '/category/dtf', description: 'Archivos listos para impresión Direct-to-Film.' },
-      { name: 'Vinil Textil', href: '/category/vinil-textil', description: 'Vectores optimizados para corte en vinilo.' },
       { name: 'Corte Láser', href: '/category/corte-laser', description: 'Proyectos para corte y grabado láser (MDF/Acrílico).' },
+      { name: 'Vinil Textil', href: '/category/vinil-textil', description: 'Vectores optimizados para corte en vinilo.' },
     ],
   },
   {
@@ -25,9 +25,9 @@ const megaMenuCategories = [
     href: '/category/recursos-graficos', // Semantic link
     items: [
       { name: 'Tipografías', href: '/category/tipografias', description: 'Fuentes y letras para tus diseños.' },
-      { name: 'Vectores', href: '/category/vectores', description: 'Recursos vectoriales editables (AI, EPS, SVG).' },
       { name: 'Plantillas', href: '/category/plantillas', description: 'Mockups, invitaciones y papelería creativa.' },
-      { name: 'Diseños 3D', href: '/category/disenos-3d', description: 'Modelos y archivos para impresión 3D.' },
+      { name: 'Imágenes PNG', href: '/category/imagenes-png', description: 'Recursos con fondo transparente.' },
+      { name: 'Vectores', href: '/category/vectores', description: 'Recursos vectoriales editables (AI, EPS, SVG).' },
     ],
   },
   {
@@ -36,7 +36,7 @@ const megaMenuCategories = [
     items: [
       { name: 'Navidad', href: '/tags/navidad', description: 'Diseños de temporada navideña.' },
       { name: 'Halloween', href: '/tags/halloween', description: 'Terror y diversión para octubre.' },
-      { name: '10 de Mayo', href: '/tags/10-de-mayo', description: 'Día de las Madres.' },
+      { name: 'Día de las Madres', href: '/tags/10-de-mayo', description: 'Diseños especiales para mamá.' },
       { name: 'San Valentín', href: '/tags/san-valentin', description: 'Amor y Amistad.' },
     ],
   },
@@ -80,10 +80,11 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Sparkles className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">DiseñosGratis.com</span>
+          <img
+            src="/logo.png"
+            alt="Diseños Gratis"
+            className="h-8 w-auto sm:h-10"
+          />
         </Link>
 
         {/* Desktop Mega Menu - CSS Only version for stability */}

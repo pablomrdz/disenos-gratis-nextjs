@@ -10,7 +10,8 @@ import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
 
 // Force SSR for SEO
-export const dynamic = 'force-dynamic'
+// ISR: Static with 1 hour revalidation
+export const revalidate = 3600
 
 
 

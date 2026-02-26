@@ -7,7 +7,8 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import { getDesigns } from '@/lib/data'
 import type { Design } from '@/lib/types'
 
-export const dynamic = 'force-dynamic'
+// ISR: Static with 1 hour revalidation
+export const revalidate = 3600
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>

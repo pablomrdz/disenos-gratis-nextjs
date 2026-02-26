@@ -45,7 +45,7 @@ export function FontCard({ font }: FontCardProps) {
     <>
       <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
         {/* Main Image Preview (Visual appeal) */}
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        <div className="relative aspect-[3/2] overflow-hidden bg-muted">
           <Link href={`/designs/${font.slug || font.id}`}>
             <Image
               src={font.image_url || font.thumbnail_url || "/placeholder.svg"}
@@ -56,66 +56,42 @@ export function FontCard({ font }: FontCardProps) {
             {/* VIP Badge */}
             {isVip && (
               <div className="absolute left-2 top-2 z-10">
-                <Badge className="h-5 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[10px] text-white px-1.5 font-bold">
-                  <Crown className="h-2.5 w-2.5" />
+                <Badge className="h-4 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] text-white px-1.5 font-bold">
+                  <Crown className="h-2 w-2" />
                   VIP
                 </Badge>
               </div>
             )}
             <div className="absolute right-2 top-2 z-10">
-              <Badge variant="outline" className="h-5 bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px] px-1.5">
-                <Type className="mr-1 h-2.5 w-2.5" />
+              <Badge variant="outline" className="h-4 bg-amber-500/10 text-amber-600 border-amber-500/20 text-[9px] px-1.5">
+                <Type className="mr-1 h-2 w-2" />
                 Fuente
               </Badge>
             </div>
           </Link>
         </div>
 
-        <CardContent className="p-3">
-          <Link href={`/designs/${font.slug || font.id}`} className="hover:text-primary transition-colors">
-            <h3 className="font-bold text-sm text-foreground line-clamp-1">
-              {font.title}
-            </h3>
-          </Link>
-
-          {/* Mini Interactive Preview Area */}
-          <div className="mt-2 space-y-1.5">
-            <div className="flex h-10 items-center justify-center rounded-md bg-muted/50 px-2">
-              <p className="text-center text-xs text-foreground line-clamp-1" style={{ fontFamily: 'serif' }}>
-                {previewText}
-              </p>
-            </div>
-            <input
-              type="text"
-              value={previewText}
-              onChange={(e) => setPreviewText(e.target.value)}
-              placeholder="Prueba la fuente aquí..."
-              className="w-full rounded border border-border bg-background px-2 py-1 text-[10px] focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+        <CardContent className="p-2 flex flex-col justify-between min-h-[90px]">
+          <div>
+            <Link href={`/designs/${font.slug || font.id}`} className="hover:text-primary transition-colors">
+              <h3 className="font-bold text-xs text-foreground line-clamp-1 sm:text-[13px]">
+                {font.title}
+              </h3>
+            </Link>
           </div>
 
-          <div className="mt-3 flex items-center justify-between">
-            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-              <Download className="h-2.5 w-2.5" />
+          <div className="flex items-center justify-between gap-1 mt-auto pt-1">
+            <span className="flex items-center gap-0.5 text-[9px] text-muted-foreground shrink-0">
+              <Download className="h-2 w-2" />
               {(font.downloads || 0).toLocaleString()}
             </span>
-            <Button
-              size="sm"
-              onClick={handleDownload}
-              className="h-7 px-3 text-[10px] gap-1"
-            >
-              {showLock ? (
-                <>
-                  <Lock className="h-3 w-3" />
-                  Desbloquear
-                </>
-              ) : (
-                <>
-                  <Download className="h-3 w-3" />
+            <div className="relative z-10">
+              <Link href={`/designs/${font.slug || font.id}`}>
+                <Button size="sm" className="h-7 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white border-none text-[10px] font-bold px-4 transition-all duration-300">
                   Descargar
-                </>
-              )}
-            </Button>
+                </Button>
+              </Link>
+            </div>
           </div>
         </CardContent>
       </Card>

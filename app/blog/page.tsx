@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button'
 import { getTutorials, getDesigns } from '@/lib/data'
 
 // Force SSR for SEO
-export const dynamic = 'force-dynamic'
+// ISR: Static with 1 hour revalidation
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Blog de Diseño - Tutoriales y Recursos Gratis',
