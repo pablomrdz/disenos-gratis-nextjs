@@ -12,8 +12,10 @@ import {
     Trash2,
     Bold,
     Italic,
+    Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { DESIGN_FONTS, loadFont } from '@/lib/font-loader'
 
 interface EditorToolbarProps {
     canvas: fabric.Canvas | null
@@ -21,16 +23,7 @@ interface EditorToolbarProps {
     onSelectionChange: (obj: fabric.FabricObject | null) => void
 }
 
-const FONT_FAMILIES = [
-    'Arial',
-    'Georgia',
-    'Times New Roman',
-    'Courier New',
-    'Verdana',
-    'Impact',
-    'Comic Sans MS',
-    'Trebuchet MS',
-]
+const FONT_FAMILIES = DESIGN_FONTS.map(f => f.name)
 
 const PRESET_COLORS = [
     '#000000', '#ffffff', '#ef4444', '#f97316', '#eab308',
@@ -44,6 +37,7 @@ type ToolTab = 'text' | 'shapes' | 'properties'
 
 export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: EditorToolbarProps) {
     const [activeTab, setActiveTab] = useState<ToolTab>('text')
+    const [isFontLoading, setIsFontLoading] = useState(false)
 
     const addText = () => {
         if (!canvas) return
@@ -117,8 +111,21 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
         onSelectionChange(null)
     }
 
-    const updateProperty = (prop: string, value: any) => {
+    const updateProperty = async (prop: string, value: any) => {
         if (!canvas || !selectedObject) return
+
+        if (prop === 'fontFamily') {
+            const font = DESIGN_FONTS.find(f => f.name === value)
+            if (font && font.url) {
+                setIsFontLoading(true)
+                try {
+                    await loadFont(font.name, font.url)
+                } finally {
+                    setIsFontLoading(false)
+                }
+            }
+        }
+
         selectedObject.set(prop as keyof fabric.FabricObject, value)
         canvas.renderAll()
     }
@@ -132,8 +139,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                 <button
                     onClick={() => setActiveTab('text')}
                     className={`flex-1 px-3 py-3 text-xs font-medium transition-colors ${activeTab === 'text'
-                            ? 'border-b-2 border-primary text-primary bg-primary/5'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        ? 'border-b-2 border-primary text-primary bg-primary/5'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                         }`}
                 >
                     <Type className="mx-auto mb-1 h-4 w-4" />
@@ -142,8 +149,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                 <button
                     onClick={() => setActiveTab('shapes')}
                     className={`flex-1 px-3 py-3 text-xs font-medium transition-colors ${activeTab === 'shapes'
-                            ? 'border-b-2 border-primary text-primary bg-primary/5'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        ? 'border-b-2 border-primary text-primary bg-primary/5'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                         }`}
                 >
                     <Square className="mx-auto mb-1 h-4 w-4" />
@@ -153,8 +160,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                     <button
                         onClick={() => setActiveTab('properties')}
                         className={`flex-1 px-3 py-3 text-xs font-medium transition-colors ${activeTab === 'properties'
-                                ? 'border-b-2 border-primary text-primary bg-primary/5'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                            ? 'border-b-2 border-primary text-primary bg-primary/5'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                             }`}
                     >
                         <Palette className="mx-auto mb-1 h-4 w-4" />
@@ -238,14 +245,18 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                             <>
                                 {/* Font Family */}
                                 <div>
-                                    <label className="mb-2 block text-xs font-medium text-foreground">Tipografía</label>
+                                    <label className="mb-2 block text-xs font-medium text-foreground flex items-center gap-2">
+                                        Tipografía
+                                        {isFontLoading && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
+                                    </label>
                                     <select
+                                        disabled={isFontLoading}
                                         value={(selectedObject as fabric.IText).fontFamily || 'Arial'}
                                         onChange={(e) => updateProperty('fontFamily', e.target.value)}
-                                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:opacity-50"
                                     >
                                         {FONT_FAMILIES.map((font) => (
-                                            <option key={font} value={font} style={{ fontFamily: font }}>
+                                            <option key={font} value={font}>
                                                 {font}
                                             </option>
                                         ))}
@@ -261,8 +272,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                                                 key={size}
                                                 onClick={() => updateProperty('fontSize', size)}
                                                 className={`rounded-lg px-2.5 py-1 text-xs transition-colors ${(selectedObject as fabric.IText).fontSize === size
-                                                        ? 'bg-primary text-white'
-                                                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                                    ? 'bg-primary text-white'
+                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                                     }`}
                                             >
                                                 {size}
@@ -278,8 +289,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                                         <button
                                             onClick={() => updateProperty('fontWeight', (selectedObject as fabric.IText).fontWeight === 'bold' ? 'normal' : 'bold')}
                                             className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${(selectedObject as fabric.IText).fontWeight === 'bold'
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                                ? 'bg-primary text-white'
+                                                : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                                 }`}
                                         >
                                             <Bold className="mx-auto h-4 w-4" />
@@ -287,8 +298,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                                         <button
                                             onClick={() => updateProperty('fontStyle', (selectedObject as fabric.IText).fontStyle === 'italic' ? 'normal' : 'italic')}
                                             className={`flex-1 rounded-lg px-3 py-2 text-sm transition-colors ${(selectedObject as fabric.IText).fontStyle === 'italic'
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                                ? 'bg-primary text-white'
+                                                : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                                 }`}
                                         >
                                             <Italic className="mx-auto h-4 w-4" />
