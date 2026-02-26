@@ -10,6 +10,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ShareToUnlockModal } from '@/components/share-to-unlock-modal'
 import type { Design } from '@/lib/types'
 
+import { slugify } from '@/lib/utils'
+
 interface FontCardProps {
   font: Design
 }
@@ -21,6 +23,8 @@ export function FontCard({ font }: FontCardProps) {
 
   const isVip = font.is_vip && font.premium_url
   const showLock = isVip && !isUnlocked
+
+  const mainCategory = (font.category || 'Tipografías').split(',')[0].trim()
 
   const handleDownload = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -62,12 +66,6 @@ export function FontCard({ font }: FontCardProps) {
                 </Badge>
               </div>
             )}
-            <div className="absolute right-2 top-2 z-10">
-              <Badge variant="outline" className="h-4 bg-amber-500/10 text-amber-600 border-amber-500/20 text-[9px] px-1.5">
-                <Type className="mr-1 h-2 w-2" />
-                Fuente
-              </Badge>
-            </div>
           </Link>
         </div>
 
@@ -78,6 +76,15 @@ export function FontCard({ font }: FontCardProps) {
                 {font.title}
               </h3>
             </Link>
+            <div className="mt-1">
+              <Link
+                href={`/category/${slugify(mainCategory)}`}
+                className="relative z-20 truncate text-[8px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {mainCategory.replace('-', ' ')}
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center justify-between gap-1 mt-auto pt-1">

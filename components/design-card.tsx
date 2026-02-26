@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ShareToUnlockModal } from '@/components/share-to-unlock-modal'
 import type { Design } from '@/lib/types'
-import { slugify } from '@/lib/utils'
+import { slugify, getCategoryIcon, getCategoryColor, cn } from '@/lib/utils'
 
 interface DesignCardProps {
   design: Design
@@ -19,6 +19,9 @@ export function DesignCard({ design }: DesignCardProps) {
   const [showShareModal, setShowShareModal] = useState(false)
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+
+  // Get main category safely
+  const mainCategory = (design.category || 'general').split(',')[0].trim()
 
   // Show VIP badge if premium_url exists (VIP designs have premium_url)
   const isVip = Boolean(design.premium_url)
@@ -138,11 +141,11 @@ export function DesignCard({ design }: DesignCardProps) {
             </div>
             <div className="mt-1">
               <Link
-                href={`/category/${slugify((design.category || 'general').split(',')[0])}`}
+                href={`/category/${slugify(mainCategory)}`}
                 className="relative z-20 truncate text-[8px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
                 onClick={(e) => e.stopPropagation()}
               >
-                {(design.category || 'general').split(',')[0].trim().replace('-', ' ')}
+                {mainCategory.replace('-', ' ')}
               </Link>
             </div>
           </div>

@@ -32,9 +32,8 @@ export async function CategorySection() {
         </div>
 
         <div className="overflow-x-auto pb-8 pt-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex flex-wrap gap-3 min-w-max sm:min-w-0 py-2 px-2">
+          <div className="flex flex-wrap gap-3 justify-center min-w-max sm:min-w-0 py-2 px-2">
             {topCategories
-              .filter(item => item.category.toLowerCase() !== 'blog')
               .map((item) => (
                 <Link
                   key={item.category}

@@ -10,7 +10,8 @@ import {
   Layout,
   Video,
   Zap,
-  FolderOpen
+  FolderOpen,
+  Image as ImageIcon
 } from 'lucide-react'
 
 export function cn(...inputs: ClassValue[]) {
@@ -42,7 +43,7 @@ export function decodeHtml(html: string) {
 }
 
 export const getCategoryIcon = (slug: string, className = "h-8 w-8") => {
-  const s = slug.toLowerCase()
+  const s = normalizeText(slug)
   if (s.includes('dtf') || s.includes('impresion')) return React.createElement(Printer, { className: `${className} text-blue-500` })
   if (s.includes('vinil') || s.includes('corte')) return React.createElement(Scissors, { className: `${className} text-purple-500` })
   if (s.includes('tipografia') || s.includes('fuente')) return React.createElement(Type, { className: `${className} text-amber-500` })
@@ -51,18 +52,20 @@ export const getCategoryIcon = (slug: string, className = "h-8 w-8") => {
   if (s.includes('plantilla')) return React.createElement(Layout, { className: `${className} text-emerald-500` })
   if (s.includes('blog') || s.includes('tutorial')) return React.createElement(Video, { className: `${className} text-red-500` })
   if (s.includes('sublimacion')) return React.createElement(Zap, { className: `${className} text-orange-500` })
+  if (s.includes('fondo') || s.includes('textura')) return React.createElement(ImageIcon, { className: `${className} text-cyan-500` })
   return React.createElement(FolderOpen, { className: `${className} text-primary` })
 }
 
 export const getCategoryColor = (slug: string) => {
-  const s = slug.toLowerCase()
+  const s = normalizeText(slug)
   if (s.includes('dtf')) return 'bg-blue-500/10'
   if (s.includes('vinil')) return 'bg-purple-500/10'
-  if (s.includes('tipografia')) return 'bg-amber-500/10'
+  if (s.includes('tipografia') || s.includes('fuente')) return 'bg-amber-500/10'
   if (s.includes('3d')) return 'bg-indigo-500/10'
   if (s.includes('recurso')) return 'bg-pink-500/10'
   if (s.includes('plantilla')) return 'bg-emerald-500/10'
   if (s.includes('blog')) return 'bg-red-500/10'
   if (s.includes('sublimacion')) return 'bg-orange-500/10'
+  if (s.includes('fondo') || s.includes('textura')) return 'bg-cyan-500/10'
   return 'bg-primary/10'
 }

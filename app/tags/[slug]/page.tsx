@@ -28,6 +28,15 @@ export default async function TagPage({ params }: TagPageProps) {
     const { slug } = await params
     const decodedTag = decodeURIComponent(slug)
 
+    // Format display name from slug
+    let displayName = decodedTag.replace(/-/g, ' ');
+
+    // Special mappings for better UX
+    if (decodedTag === 'dia-del-amor-y-la-amistad') displayName = 'Amor y Amistad';
+    if (decodedTag === 'dia-de-las-madres') displayName = 'Día de las Madres';
+    if (decodedTag === 'dia-del-padre') displayName = 'Día del Padre';
+    if (decodedTag === 'cumpleanos') displayName = 'Cumpleaños';
+
     // Fetch designs for this tag
     const taggedDesigns = await getDesignsByTag(decodedTag, 100)
 
@@ -50,18 +59,18 @@ export default async function TagPage({ params }: TagPageProps) {
                             <Tag className="w-8 h-8 text-primary" />
                         </div>
                         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl capitalize">
-                            {decodedTag}
+                            {displayName}
                         </h1>
                     </div>
                     <p className="mt-2 text-lg text-muted-foreground max-w-2xl">
-                        Explora todos los recursos y diseños etiquetados bajo "{decodedTag}".
+                        Explora todos los recursos y diseños etiquetados bajo "{displayName}".
                     </p>
                 </div>
             </div>
 
             <div className="py-8 bg-slate-50 border-b border-slate-200">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <AdSlot variant="in-feed" className="bg-white shadow-sm border border-slate-200 rounded-lg" />
+                    <AdSlot variant="inline" className="bg-white shadow-sm border border-slate-200 rounded-lg" />
                 </div>
             </div>
 
@@ -84,7 +93,19 @@ export default async function TagPage({ params }: TagPageProps) {
                                     <p className="mt-2 text-muted-foreground">
                                         No hay diseños etiquetados con "{decodedTag}" en este momento.
                                     </p>
-                                    <Link href="/designs" className="mt-4 text-sm font-medium text-primary hover:underline">
+                                    <div className="mt-8 flex flex-wrap justify-center gap-3">
+                                        <p className="w-full text-sm font-medium text-muted-foreground mb-2">O intenta explorar estas categorías populares:</p>
+                                        {['Sublimación', 'DTF', 'Corte Láser', 'Vectores', 'Tipografías'].map((cat) => (
+                                            <Link
+                                                key={cat}
+                                                href={`/category/${cat.toLowerCase().replace(/ /g, '-')}`}
+                                                className="rounded-full bg-white px-4 py-2 text-sm font-medium border border-slate-200 hover:border-primary hover:text-primary transition-colors"
+                                            >
+                                                {cat}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    <Link href="/designs" className="mt-8 text-sm font-medium text-primary hover:underline">
                                         Ver todos los diseños
                                     </Link>
                                 </div>

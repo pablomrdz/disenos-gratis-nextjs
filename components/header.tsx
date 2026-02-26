@@ -8,36 +8,52 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-// Mega Menu Data Structure - 9 Categories + Events
+// Mega Menu Data Structure - Expertly aligned with WordPress backend
 const megaMenuCategories = [
   {
-    title: 'Formatos y Técnicas',
-    href: '/category/formatos', // Semantic link
+    title: 'Técnicas y Proyectos',
+    href: '/designs',
     items: [
-      { name: 'Sublimación', href: '/category/sublimacion', description: 'Plantillas y diseños para sublimar tazas, playeras y más.' },
-      { name: 'DTF', href: '/category/dtf', description: 'Archivos listos para impresión Direct-to-Film.' },
-      { name: 'Corte Láser', href: '/category/corte-laser', description: 'Proyectos para corte y grabado láser (MDF/Acrílico).' },
-      { name: 'Vinil Textil', href: '/category/vinil-textil', description: 'Vectores optimizados para corte en vinilo.' },
+      { name: 'Sublimación', href: '/category/sublimacion', description: 'Plantillas y diseños para tazas, playeras y más.' },
+      { name: 'DTF / Impresión', href: '/category/dtf', description: 'Archivos listos para impresión textil y transfers.' },
+      { name: 'Corte y Grabado', href: '/category/corte-laser', description: 'Vectores para corte láser y plotter (SVG, DXF).' },
+      { name: 'Vinil Textil', href: '/category/vinil-textil', description: 'Diseños optimizados para corte en vinilo.' },
+      { name: 'Tipografías', href: '/category/tipografias', description: 'Fuentes premium para tus proyectos creativos.' },
     ],
   },
   {
-    title: 'Recursos Gráficos',
-    href: '/category/recursos-graficos', // Semantic link
+    title: 'Formatos de Archivo',
+    href: '/designs',
     items: [
-      { name: 'Tipografías', href: '/category/tipografias', description: 'Fuentes y letras para tus diseños.' },
-      { name: 'Plantillas', href: '/category/plantillas', description: 'Mockups, invitaciones y papelería creativa.' },
-      { name: 'Imágenes PNG', href: '/category/imagenes-png', description: 'Recursos con fondo transparente.' },
-      { name: 'Vectores', href: '/category/vectores', description: 'Recursos vectoriales editables (AI, EPS, SVG).' },
+      { name: 'Imágenes PNG', href: '/tags/png', description: 'Recursos con fondo transparente en alta resolución.' },
+      { name: 'Vectores (SVG/Ai)', href: '/category/vectores', description: 'Archivos editables para Illustrator y Corel.' },
+      { name: 'Photoshop (PSD)', href: '/tags/psd', description: 'Plantillas editables en capas para Photoshop.' },
+      { name: 'Corte (Studio3/DXF)', href: '/tags/studio3', description: 'Archivos listos para Silhouette Cameo y Cricut.' },
+      { name: 'Fondos y Texturas', href: '/category/fondos-y-texturas', description: 'Papel digital y texturas para tus fondos.' },
     ],
   },
   {
-    title: 'Eventos y Temáticas',
-    href: '/tags/eventos', // Semantic link
+    title: 'Temas y Personajes',
+    href: '/tags/personajes',
     items: [
-      { name: 'Navidad', href: '/tags/navidad', description: 'Diseños de temporada navideña.' },
-      { name: 'Halloween', href: '/tags/halloween', description: 'Terror y diversión para octubre.' },
-      { name: 'Día de las Madres', href: '/tags/10-de-mayo', description: 'Diseños especiales para mamá.' },
-      { name: 'San Valentín', href: '/tags/san-valentin', description: 'Amor y Amistad.' },
+      { name: 'Disney y Pixar', href: '/tags/disney', description: 'Mickey, Princesas y tus personajes favoritos.' },
+      { name: 'Anime y Manga', href: '/tags/anime', description: 'Diseños de Goku, Naruto y cultura japonesa.' },
+      { name: 'Películas', href: '/tags/peliculas', description: 'Inspiración en los mejores títulos del cine.' },
+      { name: 'Series de TV', href: '/tags/series', description: 'Tus shows favoritos en formato digital.' },
+      { name: 'Videojuegos / Gamers', href: '/tags/videojuegos', description: 'Recursos de tus juegos preferidos.' },
+      { name: 'Marcas y Logos', href: '/tags/logos', description: 'Vectores de marcas reconocidas.' },
+    ],
+  },
+  {
+    title: 'Eventos y Festividades',
+    href: '/tags/eventos',
+    items: [
+      { name: 'Día del Padre', href: '/tags/dia-del-padre', description: 'El regalo perfecto para papá en su día.' },
+      { name: 'Día de las Madres', href: '/tags/dia-de-las-madres', description: 'Diseños tiernos para celebrar a mamá.' },
+      { name: 'Amor y Amistad', href: '/tags/dia-del-amor-y-la-amistad', description: 'San Valentín y detalles románticos.' },
+      { name: 'Navidad / Halloween', href: '/tags/navidad', description: 'Todo para tus decoraciones de temporada.' },
+      { name: 'Cumpleaños / Fiestas', href: '/tags/cumpleanos', description: 'Recursos para fiestas inolvidables.' },
+      { name: 'Baby Shower', href: '/tags/baby-shower', description: 'Diseños dulces para la llegada del bebé.' },
     ],
   },
 ];
@@ -97,11 +113,11 @@ export function Header() {
               </button>
 
               {/* Mega Menu Dropdown */}
-              <div className="absolute left-1/2 top-full z-[100] mt-0 w-[800px] -translate-x-1/2 transform rounded-lg border border-slate-200 bg-white p-6 shadow-xl opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
+              <div className="absolute left-1/2 top-full z-[100] mt-0 w-[1000px] -translate-x-1/2 transform rounded-lg border border-slate-200 bg-white p-6 shadow-xl opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
                 {/* Bridge to prevent closing when moving mouse */}
                 <div className="absolute -top-4 left-0 h-4 w-full bg-transparent"></div>
 
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-4 gap-6">
                   {megaMenuCategories.map((group) => (
                     <div key={group.title} className="space-y-4">
                       <Link
@@ -128,6 +144,16 @@ export function Header() {
                       </div>
                     </div>
                   ))}
+                </div>
+
+                {/* Footer link for Mega Menu */}
+                <div className="mt-6 border-t border-slate-100 pt-4 text-center">
+                  <Link
+                    href="/tags"
+                    className="text-xs font-bold text-primary hover:underline"
+                  >
+                    Explorar todas las etiquetas y temas →
+                  </Link>
                 </div>
               </div>
             </li>

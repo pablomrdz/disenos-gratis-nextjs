@@ -245,7 +245,6 @@ export async function getCategories(): Promise<Category[]> {
     console.error('Error fetching categories:', error)
     // Return empty or valid static structure based on ALLOWED_SLUGS instead of mockCategories
     return ALLOWED_SLUGS
-      .filter(slug => slug !== 'blog') // EXCLUDE BLOG FROM FALLBACK
       .map((slug, index) => ({
         id: `fallback-${index}`,
         name: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // capitalized
@@ -256,13 +255,13 @@ export async function getCategories(): Promise<Category[]> {
   }
 
   // Filter out any categories not in the allowed list and any that contain commas (dirty data)
-  const cleanCategories = (data || []).filter(cat => {
+  const cleanCategories = ((data as any[]) || []).filter(cat => {
     // Basic clean checks
     if (!cat.slug || cat.slug === 'uncategorized' || cat.slug.includes(',')) return false;
 
     // Strict Clean: Must be in our allowed list
     const normalizedSlug = cat.slug.toLowerCase().trim().replace(/\s+/g, '-');
-    return ALLOWED_SLUGS.includes(normalizedSlug) && normalizedSlug !== 'blog';
+    return ALLOWED_SLUGS.includes(normalizedSlug);
   });
 
   return cleanCategories;
@@ -294,11 +293,49 @@ export async function getDesignsByTag(tag: string, limit: number = 20): Promise<
 
   const supabase = createServerSupabaseClient()
 
-  // Using the 'contains' operator for array columns in Supabase
+  // Prepare variations for search (Postgres array contains is case-sensitive)
+  const variations = [tag];
+
+  // 1. Capitalized version (e.g., 'anime' -> 'Anime')
+  variations.push(tag.charAt(0).toUpperCase() + tag.slice(1));
+
+  // 2. Space variation instead of hyphens (e.g., 'dia-del-padre' -> 'dia del padre')
+  const spaceVariation = tag.replace(/-/g, ' ');
+  variations.push(spaceVariation);
+
+  // 3. Capitalized space variation (e.g., 'Día del Padre')
+  const capitalizedSpace = spaceVariation.split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  variations.push(capitalizedSpace);
+
+  // 4. Specific Mappings from WordPress accurately identified by user
+  if (tag === 'dia-del-amor-y-la-amistad') variations.push('Amor y Amistad');
+  if (tag === 'dia-de-las-madres') variations.push('Día de las Madres');
+  if (tag === 'dia-del-padre') variations.push('Día del Padre');
+  if (tag === 'disney') variations.push('Disney');
+  if (tag === 'anime') variations.push('Anime');
+  if (tag === 'series') variations.push('Series');
+  if (tag === 'peliculas') variations.push('Películas');
+  if (tag === 'videojuegos') variations.push('Videojuegos');
+  if (tag === 'logos') variations.push('Logos', 'Marcas');
+  if (tag === 'png') variations.push('PNG');
+  if (tag === 'psd') variations.push('PSD');
+  if (tag === 'studio3') variations.push('Studio3', 'Silhouette');
+  if (tag === 'baby-shower') variations.push('Baby Shower');
+  if (tag === 'navidad') variations.push('Navidad');
+  if (tag === 'cumpleanos') variations.push('Cumpleaños');
+
+  // Remove duplicates
+  const uniqueVariations = Array.from(new Set(variations));
+
+  // Construct OR query with .contains matching any variation
+  const orQuery = uniqueVariations.map(v => `tags.cs.{${v}}`).join(',');
+
   const { data, error } = await supabase
     .from('designs')
     .select('*')
-    .contains('tags', [tag])
+    .or(orQuery)
     .limit(limit)
     .order('created_at', { ascending: false })
 
@@ -347,33 +384,48 @@ export async function getTopCategories(limit: number = 6): Promise<Array<{ categ
   try {
     const supabase = createServerSupabaseClient()
 
-    // Get all designs and count by category
+    // Get all designs' categories
     const { data, error } = await supabase
       .from('designs')
       .select('category')
-      .neq('category', 'blog')
 
     if (error) {
       console.error('Error fetching categories:', error)
       return []
     }
 
-    // Count designs per category, handling multiple categories if present
+    // Initialize counts for all allowed categories with zero
+    const initialCounts: Record<string, number> = {}
+    ALLOWED_SLUGS.forEach(slug => {
+      initialCounts[slug] = 0
+    })
+
+    // Count designs per category from the designs fetched
     const categoryCounts = (data || []).reduce((acc, design) => {
       const categoryRaw = (design as { category: string }).category || 'uncategorized'
-      // Take the first category in case of comma-separated list
-      const category = categoryRaw.split(',')[0].trim().toLowerCase()
 
-      if (category !== 'blog') {
-        acc[category] = (acc[category] || 0) + 1
-      }
+      // Split by comma to handle multiple categories per design
+      const categories = categoryRaw.split(',').map(c => c.trim())
+
+      categories.forEach(rawSubCat => {
+        // Normalize each category to match slugs: lowercase, no accents, hyphenated
+        const category = rawSubCat.toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, '-')
+
+        // Update count if it's one of our allowed categories
+        if (acc.hasOwnProperty(category)) {
+          acc[category] = (acc[category] || 0) + 1
+        }
+      })
+
       return acc
-    }, {} as Record<string, number>)
+    }, initialCounts)
 
-    // Convert to array and sort by count
+    // Convert to array and sort by count (descending) then alphabetically
     return Object.entries(categoryCounts)
       .map(([category, count]) => ({ category, count }))
-      .sort((a, b) => b.count - a.count)
+      .sort((a, b) => b.count - a.count || a.category.localeCompare(b.category))
       .slice(0, limit)
   } catch (err) {
     console.error('Error fetching top categories:', err)
@@ -435,4 +487,38 @@ export async function getRelatedDesignsByTags(
 // Get popular categories for sidebar (alias for getTopCategories)
 export async function getPopularCategories(limit: number = 5): Promise<Array<{ category: string; count: number }>> {
   return getTopCategories(limit)
+}
+
+// Get all unique tags from designs
+export async function getAllTags(): Promise<string[]> {
+  if (USE_MOCK) {
+    const tagSet = new Set<string>();
+    (mockDesigns as Design[]).forEach(d => d.tags?.forEach(t => tagSet.add(t)));
+    return Array.from(tagSet).sort();
+  }
+
+  try {
+    const supabase = createServerSupabaseClient()
+    const { data, error } = await supabase
+      .from('designs')
+      .select('tags')
+
+    if (error) {
+      console.error('Error fetching all tags:', error)
+      return []
+    }
+
+    const tagSet = new Set<string>();
+    (data as Array<{ tags: string[] | null }> | null)?.forEach(row => {
+      const designTags = Array.isArray(row.tags) ? row.tags : [];
+      designTags.forEach((t: string) => {
+        if (t && t.length > 0) tagSet.add(t);
+      });
+    });
+
+    return Array.from(tagSet).sort((a, b) => a.localeCompare(b, 'es'));
+  } catch (err) {
+    console.error('Error in getAllTags:', err)
+    return []
+  }
 }
