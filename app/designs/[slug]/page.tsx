@@ -20,6 +20,7 @@ import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import { FontPreviewInteractive } from '@/components/font-preview-interactive'
+import { TechnicalInfo } from '@/components/technical-info'
 import { getDesignBySlug, getDesigns, getTutorials, getRelatedDesignsByTags, getPopularCategories, getPrimaryCategory } from '@/lib/data'
 import { detectContentType, extractDownloadLink, splitContentForAd } from '@/lib/content-utils'
 import { DownloadSection } from './download-section'
@@ -225,7 +226,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
                   )}>
                     <Image
                       src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
-                      alt={title}
+                      alt={design.alt_text || title}
                       fill
                       className="object-cover"
                       priority
@@ -304,6 +305,11 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
                   <DownloadSection design={design} isVip={isVip} />
                 </div>
+              )}
+
+              {/* Technical Information Block */}
+              {!isBlog && (
+                <TechnicalInfo design={design} />
               )}
 
               {/* Description Content */}

@@ -17,6 +17,10 @@ export interface Design {
   created_at: string
   updated_at: string
   tags: string[]
+  // New Supabase columns
+  technical_type?: string | null
+  software_recommended?: string | null
+  alt_text?: string | null
 }
 
 export interface Tutorial {
