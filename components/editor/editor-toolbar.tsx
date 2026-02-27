@@ -42,8 +42,6 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
     const addText = () => {
         if (!canvas) return
         const text = new fabric.IText('Tu texto aquí', {
-            left: canvas.width! / 2 - 80,
-            top: canvas.height! / 2 - 20,
             fontFamily: 'Arial',
             fontSize: 32,
             fill: '#000000',
@@ -51,6 +49,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
             fontStyle: 'normal',
         })
         canvas.add(text)
+        canvas.centerObject(text)
+        canvas.bringObjectToFront(text)
         canvas.setActiveObject(text)
         canvas.renderAll()
         onSelectionChange(text)
@@ -97,6 +97,8 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
         }
 
         canvas.add(shape)
+        canvas.centerObject(shape)
+        canvas.bringObjectToFront(shape)
         canvas.setActiveObject(shape)
         canvas.renderAll()
         onSelectionChange(shape)

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import * as fabric from 'fabric'
 import { ArrowLeft, Download, ImageDown, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 
 interface EditorHeaderProps {
@@ -42,6 +43,7 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
             document.body.removeChild(link)
         } catch (err) {
             console.error('[EditorHeader] Export failed:', err)
+            toast.error('No se pudo exportar. Intenta recargar la página.')
         } finally {
             setExporting(false)
         }

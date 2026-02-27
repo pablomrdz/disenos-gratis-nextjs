@@ -19,6 +19,12 @@ export function DesignCard({ design }: DesignCardProps) {
   const [showShareModal, setShowShareModal] = useState(false)
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [imgError, setImgError] = useState(false)
+
+  // Robust image src with error fallback
+  const imgSrc = imgError
+    ? '/placeholder.svg'
+    : (design.image_url || design.thumbnail_url || '/placeholder.svg')
 
   // Get main category safely
   const mainCategory = (design.category || 'general').split(',')[0].trim()
@@ -94,11 +100,13 @@ export function DesignCard({ design }: DesignCardProps) {
         <div className="relative aspect-[3/2] overflow-hidden bg-muted">
           <Link href={`/designs/${design.slug || design.id}`}>
             <Image
-              src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
+              src={imgSrc}
               alt={design.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+              onError={() => setImgError(true)}
+              unoptimized={imgSrc.includes('supabase.co')}
             />
           </Link>
 

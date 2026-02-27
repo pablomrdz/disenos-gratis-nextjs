@@ -35,17 +35,25 @@ export function EditorCanvas({ imageUrl, canvasRef, onSelectionChange }: EditorC
 
         // Load design image as background
         try {
-            const img = await fabric.FabricImage.fromURL(imageUrl, { crossOrigin: 'anonymous' })
-            const scale = Math.min(width / img.width!, height / img.height!)
-            img.scale(scale)
+            const img = await fabric.FabricImage.fromURL(imageUrl, {}, { crossOrigin: 'anonymous' })
+
+            // Refined scaling: Fill most of the canvas but keep aspect ratio
+            if (img.width! / img.height! > width / height) {
+                img.scaleToWidth(width * 0.9)
+            } else {
+                img.scaleToHeight(height * 0.9)
+            }
+
             img.set({
-                left: (width - img.width! * scale) / 2,
-                top: (height - img.height! * scale) / 2,
                 selectable: false,
                 evented: false,
                 hasControls: false,
+                lockMovementX: true,
+                lockMovementY: true,
             })
+
             canvas.add(img)
+            canvas.centerObject(img)
             canvas.sendObjectToBack(img)
             canvas.renderAll()
         } catch (err) {

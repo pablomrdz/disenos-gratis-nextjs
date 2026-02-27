@@ -108,17 +108,8 @@ export async function getTutorials(options?: {
   category?: string
   limit?: number
 }): Promise<Tutorial[]> {
-  if (USE_MOCK) {
-    let tutorials = [...mockTutorials]
-    if (options?.category) {
-      tutorials = tutorials.filter(t => t.category === options.category)
-    }
-    if (options?.limit) {
-      tutorials = tutorials.slice(0, options.limit)
-    }
-    return tutorials
-  }
-
+  // Commented out Supabase call to prevent errors as requested
+  /*
   const supabase = createServerSupabaseClient()
   let query = supabase.from('tutorials').select('*')
 
@@ -137,6 +128,16 @@ export async function getTutorials(options?: {
   }
 
   return data || []
+  */
+
+  let tutorials = [...mockTutorials]
+  if (options?.category) {
+    tutorials = tutorials.filter(t => t.category === options.category)
+  }
+  if (options?.limit) {
+    tutorials = tutorials.slice(0, options.limit)
+  }
+  return tutorials
 }
 
 export async function getTutorialBySlug(slug: string): Promise<Tutorial | null> {
