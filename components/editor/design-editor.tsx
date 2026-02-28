@@ -12,7 +12,7 @@ interface DesignEditorProps {
 }
 
 export function DesignEditor({ design }: DesignEditorProps) {
-    const canvasRef = useRef<fabric.Canvas | null>(null)
+    const [canvas, setCanvas] = useState<fabric.Canvas | null>(null)
     const [selectedObject, setSelectedObject] = useState<fabric.FabricObject | null>(null)
 
     const handleSelectionChange = useCallback((obj: fabric.FabricObject | null) => {
@@ -27,7 +27,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
             <EditorHeader
                 title={design.title}
                 slug={design.slug || design.id}
-                canvas={canvasRef.current}
+                canvas={canvas}
             />
 
             {/* Main Editor Area */}
@@ -35,7 +35,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
                 {/* Sidebar (Toolbar) */}
                 <div className="hidden w-[260px] shrink-0 md:block">
                     <EditorToolbar
-                        canvas={canvasRef.current}
+                        canvas={canvas}
                         selectedObject={selectedObject}
                         onSelectionChange={handleSelectionChange}
                     />
@@ -46,7 +46,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
                     <div className="flex flex-1 items-center justify-center p-4 sm:p-6 lg:p-8">
                         <EditorCanvas
                             imageUrl={imageUrl}
-                            canvasRef={canvasRef}
+                            setCanvas={setCanvas}
                             onSelectionChange={handleSelectionChange}
                         />
                     </div>
@@ -55,7 +55,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
                     <div className="block border-t border-border/50 md:hidden">
                         <div className="max-h-[40vh] overflow-y-auto">
                             <EditorToolbar
-                                canvas={canvasRef.current}
+                                canvas={canvas}
                                 selectedObject={selectedObject}
                                 onSelectionChange={handleSelectionChange}
                             />

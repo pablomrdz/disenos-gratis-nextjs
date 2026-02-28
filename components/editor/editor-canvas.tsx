@@ -5,19 +5,21 @@ import * as fabric from 'fabric'
 
 interface EditorCanvasProps {
     imageUrl: string
-    canvasRef: React.MutableRefObject<fabric.Canvas | null>
+    setCanvas: (canvas: fabric.Canvas | null) => void
     onSelectionChange: (obj: fabric.FabricObject | null) => void
 }
 
-export function EditorCanvas({ imageUrl, canvasRef, onSelectionChange }: EditorCanvasProps) {
+export function EditorCanvas({ imageUrl, setCanvas, onSelectionChange }: EditorCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const htmlCanvasRef = useRef<HTMLCanvasElement>(null)
+    const canvasInstanceRef = useRef<fabric.Canvas | null>(null)
 
     const initCanvas = useCallback(async () => {
         if (!htmlCanvasRef.current || !containerRef.current) return
-        if (canvasRef.current) {
-            canvasRef.current.dispose()
-            canvasRef.current = null
+        if (canvasInstanceRef.current) {
+            canvasInstanceRef.current.dispose()
+            canvasInstanceRef.current = null
+            setCanvas(null)
         }
 
         const container = containerRef.current
@@ -31,7 +33,8 @@ export function EditorCanvas({ imageUrl, canvasRef, onSelectionChange }: EditorC
             selection: true,
         })
 
-        canvasRef.current = canvas
+        canvasInstanceRef.current = canvas
+        setCanvas(canvas)
 
         // Load design image as background
         try {
@@ -88,30 +91,31 @@ export function EditorCanvas({ imageUrl, canvasRef, onSelectionChange }: EditorC
         return () => {
             document.removeEventListener('keydown', handleKeyDown)
         }
-    }, [imageUrl, canvasRef, onSelectionChange])
+    }, [imageUrl, setCanvas, onSelectionChange])
 
     useEffect(() => {
         initCanvas()
         return () => {
-            if (canvasRef.current) {
-                canvasRef.current.dispose()
-                canvasRef.current = null
+            if (canvasInstanceRef.current) {
+                canvasInstanceRef.current.dispose()
+                canvasInstanceRef.current = null
+                setCanvas(null)
             }
         }
-    }, [initCanvas])
+    }, [initCanvas, setCanvas])
 
     // Responsive resize
     useEffect(() => {
         const handleResize = () => {
-            if (!containerRef.current || !canvasRef.current) return
+            if (!containerRef.current || !canvasInstanceRef.current) return
             const width = containerRef.current.clientWidth
             const height = Math.min(width * 0.75, window.innerHeight - 140)
-            canvasRef.current.setDimensions({ width, height })
-            canvasRef.current.renderAll()
+            canvasInstanceRef.current.setDimensions({ width, height })
+            canvasInstanceRef.current.renderAll()
         }
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
-    }, [canvasRef])
+    }, [])
 
     return (
         <div ref={containerRef} className="relative w-full overflow-hidden rounded-xl border border-border/50 bg-muted shadow-inner">
