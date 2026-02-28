@@ -15,6 +15,35 @@ export const revalidate = 3600
 
 
 
+async function TopDesigns() {
+  const designs = await getDesigns({ limit: 8, tag: 'Top del mes', excludeCategory: 'blog' })
+
+  if (!designs || designs.length === 0) return null
+
+  return (
+    <div className="mb-16">
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            🔥 Top del mes
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            Los recursos y plantillas más populares seleccionados por la comunidad
+          </p>
+        </div>
+        <Link
+          href="/tags/Top del mes"
+          className="hidden items-center gap-1 text-sm font-medium text-primary hover:underline sm:flex"
+        >
+          Ver todo
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+      <DesignGrid designs={designs} showAds={false} />
+    </div>
+  )
+}
+
 async function FeaturedDesigns() {
   const designs = await getDesigns({ limit: 16, excludeCategory: 'blog' })
   return <DesignGrid designs={designs} showAds={true} adFrequency={8} />
@@ -35,8 +64,14 @@ export default function HomePage() {
       <CategorySection />
 
       {/* Main Content - Full Width */}
-      <section className="py-16">
+      <section className="pt-0 sm:pt-8 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+          {/* Top del Mes */}
+          <Suspense fallback={<DesignGridSkeleton />}>
+            <TopDesigns />
+          </Suspense>
+
           <div className="flex items-end justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">

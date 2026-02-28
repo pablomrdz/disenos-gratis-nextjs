@@ -16,7 +16,7 @@ export async function CategorySection() {
   const topCategories = await getTopCategories(12) // Fetch more for pills
 
   return (
-    <section className="py-8">
+    <section className="pt-6 pb-0 sm:py-8 sm:pb-4">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
@@ -31,24 +31,28 @@ export async function CategorySection() {
           </Link>
         </div>
 
-        <div className="overflow-x-auto pb-8 pt-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex flex-wrap gap-3 justify-center min-w-max sm:min-w-0 py-2 px-2">
+        <div className="overflow-x-auto pb-4 pt-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth snap-x snap-mandatory">
+          {/* Used CSS Grid on desktop to enforce exactly 5 columns taking full width, while keeping mobile flex */}
+          <div className="flex sm:grid sm:grid-cols-5 sm:gap-y-8 sm:gap-x-4 sm:justify-items-center gap-3 flex-nowrap justify-start w-full px-2 py-2">
             {topCategories
               .map((item) => (
                 <Link
                   key={item.category}
                   href={`/category/${slugify(item.category)}`}
-                  className="group"
+                  className="group snap-start relative flex-shrink-0"
                 >
-                  <div className="flex items-center gap-2 rounded-full px-4 py-2 border border-border/50 bg-white transition-all duration-300 hover:border-primary/30 hover:shadow-sm hover:scale-105 select-none whitespace-nowrap">
-                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${getCategoryColor(item.category)}`}>
-                      {getCategoryIcon(item.category, "h-3.5 w-3.5")}
+                  {/* w-[76px] -> w-[88px], sm:w-[110px] -> sm:w-[128px] */}
+                  <div className="flex flex-col items-center gap-2 sm:gap-3 transition-all duration-300 hover:scale-105 select-none w-[88px] sm:w-[128px]">
+
+                    {/* Icon container: h-16 w-16 -> h-20 w-20, sm:h-24 sm:w-24 -> sm:h-28 sm:w-28 */}
+                    <div className={`flex h-20 w-20 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-full shadow-sm hover:shadow-md border border-border/40 ${getCategoryColor(item.category)}`}>
+                      {/* Icon size: h-7 w-7 -> h-9 w-9, sm:h-12 w-12 -> sm:h-14 sm:w-14 */}
+                      {getCategoryIcon(item.category, "h-9 w-9 sm:h-14 sm:w-14")}
                     </div>
-                    <span className="text-sm font-medium text-slate-700 group-hover:text-primary">
+
+                    {/* Category Name */}
+                    <span className="text-[11px] sm:text-sm font-medium text-slate-700 group-hover:text-primary text-center leading-tight px-1 sm:px-2 line-clamp-2">
                       {formatCategoryName(item.category)}
-                    </span>
-                    <span className="text-[10px] font-bold text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded-full">
-                      {item.count}
                     </span>
                   </div>
                 </Link>

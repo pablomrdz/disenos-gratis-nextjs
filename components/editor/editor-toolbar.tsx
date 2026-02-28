@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as fabric from 'fabric'
 import {
     Type,
@@ -15,15 +15,17 @@ import {
     Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { DESIGN_FONTS, loadFont } from '@/lib/font-loader'
+import { DESIGN_FONTS, loadFont, fetchAllFontsFromSupabase } from '@/lib/font-loader'
 
 interface EditorToolbarProps {
     canvas: fabric.Canvas | null
     selectedObject: fabric.FabricObject | null
     onSelectionChange: (obj: fabric.FabricObject | null) => void
+    defaultFontFamily?: string
 }
 
-const FONT_FAMILIES = DESIGN_FONTS.map(f => f.name)
+// We'll manage this in state now so it updates dynamically
+// const FONT_FAMILIES = DESIGN_FONTS.map(f => f.name)
 
 const PRESET_COLORS = [
     '#000000', '#ffffff', '#ef4444', '#f97316', '#eab308',
@@ -35,15 +37,24 @@ const FONT_SIZES = [14, 18, 24, 32, 48, 64, 80]
 
 type ToolTab = 'text' | 'shapes' | 'properties'
 
-export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: EditorToolbarProps) {
+export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defaultFontFamily = 'Arial' }: EditorToolbarProps) {
     const [activeTab, setActiveTab] = useState<ToolTab>('text')
     const [isFontLoading, setIsFontLoading] = useState(false)
     const [, setRevision] = useState(0)
+    const [fontFamilies, setFontFamilies] = useState<string[]>(DESIGN_FONTS.map(f => f.name))
+
+    // Fetch all fonts from Supabase bucket once when toolbar mounts
+    useEffect(() => {
+        fetchAllFontsFromSupabase().then(() => {
+            // Update the state with the potentially newly added fonts in DESIGN_FONTS
+            setFontFamilies(DESIGN_FONTS.map(f => f.name))
+        })
+    }, [])
 
     const addText = () => {
         if (!canvas) return
         const text = new fabric.IText('Tu texto aquí', {
-            fontFamily: 'Arial',
+            fontFamily: defaultFontFamily,
             fontSize: 32,
             fill: '#000000',
             fontWeight: 'normal',
@@ -259,7 +270,7 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
                                         onChange={(e) => updateProperty('fontFamily', e.target.value)}
                                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:opacity-50"
                                     >
-                                        {FONT_FAMILIES.map((font) => (
+                                        {fontFamilies.map((font) => (
                                             <option key={font} value={font}>
                                                 {font}
                                             </option>

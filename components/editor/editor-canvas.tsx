@@ -5,11 +5,12 @@ import * as fabric from 'fabric'
 
 interface EditorCanvasProps {
     imageUrl: string
+    fontFamily?: string
     setCanvas: (canvas: fabric.Canvas | null) => void
     onSelectionChange: (obj: fabric.FabricObject | null) => void
 }
 
-export function EditorCanvas({ imageUrl, setCanvas, onSelectionChange }: EditorCanvasProps) {
+export function EditorCanvas({ imageUrl, fontFamily, setCanvas, onSelectionChange }: EditorCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const htmlCanvasRef = useRef<HTMLCanvasElement>(null)
     const canvasInstanceRef = useRef<fabric.Canvas | null>(null)
@@ -38,7 +39,8 @@ export function EditorCanvas({ imageUrl, setCanvas, onSelectionChange }: EditorC
 
         // Load design image as background
         try {
-            const img = await fabric.FabricImage.fromURL(imageUrl, {}, { crossOrigin: 'anonymous' })
+            const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`
+            const img = await fabric.FabricImage.fromURL(proxyUrl, { crossOrigin: 'anonymous' })
 
             // Refined scaling: Fill most of the canvas but keep aspect ratio
             if (img.width! / img.height! > width / height) {

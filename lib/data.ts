@@ -12,6 +12,7 @@ export async function getDesigns(options?: {
   limit?: number
   isVip?: boolean
   excludeCategory?: string
+  tag?: string
 }): Promise<Design[]> {
   if (USE_MOCK) {
     let designs = [...mockDesigns]
@@ -23,6 +24,9 @@ export async function getDesigns(options?: {
     }
     if (options?.isVip !== undefined) {
       designs = designs.filter(d => d.is_vip === options.isVip)
+    }
+    if (options?.tag) {
+      designs = designs.filter(d => d.tags && d.tags.includes(options.tag!))
     }
     if (options?.limit) {
       designs = designs.slice(0, options.limit)
@@ -67,6 +71,10 @@ export async function getDesigns(options?: {
     }
     if (options?.excludeCategory) {
       query = query.neq('category', options.excludeCategory)
+    }
+    if (options?.tag) {
+      // For Supabase, to check if an array column contains an element, use .contains
+      query = query.contains('tags', [options.tag])
     }
 
     const { data, error } = await query.order('created_at', { ascending: false })

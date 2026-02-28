@@ -21,6 +21,7 @@ export interface Design {
   technical_type?: string | null
   software_recommended?: string | null
   alt_text?: string | null
+  font_family?: string | null
 }
 
 export interface Tutorial {
