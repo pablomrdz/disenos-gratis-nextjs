@@ -38,6 +38,7 @@ type ToolTab = 'text' | 'shapes' | 'properties'
 export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: EditorToolbarProps) {
     const [activeTab, setActiveTab] = useState<ToolTab>('text')
     const [isFontLoading, setIsFontLoading] = useState(false)
+    const [, setRevision] = useState(0)
 
     const addText = () => {
         if (!canvas) return
@@ -130,6 +131,7 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange }: Edi
 
         selectedObject.set(prop as keyof fabric.FabricObject, value)
         canvas.renderAll()
+        setRevision(r => r + 1)
     }
 
     const isTextObject = selectedObject instanceof fabric.IText || selectedObject instanceof fabric.Textbox

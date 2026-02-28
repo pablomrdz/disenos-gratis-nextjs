@@ -313,16 +313,18 @@ export function DownloadSection({ design, isVip }: DownloadSectionProps) {
               )}
 
               {/* Edit Design Button */}
-              <Link href={`/edit/${design.slug || design.id}`}>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="gap-2 rounded-xl border-primary/30 bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all"
-                >
-                  <Pencil className="h-5 w-5" />
-                  Editar Diseño
-                </Button>
-              </Link>
+              {design.category === 'Plantillas' && (
+                <Link href={`/edit/${design.slug || design.id}`}>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="gap-2 rounded-xl border-primary/30 bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all"
+                  >
+                    <Pencil className="h-5 w-5" />
+                    Editar Diseño
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 
