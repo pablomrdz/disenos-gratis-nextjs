@@ -12,8 +12,10 @@ import {
     Trash2,
     Bold,
     Italic,
-    Loader2
+    Loader2,
+    Image
 } from 'lucide-react'
+import { EditorAssetsPanel } from './editor-assets-panel'
 import { Button } from '@/components/ui/button'
 import { DESIGN_FONTS, loadFont, fetchAllFontsFromSupabase } from '@/lib/font-loader'
 
@@ -22,6 +24,8 @@ interface EditorToolbarProps {
     selectedObject: fabric.FabricObject | null
     onSelectionChange: (obj: fabric.FabricObject | null) => void
     defaultFontFamily?: string
+    designSlug?: string
+    designCategory?: string
 }
 
 // We'll manage this in state now so it updates dynamically
@@ -35,9 +39,9 @@ const PRESET_COLORS = [
 
 const FONT_SIZES = [14, 18, 24, 32, 48, 64, 80]
 
-type ToolTab = 'text' | 'shapes' | 'properties'
+type ToolTab = 'text' | 'shapes' | 'assets' | 'properties'
 
-export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defaultFontFamily = 'Arial' }: EditorToolbarProps) {
+export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defaultFontFamily = 'Arial', designSlug, designCategory }: EditorToolbarProps) {
     const [activeTab, setActiveTab] = useState<ToolTab>('text')
     const [isFontLoading, setIsFontLoading] = useState(false)
     const [, setRevision] = useState(0)
@@ -171,6 +175,18 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defau
                     <Square className="mx-auto mb-1 h-4 w-4" />
                     Formas
                 </button>
+                {designSlug && (
+                    <button
+                        onClick={() => setActiveTab('assets')}
+                        className={`flex-1 px-3 py-3 text-xs font-medium transition-colors ${activeTab === 'assets'
+                            ? 'border-b-2 border-primary text-primary bg-primary/5'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                            }`}
+                    >
+                        <Image className="mx-auto mb-1 h-4 w-4" />
+                        Elementos
+                    </button>
+                )}
                 {selectedObject && (
                     <button
                         onClick={() => setActiveTab('properties')}
@@ -232,6 +248,11 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defau
                             <span className="text-xs text-muted-foreground">Línea</span>
                         </button>
                     </div>
+                )}
+
+                {/* ─── ASSETS TAB ─────────────────────────── */}
+                {activeTab === 'assets' && designSlug && (
+                    <EditorAssetsPanel canvas={canvas} designSlug={designSlug} designCategory={designCategory || ''} selectedObject={selectedObject} />
                 )}
 
                 {/* ─── PROPERTIES TAB ──────────────────────── */}

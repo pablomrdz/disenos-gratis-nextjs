@@ -51,16 +51,19 @@ export function DesignEditor({ design }: DesignEditorProps) {
                         selectedObject={selectedObject}
                         onSelectionChange={handleSelectionChange}
                         defaultFontFamily={customFontFamily}
+                        designSlug={design.slug}
+                        designCategory={design.category}
                     />
                 </div>
 
                 {/* Canvas Area */}
-                <div className="flex flex-1 flex-col">
-                    <div className="flex flex-1 items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div className="flex flex-1 flex-col min-h-0">
+                    <div className="flex-1 min-h-0">
                         {isFontReady && (
                             <EditorCanvas
                                 imageUrl={imageUrl}
                                 fontFamily={customFontFamily}
+                                designSlug={design.slug}
                                 setCanvas={setCanvas}
                                 onSelectionChange={handleSelectionChange}
                             />
@@ -80,6 +83,8 @@ export function DesignEditor({ design }: DesignEditorProps) {
                                 selectedObject={selectedObject}
                                 onSelectionChange={handleSelectionChange}
                                 defaultFontFamily={customFontFamily}
+                                designSlug={design.slug}
+                                designCategory={design.category}
                             />
                         </div>
                     </div>

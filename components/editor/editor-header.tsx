@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import * as fabric from 'fabric'
-import { ArrowLeft, Download, ImageDown, Loader2 } from 'lucide-react'
+import { ArrowLeft, ImageDown, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 
@@ -13,9 +13,11 @@ interface EditorHeaderProps {
     canvas: fabric.Canvas | null
 }
 
+type ExportFormat = 'png' | 'jpeg' | 'pdf'
+
 export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
     const [exporting, setExporting] = useState(false)
-    const [format, setFormat] = useState<'png' | 'jpeg'>('png')
+    const [format, setFormat] = useState<ExportFormat>('png')
 
     const handleExport = async () => {
         if (!canvas) return
@@ -27,26 +29,90 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
         try {
             // Deselect any active object to avoid selection handles in export
             canvas.discardActiveObject()
-            canvas.renderAll()
 
-            const dataUrl = canvas.toDataURL({
-                format,
-                quality: format === 'jpeg' ? 0.92 : 1,
-                multiplier: 2, // 2x resolution
+            // Hide any remaining placeholders before export
+            const placeholders: fabric.FabricObject[] = []
+            canvas.getObjects().forEach(obj => {
+                if ((obj as any).isPlaceholder) {
+                    placeholders.push(obj)
+                    obj.set({ visible: false })
+                }
             })
 
-            const link = document.createElement('a')
-            link.download = `${slug}-editado.${format}`
-            link.href = dataUrl
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
+            canvas.renderAll()
+
+            if (format === 'pdf') {
+                await exportAsPDF(canvas, slug)
+            } else {
+                exportAsImage(canvas, slug, format)
+            }
+
+            // Restore placeholders visibility
+            placeholders.forEach(obj => {
+                obj.set({ visible: true })
+            })
+            canvas.renderAll()
+
         } catch (err) {
             console.error('[EditorHeader] Export failed:', err)
             toast.error('No se pudo exportar. Intenta recargar la página.')
         } finally {
             setExporting(false)
         }
+    }
+
+    const exportAsImage = (canvas: fabric.Canvas, slug: string, fmt: 'png' | 'jpeg') => {
+        const dataUrl = canvas.toDataURL({
+            format: fmt,
+            quality: fmt === 'jpeg' ? 0.92 : 1,
+            multiplier: 2,
+        })
+
+        const link = document.createElement('a')
+        link.download = `${slug}-editado.${fmt}`
+        link.href = dataUrl
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
+    const exportAsPDF = async (canvas: fabric.Canvas, slug: string) => {
+        // Dynamic import to avoid SSR issues
+        const { jsPDF } = await import('jspdf')
+
+        // Export at high resolution for 300 DPI print quality
+        // Standard print: if canvas is ~800px, multiplier 4 = 3200px
+        // At 300 DPI for an 8.5"×11" page = 2550×3300px
+        const multiplier = 4
+
+        const dataUrl = canvas.toDataURL({
+            format: 'png',
+            quality: 1,
+            multiplier,
+        })
+
+        const canvasW = canvas.width! * multiplier
+        const canvasH = canvas.height! * multiplier
+
+        // Determine orientation
+        const isLandscape = canvasW > canvasH
+        const orientation = isLandscape ? 'landscape' : 'portrait'
+
+        // Create PDF with dimensions matching the canvas aspect ratio
+        // Use mm units, convert from pixels at 300 DPI
+        // 1 inch = 25.4mm, 300 DPI → 1px = 25.4/300 mm
+        const pxToMm = 25.4 / 300
+        const pdfW = canvasW * pxToMm
+        const pdfH = canvasH * pxToMm
+
+        const pdf = new jsPDF({
+            orientation,
+            unit: 'mm',
+            format: [pdfW, pdfH],
+        })
+
+        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfW, pdfH, undefined, 'FAST')
+        pdf.save(`${slug}-editado.pdf`)
     }
 
     return (
@@ -68,11 +134,12 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
             <div className="flex items-center gap-2">
                 <select
                     value={format}
-                    onChange={(e) => setFormat(e.target.value as 'png' | 'jpeg')}
+                    onChange={(e) => setFormat(e.target.value as ExportFormat)}
                     className="hidden rounded-lg border border-border bg-background px-2 py-1.5 text-xs sm:block"
                 >
                     <option value="png">PNG</option>
                     <option value="jpeg">JPG</option>
+                    <option value="pdf">PDF (300 DPI)</option>
                 </select>
                 <Button
                     onClick={handleExport}
