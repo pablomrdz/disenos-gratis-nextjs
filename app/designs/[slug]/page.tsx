@@ -15,14 +15,14 @@ import {
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { GoogleAd } from '@/components/google-ad'
-import { AdPlaceholder } from '@/components/ad-placeholder'
+import { AdBanner } from '@/components/ad-banner'
 import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import { FontPreviewInteractive } from '@/components/font-preview-interactive'
 import { TechnicalInfo } from '@/components/technical-info'
 import { getDesignBySlug, getDesigns, getTutorials, getRelatedDesignsByTags, getPopularCategories, getPrimaryCategory } from '@/lib/data'
-import { detectContentType, extractDownloadLink, splitContentForAd } from '@/lib/content-utils'
+import { detectContentType, extractDownloadLink } from '@/lib/content-utils'
 import { DownloadSection } from './download-section'
 import { cn, slugify, normalizeText } from '@/lib/utils'
 
@@ -116,9 +116,6 @@ export default async function DesignPage({ params }: DesignPageProps) {
   // Extract external download link if exists
   const externalLink = extractDownloadLink(description)
   const finalDownloadUrl = externalLink || design.download_url || design.external_url
-
-  // Split content for ad insertion
-  const { before: descBefore, after: descAfter } = splitContentForAd(description)
 
   // Related designs - try tag-based first, then fall back to category-based
   let relatedDesigns = await getRelatedDesignsByTags(design.id, tags, 4)
@@ -318,22 +315,17 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 isBlog ? "font-serif text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
               )}>
                 <h2 className="sr-only">Descripción</h2>
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  {descBefore.split('\n').map((paragraph, index) => (
-                    <p key={`before-${index}`} className="mb-4">{paragraph}</p>
-                  ))}
 
-                  {/* Internal Ad placeholder */}
-                  {descAfter && (
-                    <div className="my-8 flex justify-center">
-                      <AdPlaceholder variant="horizontal" />
-                    </div>
-                  )}
+                {/* Ad before description */}
+                <AdBanner className="mb-6" />
 
-                  {descAfter && descAfter.split('\n').map((paragraph, index) => (
-                    <p key={`after-${index}`} className="mb-4">{paragraph}</p>
-                  ))}
-                </div>
+                <div
+                  className="prose prose-slate dark:prose-invert max-w-none"
+                  dangerouslySetInnerHTML={{ __html: design.description || '' }}
+                />
+
+                {/* Ad after description */}
+                <AdBanner className="mt-6" />
               </div>
 
               {/* Related Designs */}

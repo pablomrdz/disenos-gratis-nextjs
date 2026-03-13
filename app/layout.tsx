@@ -92,13 +92,12 @@ export default function RootLayout({
       <head>
         <OrganizationJsonLd />
         <WebsiteJsonLd />
-        {/* Google AdSense - Auto Ads (Descomentar cuando esté listo)
+        {/* Google AdSense - Auto Ads */}
         <script
           async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADS_CLIENT}`}
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1784471620247875"
           crossOrigin="anonymous"
         />
-        */}
       </head>
       <body className="font-sans antialiased">
         <div className="flex min-h-screen flex-col">

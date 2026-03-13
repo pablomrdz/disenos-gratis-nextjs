@@ -40,9 +40,24 @@ const nextConfig = {
         source: '/tutorials/:path*',
         destination: '/blog',
         permanent: true,
-      }
+      },
+      {
+        source: '/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar/',
+        destination: '/designs/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar',
+        permanent: true,
+      },
     ]
-  }
+  },
+  async rewrites() {
+    return {
+      fallback: [
+        {
+          source: '/:path*',
+          destination: 'https://wp.disenosgratis.com/:path*',
+        },
+      ],
+    };
+  },
 }
 
 export default nextConfig
