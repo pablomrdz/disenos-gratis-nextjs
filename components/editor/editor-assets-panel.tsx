@@ -116,7 +116,6 @@ export function EditorAssetsPanel({ canvas, designSlug, designCategory, selected
             const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(asset.url)}`
             const img = await fabric.FabricImage.fromURL(proxyUrl, { crossOrigin: 'anonymous' })
 
-            // Lock proportions on all added images
             img.set({
                 selectable: true,
                 hasControls: true,
@@ -125,44 +124,44 @@ export function EditorAssetsPanel({ canvas, designSlug, designCategory, selected
                 lockUniScaling: true,
             })
 
-            // Smart Replacement: if a placeholder is selected, snap to its position
-            const activeObj = canvas.getActiveObject()
-            if (activeObj && (activeObj as any).isPlaceholder) {
-                // Calculate cell dimensions from the fixed artboard size (not viewport)
-                const COLS = 4
-                const ROWS = 4
-                const ARTBOARD_W = 800
-                const ARTBOARD_H = 1120
-                const PAD = 2
-                const cellW = (ARTBOARD_W - PAD * 2) / COLS
-                const cellH = (ARTBOARD_H - PAD * 2) / ROWS
+            // 1. Try to see if an active Placeholder is selected
+            let targetPlaceholder = null;
+            const activeObj = canvas.getActiveObject();
+            
+            if (activeObj && (activeObj as any).isPlaceholder && !(activeObj as any).hasCard) {
+                targetPlaceholder = activeObj;
+            } else {
+                // 2. Otherwise search for the first available placeholder
+                const objects = canvas.getObjects()
+                targetPlaceholder = objects.find(
+                    (obj: any) => obj.isPlaceholder === true && obj.hasCard === false
+                )
+            }
 
-                const idx = (activeObj as any).placeholderIndex ?? 0
-                const col = idx % COLS
-                const row = Math.floor(idx / COLS)
-
-                const cellLeft = PAD + col * cellW
-                const cellTop = PAD + row * cellH
-
-                // Stretch image to fill the cell completely
+            if (targetPlaceholder) {
+                // Perfect Fit mechanics based on target Placeholder
                 img.set({
-                    left: cellLeft,
-                    top: cellTop,
-                    scaleX: cellW / (img.width ?? 1),
-                    scaleY: cellH / (img.height ?? 1),
-                    lockUniScaling: false, // allow independent scaling for cell fill
+                    originX: 'left',
+                    originY: 'top',
+                    left: targetPlaceholder.left,
+                    top: targetPlaceholder.top,
+                    lockUniScaling: false, 
+                    scaleX: (targetPlaceholder.width!) / img.width!,
+                    scaleY: (targetPlaceholder.height!) / img.height!
                 })
-
-                // Remove the placeholder
-                canvas.remove(activeObj)
-                canvas.discardActiveObject()
+                
+                // Mark as populated so the next card ignores it
+                ;(targetPlaceholder as any).hasCard = true
+                
+                // Unselect the placeholder so it moves focus cleanly to the new card
+                canvas.discardActiveObject();
 
                 canvas.add(img)
                 canvas.bringObjectToFront(img)
                 canvas.setActiveObject(img)
                 canvas.renderAll()
             } else {
-                // Default behavior: scale to max 150px and center
+                // Default behavior if no target placeholder or not in loteria mode
                 const MAX_WIDTH = 150
                 if (img.width && img.width > MAX_WIDTH) {
                     img.scaleToWidth(MAX_WIDTH)

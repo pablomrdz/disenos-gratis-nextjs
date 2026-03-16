@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/json-ld'
@@ -93,10 +94,11 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <WebsiteJsonLd />
         {/* Google AdSense - Auto Ads */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1784471620247875"
-          crossOrigin="anonymous"
+        <Script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1784471620247875" 
+          strategy="afterInteractive" 
+          crossOrigin="anonymous" 
         />
       </head>
       <body className="font-sans antialiased">

@@ -14,7 +14,6 @@ import {
   Play
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { GoogleAd } from '@/components/google-ad'
 import { AdBanner } from '@/components/ad-banner'
 import { DesignGrid } from '@/components/design-grid'
 import { JsonLd } from '@/components/json-ld'
@@ -198,9 +197,9 @@ export default async function DesignPage({ params }: DesignPageProps) {
       </section>
 
       {/* Main Content Layout */}
-      <section className="py-8 sm:py-12">
+      <section className="py-6 sm:py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-12 gap-8">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8">
             {/* Main Column (8 or 9 columns) */}
             <div className={cn(
               "col-span-12 lg:col-span-8 xl:col-span-9",
@@ -273,7 +272,7 @@ export default async function DesignPage({ params }: DesignPageProps) {
                   )}
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
-                <GoogleAd adUnitName="despúes de cada h1" height={90} className="mt-4" />
+                <AdBanner slot="9549519747" responsive={true} className="mt-4" />
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Link href={`/category/${slugify(category)}`} className="transition-opacity hover:opacity-80">
                     <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
@@ -311,13 +310,13 @@ export default async function DesignPage({ params }: DesignPageProps) {
 
               {/* Description Content */}
               <div className={cn(
-                "mt-10",
+                "mt-6",
                 isBlog ? "font-serif text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
               )}>
                 <h2 className="sr-only">Descripción</h2>
 
                 {/* Ad before description */}
-                <AdBanner className="mb-6" />
+                <AdBanner slot="9549519747" responsive={true} className="mb-6 my-6" />
 
                 <div
                   className="prose prose-slate dark:prose-invert max-w-none"
@@ -325,12 +324,12 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 />
 
                 {/* Ad after description */}
-                <AdBanner className="mt-6" />
+                <AdBanner slot="9549519747" responsive={true} className="mt-6 my-6" />
               </div>
 
               {/* Related Designs */}
               {relatedDesigns.length > 0 && (
-                <div className="mt-16 border-t border-border/40 pt-12">
+                <div className="mt-10 border-t border-border/40 pt-12">
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-foreground">También te puede gustar</h2>
                     <Link

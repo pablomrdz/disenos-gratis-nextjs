@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Folder, Tag as TagIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { AdPlaceholder } from '@/components/ad-placeholder'
-import { GoogleAd } from '@/components/google-ad'
+import { AdBanner } from '@/components/ad-banner'
 import { formatCategoryName } from '@/lib/content-utils'
 import { slugify } from '@/lib/utils'
 
@@ -17,7 +17,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
         <div className={`sticky top-8 space-y-6 ${className || ''}`}>
             {/* Top Ad - 300x250 */}
             <div className="flex justify-center">
-                <GoogleAd adUnitName="sidebar-top" height={250} width={300} />
+                <AdBanner slot="3806846005" responsive={false} width="300px" height="250px" />
             </div>
 
             {/* Bloque 1: Categorías Populares */}
@@ -53,7 +53,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
 
             {/* Bottom Ad - 300x250 */}
             <div className="flex justify-center">
-                <GoogleAd adUnitName="sidebar-bottom" height={250} width={300} />
+                <AdBanner slot="3806846005" responsive={false} width="300px" height="250px" />
             </div>
 
             {/* Bloque 3: Etiquetas Relacionadas */}

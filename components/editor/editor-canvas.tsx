@@ -9,6 +9,7 @@ declare module 'fabric' {
     interface FabricObject {
         isPlaceholder?: boolean
         placeholderIndex?: number
+        hasCard?: boolean
     }
 }
 
@@ -33,43 +34,54 @@ function isLoteriaTemplate(slug?: string): boolean {
 }
 
 function addLoteriaGrid(canvas: fabric.Canvas) {
-    // Add padding so cell strokes at the edges don't extend outside the canvas boundary
-    // (strokeWidth: 1 means 0.5px extends outward from each rect edge)
-    const PAD = 2
-    const cellW = (LOTERIA_W - PAD * 2) / LOTERIA_COLS
-    const cellH = (LOTERIA_H - PAD * 2) / LOTERIA_ROWS
+    const margin = 10;
+    const gap = 7;
+    
+    // We use the fixed LOTERIA Artboard constants to generate the grid
+    // so it fills the design correctly regardless of the window zoom size
+    const canvasWidth = LOTERIA_W; // 800
+    const canvasHeight = LOTERIA_H; // 1120
 
-    let index = 0
-    for (let row = 0; row < LOTERIA_ROWS; row++) {
-        for (let col = 0; col < LOTERIA_COLS; col++) {
+    // Cálculo exacto (sin doble división posterior)
+    const cellWidth = (canvasWidth - (margin * 2) - (gap * 3)) / 4;
+    const cellHeight = (canvasHeight - (margin * 2) - (gap * 3)) / 4;
+
+    for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 4; col++) {
+            const left = margin + col * (cellWidth + gap);
+            const top = margin + row * (cellHeight + gap);
+
             const rect = new fabric.Rect({
-                left: PAD + col * cellW,
-                top: PAD + row * cellH,
-                width: cellW,
-                height: cellH,
-                fill: 'rgba(49, 155, 185, 0.04)',
-                stroke: '#d1d5db',
-                strokeWidth: 1,
-                strokeUniform: true,
-                selectable: true,
+                left: left,
+                top: top,
+                width: cellWidth,
+                height: cellHeight,
+                fill: 'transparent',
+                stroke: '#888',
+                strokeWidth: 2,
+                strokeDashArray: [5, 5],
+                selectable: true, // we reinstate this so they can be clicked
+                evented: true, // We reinstate this so it emits events
                 hasControls: false,
-                hasBorders: true,
+                hasBorders: true, // Show border when selected
                 lockMovementX: true,
                 lockMovementY: true,
                 lockScalingX: true,
                 lockScalingY: true,
                 lockRotation: true,
-                hoverCursor: 'pointer',
-            })
-
-            rect.isPlaceholder = true
-            rect.placeholderIndex = index
-            index++
-
-            canvas.add(rect)
+                originX: 'left',
+                originY: 'top',
+                scaleX: 1,
+                scaleY: 1
+            });
+            
+            // Propiedades custom para nuestra lógica
+            rect.set('isPlaceholder', true);
+            rect.set('hasCard', false);
+            canvas.add(rect);
         }
     }
-    canvas.renderAll()
+    canvas.renderAll();
 }
 
 export function EditorCanvas({ imageUrl, fontFamily, designSlug, setCanvas, onSelectionChange }: EditorCanvasProps) {

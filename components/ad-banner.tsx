@@ -1,33 +1,30 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 
-interface AdBannerProps {
-    className?: string
-}
-
-export function AdBanner({ className }: AdBannerProps) {
-    const adRef = useRef<HTMLModElement>(null)
-
+export function AdBanner({ slot, responsive = true, width, height, className }: any) {
     useEffect(() => {
         try {
             ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
-        } catch (err) {
+        } catch (e) {
             // Silently ignore — prevents hydration / duplicate-push errors
         }
     }, [])
 
     return (
-        <div className={cn("my-6 w-full overflow-hidden", className)}>
+        <div className={cn("overflow-hidden flex justify-center w-full", className)}>
             <ins
-                ref={adRef}
                 className="adsbygoogle"
-                style={{ display: "block", textAlign: "center" }}
+                style={{
+                    display: responsive ? 'block' : 'inline-block',
+                    width: width || 'auto',
+                    height: height || 'auto'
+                }}
                 data-ad-client="ca-pub-1784471620247875"
-                data-ad-slot="9549519747"
-                data-ad-format="auto"
-                data-full-width-responsive="true"
+                data-ad-slot={slot}
+                data-ad-format={responsive ? "auto" : undefined}
+                data-full-width-responsive={responsive ? "true" : "false"}
             />
         </div>
     )
