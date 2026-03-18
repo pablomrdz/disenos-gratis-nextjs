@@ -50,6 +50,12 @@ const nextConfig = {
   },
   async rewrites() {
     return {
+      beforeFiles: [
+        {
+          source: '/',
+          destination: 'https://wp.disenosgratis.com/',
+        },
+      ],
       fallback: [
         {
           source: '/:path*',

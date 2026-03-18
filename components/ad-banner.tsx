@@ -5,11 +5,15 @@ import { cn } from "@/lib/utils"
 
 export function AdBanner({ slot, responsive = true, width, height, className }: any) {
     useEffect(() => {
-        try {
-            ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
-        } catch (e) {
-            // Silently ignore — prevents hydration / duplicate-push errors
-        }
+        const timer = setTimeout(() => {
+            try {
+                ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
+            } catch (e) {
+                // Silently ignore — prevents hydration / duplicate-push errors
+            }
+        }, 500)
+        
+        return () => clearTimeout(timer)
     }, [])
 
     return (

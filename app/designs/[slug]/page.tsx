@@ -272,7 +272,9 @@ export default async function DesignPage({ params }: DesignPageProps) {
                   )}
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
-                <AdBanner slot="9549519747" responsive={true} className="mt-4" />
+                <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
+                  <AdBanner slot="9549519747" responsive={true} />
+                </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Link href={`/category/${slugify(category)}`} className="transition-opacity hover:opacity-80">
                     <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
@@ -316,7 +318,9 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 <h2 className="sr-only">Descripción</h2>
 
                 {/* Ad before description */}
-                <AdBanner slot="9549519747" responsive={true} className="mb-6 my-6" />
+                <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
+                  <AdBanner slot="9549519747" responsive={true} />
+                </div>
 
                 <div
                   className="prose prose-slate dark:prose-invert max-w-none"
@@ -324,7 +328,9 @@ export default async function DesignPage({ params }: DesignPageProps) {
                 />
 
                 {/* Ad after description */}
-                <AdBanner slot="9549519747" responsive={true} className="mt-6 my-6" />
+                <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
+                  <AdBanner slot="9549519747" responsive={true} />
+                </div>
               </div>
 
               {/* Related Designs */}
