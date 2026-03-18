@@ -54,12 +54,14 @@ const nextConfig = {
         {
           source: '/',
           destination: 'https://wp.disenosgratis.com/',
+          basePath: false,
         },
       ],
       fallback: [
         {
           source: '/:path*',
           destination: 'https://wp.disenosgratis.com/:path*',
+          basePath: false,
         },
       ],
     };
