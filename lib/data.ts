@@ -104,7 +104,9 @@ export async function getDesignBySlug(slug: string): Promise<Design | null> {
     .single()
 
   if (error) {
-    console.error('Error fetching design:', error)
+    if (error.code !== 'PGRST116') {
+      console.error('Error fetching design:', error.message || error)
+    }
     return null
   }
 
@@ -161,7 +163,9 @@ export async function getTutorialBySlug(slug: string): Promise<Tutorial | null> 
     .single()
 
   if (error) {
-    console.error('Error fetching tutorial:', error)
+    if (error.code !== 'PGRST116') {
+       console.error('Error fetching tutorial:', error.message || error)
+    }
     return null
   }
 
@@ -217,7 +221,9 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     .single()
 
   if (error) {
-    console.error('Error fetching blog post:', error)
+    if (error.code !== 'PGRST116') {
+      console.error('Error fetching blog post:', error.message || error)
+    }
     return null
   }
 
@@ -438,6 +444,29 @@ export async function getTopCategories(limit: number = 6): Promise<Array<{ categ
       .slice(0, limit)
   } catch (err) {
     console.error('Error fetching top categories:', err)
+    return []
+  }
+}
+
+// Get related designs by RPC (Topical Authority Silo)
+export async function getRelatedAssetsFromRpc(designId: string, categoryName: string, limitCount: number = 4): Promise<Design[]> {
+  if (USE_MOCK) return []
+  
+  try {
+    const supabase = createServerSupabaseClient()
+    const { data, error } = await (supabase.rpc as any)('get_related_designs', {
+      design_id: designId,
+      category_name: categoryName,
+      limit_count: limitCount
+    })
+
+    if (error) {
+      console.error('Error fetching RPC get_related_designs:', error.message)
+      return []
+    }
+    return data || []
+  } catch (err) {
+    console.error('Error executing get_related_designs RPC:', err)
     return []
   }
 }

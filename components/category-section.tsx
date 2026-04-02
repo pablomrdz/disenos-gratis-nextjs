@@ -38,7 +38,7 @@ export async function CategorySection() {
               .map((item) => (
                 <Link
                   key={item.category}
-                  href={`/category/${slugify(item.category)}`}
+                  href={`/${slugify(item.category)}`}
                   className="group snap-start relative flex-shrink-0"
                 >
                   {/* w-[76px] -> w-[88px], sm:w-[110px] -> sm:w-[128px] */}

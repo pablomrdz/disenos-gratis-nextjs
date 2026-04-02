@@ -22,6 +22,8 @@ export interface Design {
   software_recommended?: string | null
   alt_text?: string | null
   font_family?: string | null
+  gallery_urls?: string[] | null
+  related_keywords?: string[] | null
 }
 
 export interface Tutorial {

@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import { ALLOWED_SLUGS } from '@/lib/data'
+import { ALLOWED_SLUGS, getPrimaryCategory } from '@/lib/data'
 
 const BASE_URL = 'https://disenosgratis.com'
 
@@ -69,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         const { data, error } = await supabase
             .from('designs')
-            .select('slug, updated_at')
+            .select('slug, category, updated_at')
             .order('created_at', { ascending: false })
             .limit(5000)
 
@@ -78,13 +78,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
 
         if (data && data.length > 0) {
-            const designs = data as Array<{ slug: string; updated_at: string | null }>
-            designRoutes = designs.map((design) => ({
-                url: `${BASE_URL}/designs/${design.slug}`,
-                lastModified: new Date(design.updated_at || new Date()),
-                changeFrequency: 'weekly' as const,
-                priority: 0.8,
-            }))
+            const designs = data as Array<{ slug: string; category: string; updated_at: string | null }>
+            designRoutes = designs.map((design) => {
+                const primaryCategory = getPrimaryCategory(design.category);
+                return {
+                  url: `${BASE_URL}/${primaryCategory}/${design.slug}`,
+                  lastModified: new Date(design.updated_at || new Date()),
+                  changeFrequency: 'weekly' as const,
+                  priority: 0.8,
+                }
+            })
         }
     } catch (err) {
         console.error('[Sitemap] Unexpected error:', err)

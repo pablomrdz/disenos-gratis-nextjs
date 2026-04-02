@@ -28,41 +28,20 @@ export function DesignCard({ design }: DesignCardProps) {
 
   // Get main category safely
   const mainCategory = (design.category || 'general').split(',')[0].trim()
+  const siloUrl = `/${slugify(mainCategory)}/${design.slug || design.id}`
 
-  // Show VIP badge if premium_url exists (VIP designs have premium_url)
-  const isVip = Boolean(design.premium_url)
+  // Show VIP badge checking the designated column
+  const isVip = Boolean(design.is_vip)
   const showLock = isVip && !isUnlocked
 
-  const designType = design.type || 'internal'
-
   const getTypeLabel = () => {
-    if (isVip) return 'Acceso VIP'
-
-    switch (designType) {
-      case 'canva':
-        return 'Plantilla Canva'
-      case 'capcut':
-        return 'Plantilla CapCut'
-      case 'font':
-        return 'Descarga de Fuente'
-      default:
-        return 'Descarga Directa'
-    }
+    if (isVip) return 'Pack VIP'
+    return 'Gratis'
   }
 
   const getTypeColor = () => {
     if (isVip) return 'bg-amber-500/10 text-amber-600 border-amber-500/30'
-
-    switch (designType) {
-      case 'canva':
-        return 'bg-[#00C4CC]/10 text-[#00C4CC] border-[#00C4CC]/30'
-      case 'capcut':
-        return 'bg-[#FF0050]/10 text-[#FF0050] border-[#FF0050]/30'
-      case 'font':
-        return 'bg-amber-500/10 text-amber-600 border-amber-500/30'
-      default:
-        return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
-    }
+    return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
   }
 
   const handleDownload = () => {
@@ -98,7 +77,7 @@ export function DesignCard({ design }: DesignCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative aspect-[3/2] overflow-hidden bg-muted">
-          <Link href={`/designs/${design.slug || design.id}`}>
+          <Link href={siloUrl}>
             <Image
               src={imgSrc}
               alt={design.title}
@@ -119,7 +98,7 @@ export function DesignCard({ design }: DesignCardProps) {
               </div>
             )}
             <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto shadow-sm" asChild onClick={(e) => e.stopPropagation()}>
-              <Link href={`/designs/${design.slug || design.id}`}>
+              <Link href={siloUrl}>
                 <Eye className="h-4 w-4" />
               </Link>
             </Button>
@@ -128,11 +107,18 @@ export function DesignCard({ design }: DesignCardProps) {
           {/* VIP Badge - Smaller */}
           {isVip && (
             <div className="absolute left-2 top-2 z-10">
-              <Badge className="h-4 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] text-white px-1.5 font-bold">
+              <Badge className="h-4 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] text-white px-1.5 font-bold shadow-sm">
                 <Crown className="h-2 w-2" />
                 VIP
               </Badge>
             </div>
+          )}
+          {!isVip && (
+             <div className="absolute left-2 top-2 z-10">
+              <Badge className="h-4 gap-1 border-emerald-500/30 bg-emerald-500/90 text-[9px] text-white px-1.5 font-bold shadow-sm backdrop-blur-sm">
+                Gratis
+              </Badge>
+             </div>
           )}
         </div>
 
@@ -140,7 +126,7 @@ export function DesignCard({ design }: DesignCardProps) {
           <div>
             <div className="group/link block relative z-10">
               {/* Title needs to decode entities like &#8211; */}
-              <Link href={`/designs/${design.slug || design.id}`}>
+              <Link href={siloUrl}>
                 <h3
                   className="line-clamp-1 text-xs font-bold text-foreground transition-colors group-hover/link:text-primary sm:text-[13px]"
                   dangerouslySetInnerHTML={{ __html: design.title || 'Untitled Design' }}
@@ -149,7 +135,7 @@ export function DesignCard({ design }: DesignCardProps) {
             </div>
             <div className="mt-1">
               <Link
-                href={`/category/${slugify(mainCategory)}`}
+                href={`/${slugify(mainCategory)}`}
                 className="relative z-20 truncate text-[8px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -163,7 +149,7 @@ export function DesignCard({ design }: DesignCardProps) {
               {(design.downloads ?? 0).toLocaleString()}
             </span>
             <div className="relative z-10">
-              <Link href={`/designs/${design.slug || design.id}`}>
+              <Link href={siloUrl}>
                 <Button size="sm" className="h-7 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white border-none text-[10px] font-bold px-4 transition-all duration-300">
                   Descargar
                 </Button>

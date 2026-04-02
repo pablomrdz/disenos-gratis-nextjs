@@ -21,7 +21,7 @@ export function FontCard({ font }: FontCardProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [previewText, setPreviewText] = useState('Texto de prueba')
 
-  const isVip = font.is_vip && font.premium_url
+  const isVip = Boolean(font.is_vip)
   const showLock = isVip && !isUnlocked
 
   const mainCategory = (font.category || 'Tipografías').split(',')[0].trim()
@@ -78,7 +78,7 @@ export function FontCard({ font }: FontCardProps) {
             </Link>
             <div className="mt-1">
               <Link
-                href={`/category/${slugify(mainCategory)}`}
+                href={`/${slugify(mainCategory)}`}
                 className="relative z-20 truncate text-[8px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
                 onClick={(e) => e.stopPropagation()}
               >

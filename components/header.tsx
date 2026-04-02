@@ -14,11 +14,11 @@ const megaMenuCategories = [
     title: 'Técnicas y Proyectos',
     href: '/designs',
     items: [
-      { name: 'Sublimación', href: '/category/sublimacion', description: 'Plantillas y diseños para tazas, playeras y más.' },
-      { name: 'DTF / Impresión', href: '/category/dtf', description: 'Archivos listos para impresión textil y transfers.' },
-      { name: 'Corte y Grabado', href: '/category/corte-laser', description: 'Vectores para corte láser y plotter (SVG, DXF).' },
-      { name: 'Vinil Textil', href: '/category/vinil-textil', description: 'Diseños optimizados para corte en vinilo.' },
-      { name: 'Tipografías', href: '/category/tipografias', description: 'Fuentes premium para tus proyectos creativos.' },
+      { name: 'Sublimación', href: '/sublimacion', description: 'Plantillas y diseños para tazas, playeras y más.' },
+      { name: 'DTF / Impresión', href: '/dtf', description: 'Archivos listos para impresión textil y transfers.' },
+      { name: 'Corte y Grabado', href: '/corte-laser', description: 'Vectores para corte láser y plotter (SVG, DXF).' },
+      { name: 'Vinil Textil', href: '/vinil-textil', description: 'Diseños optimizados para corte en vinilo.' },
+      { name: 'Tipografías', href: '/tipografias', description: 'Fuentes premium para tus proyectos creativos.' },
     ],
   },
   {
@@ -26,10 +26,10 @@ const megaMenuCategories = [
     href: '/designs',
     items: [
       { name: 'Imágenes PNG', href: '/tags/png', description: 'Recursos con fondo transparente en alta resolución.' },
-      { name: 'Vectores (SVG/Ai)', href: '/category/vectores', description: 'Archivos editables para Illustrator y Corel.' },
+      { name: 'Vectores (SVG/Ai)', href: '/vectores', description: 'Archivos editables para Illustrator y Corel.' },
       { name: 'Photoshop (PSD)', href: '/tags/psd', description: 'Plantillas editables en capas para Photoshop.' },
       { name: 'Corte (Studio3/DXF)', href: '/tags/studio3', description: 'Archivos listos para Silhouette Cameo y Cricut.' },
-      { name: 'Fondos y Texturas', href: '/category/fondos-y-texturas', description: 'Papel digital y texturas para tus fondos.' },
+      { name: 'Fondos y Texturas', href: '/fondos-y-texturas', description: 'Papel digital y texturas para tus fondos.' },
     ],
   },
   {

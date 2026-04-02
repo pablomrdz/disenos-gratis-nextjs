@@ -6,10 +6,10 @@ const footerLinks = {
     { name: 'Blog', href: '/blog' },
   ],
   categories: [
-    { name: 'Sublimación', href: '/category/sublimacion' },
-    { name: 'DTF', href: '/category/dtf' },
-    { name: 'Vinil Textil', href: '/category/vinil-textil' },
-    { name: 'Tipografías', href: '/category/tipografias' },
+    { name: 'Sublimación', href: '/sublimacion' },
+    { name: 'DTF', href: '/dtf' },
+    { name: 'Vinil Textil', href: '/vinil-textil' },
+    { name: 'Tipografías', href: '/tipografias' },
   ],
   company: [
     { name: 'Sobre Nosotros', href: '/about' },
