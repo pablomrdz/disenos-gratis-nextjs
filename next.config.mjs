@@ -11,6 +11,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'disenosgratis.fsn1.your-objectstorage.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'disenosgratis.com',
       },
       {
