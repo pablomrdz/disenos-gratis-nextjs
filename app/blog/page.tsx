@@ -5,7 +5,7 @@ import { TutorialCard } from '@/components/tutorial-card'
 import { DesignCard } from '@/components/design-card'
 import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
-import { GoogleAd } from '@/components/google-ad'
+import { AdBanner } from '@/components/ad-banner'
 import { Button } from '@/components/ui/button'
 import { getTutorials, getDesigns } from '@/lib/data'
 
@@ -93,7 +93,7 @@ export default async function TutorialsPage() {
             {/* Tutorial Grid */}
             <div>
               <div className="mb-8">
-                <GoogleAd adUnitName="in feed para listas" height={250} />
+                <AdBanner slot="in feed para listas" minHeight={250} />
               </div>
 
               {blogPosts.length > 0 ? (
@@ -112,7 +112,7 @@ export default async function TutorialsPage() {
 
               {/* Bottom Ad */}
               <div className="mt-8">
-                <GoogleAd adUnitName="in feed para listas" height={250} />
+                <AdBanner slot="in feed para listas" minHeight={250} />
               </div>
             </div>
 

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import * as fabric from 'fabric'
-import { ArrowLeft, ImageDown, Loader2 } from 'lucide-react'
+import { ArrowLeft, ImageDown, Loader2, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 
@@ -11,13 +11,15 @@ interface EditorHeaderProps {
     title: string
     slug: string
     canvas: fabric.Canvas | null
+    hasSavedState?: boolean
+    onClearState?: () => void
 }
 
-type ExportFormat = 'png' | 'jpeg' | 'pdf'
+type ExportFormat = 'png' | 'jpeg' | 'pdf-letter' | 'pdf-a4'
 
-export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
+export function EditorHeader({ title, slug, canvas, hasSavedState, onClearState }: EditorHeaderProps) {
     const [exporting, setExporting] = useState(false)
-    const [format, setFormat] = useState<ExportFormat>('png')
+    const [format, setFormat] = useState<ExportFormat>('pdf-letter')
 
     const handleExport = async () => {
         if (!canvas) return
@@ -41,10 +43,11 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
 
             canvas.renderAll()
 
-            if (format === 'pdf') {
-                await exportAsPDF(canvas, slug)
+            if (format.startsWith('pdf')) {
+                const paperSize = format === 'pdf-letter' ? 'letter' : 'a4'
+                await exportAsPDF(canvas, slug, paperSize)
             } else {
-                exportAsImage(canvas, slug, format)
+                exportAsImage(canvas, slug, format as 'png' | 'jpeg')
             }
 
             // Restore placeholders visibility
@@ -76,13 +79,11 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
         document.body.removeChild(link)
     }
 
-    const exportAsPDF = async (canvas: fabric.Canvas, slug: string) => {
+    const exportAsPDF = async (canvas: fabric.Canvas, slug: string, paperSize: 'letter' | 'a4') => {
         // Dynamic import to avoid SSR issues
         const { jsPDF } = await import('jspdf')
 
         // Export at high resolution for 300 DPI print quality
-        // Standard print: if canvas is ~800px, multiplier 4 = 3200px
-        // At 300 DPI for an 8.5"×11" page = 2550×3300px
         const multiplier = 4
 
         const dataUrl = canvas.toDataURL({
@@ -91,28 +92,50 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
             multiplier,
         })
 
-        const canvasW = canvas.width! * multiplier
-        const canvasH = canvas.height! * multiplier
+        // Paper dimensions in mm
+        const paperDimensions = {
+            letter: { w: 215.9, h: 279.4 },  // 8.5 x 11 inches
+            a4: { w: 210, h: 297 },
+        }
 
-        // Determine orientation
-        const isLandscape = canvasW > canvasH
-        const orientation = isLandscape ? 'landscape' : 'portrait'
+        const paper = paperDimensions[paperSize]
 
-        // Create PDF with dimensions matching the canvas aspect ratio
-        // Use mm units, convert from pixels at 300 DPI
-        // 1 inch = 25.4mm, 300 DPI → 1px = 25.4/300 mm
-        const pxToMm = 25.4 / 300
-        const pdfW = canvasW * pxToMm
-        const pdfH = canvasH * pxToMm
-
+        // Create PDF with standard paper size (portrait)
         const pdf = new jsPDF({
-            orientation,
+            orientation: 'portrait',
             unit: 'mm',
-            format: [pdfW, pdfH],
+            format: paperSize === 'letter' ? 'letter' : 'a4',
         })
 
-        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfW, pdfH, undefined, 'FAST')
-        pdf.save(`${slug}-editado.pdf`)
+        // Calculate canvas aspect ratio
+        const canvasW = canvas.width! * multiplier
+        const canvasH = canvas.height! * multiplier
+        const canvasAspect = canvasW / canvasH
+
+        // Define print margins (10mm on each side)
+        const margin = 10
+        const printableW = paper.w - (margin * 2)
+        const printableH = paper.h - (margin * 2)
+        const printableAspect = printableW / printableH
+
+        // Fit canvas within printable area maintaining aspect ratio
+        let imgW: number, imgH: number
+        if (canvasAspect > printableAspect) {
+            // Canvas is wider relative to paper - fit by width
+            imgW = printableW
+            imgH = printableW / canvasAspect
+        } else {
+            // Canvas is taller relative to paper - fit by height
+            imgH = printableH
+            imgW = printableH * canvasAspect
+        }
+
+        // Center on page
+        const offsetX = (paper.w - imgW) / 2
+        const offsetY = (paper.h - imgH) / 2
+
+        pdf.addImage(dataUrl, 'PNG', offsetX, offsetY, imgW, imgH, undefined, 'FAST')
+        pdf.save(`${slug}-listo-para-imprimir.pdf`)
     }
 
     return (
@@ -130,16 +153,28 @@ export function EditorHeader({ title, slug, canvas }: EditorHeaderProps) {
                 <h1 className="line-clamp-1 max-w-[200px] text-sm font-semibold text-foreground sm:max-w-md" dangerouslySetInnerHTML={{ __html: title }} />
             </div>
 
-            {/* Right: Format + Export */}
+            {/* Right: Format + Reset + Export */}
             <div className="flex items-center gap-2">
+                {/* Reset saved state button */}
+                {hasSavedState && onClearState && (
+                    <button
+                        onClick={onClearState}
+                        className="hidden sm:flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                        title="Reiniciar diseño (borrar progreso guardado)"
+                    >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Reiniciar
+                    </button>
+                )}
                 <select
                     value={format}
                     onChange={(e) => setFormat(e.target.value as ExportFormat)}
                     className="hidden rounded-lg border border-border bg-background px-2 py-1.5 text-xs sm:block"
                 >
+                    <option value="pdf-letter">PDF Carta (8.5×11&quot;)</option>
+                    <option value="pdf-a4">PDF A4</option>
                     <option value="png">PNG</option>
                     <option value="jpeg">JPG</option>
-                    <option value="pdf">PDF (300 DPI)</option>
                 </select>
                 <Button
                     onClick={handleExport}

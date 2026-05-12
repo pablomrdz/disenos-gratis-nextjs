@@ -204,13 +204,7 @@ export function Header() {
             )}
           </div>
 
-          {/* VIP Button - Using brand colors now? No, the user wants to maintain the "VIP vibe" but maybe sync the dark part with our brand dark */}
-          <Button asChild className="hidden gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 sm:flex shadow-sm">
-            <Link href="/vip">
-              <Sparkles className="h-4 w-4" />
-              Acceso VIP
-            </Link>
-          </Button>
+          {/* VIP Button removed — Phase 1: all content is free */}
 
           {/* Mobile menu button */}
           <Button
@@ -296,14 +290,7 @@ export function Header() {
               </Link>
             </div>
 
-            <div className="pt-6">
-              <Button asChild className="w-full gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md">
-                <Link href="/vip" onClick={() => setMobileMenuOpen(false)}>
-                  <Sparkles className="h-4 w-4" />
-                  Obtener Acceso VIP
-                </Link>
-              </Button>
-            </div>
+
 
             <p className="text-center text-xs text-gray-400 mt-8 mb-4">
               © {new Date().getFullYear()} DiseñosGratis.com

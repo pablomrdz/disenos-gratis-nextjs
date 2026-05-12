@@ -18,10 +18,9 @@ const footerLinks = {
     { name: 'Términos de Servicio', href: '/terms' },
   ],
   social: [
-    { name: 'Pinterest', href: 'https://pinterest.com' },
-    { name: 'TikTok', href: 'https://tiktok.com' },
-    { name: 'Instagram', href: 'https://instagram.com' },
-    { name: 'YouTube', href: 'https://youtube.com' },
+    { name: 'Pinterest', href: 'https://mx.pinterest.com/disenosgratis/' },
+    { name: 'TikTok', href: 'https://www.tiktok.com/@disenosgratis' },
+    { name: 'Instagram', href: 'https://instagram.com/_disenosgratis/' }
   ],
 }
 
@@ -40,7 +39,7 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Recursos de diseño premium para creadores, marketers y marcas. Plantillas gratuitas y VIP para cada proyecto.
+              Recursos de diseño premium para creadores, marketers y marcas. Plantillas gratuitas listas para imprimir.
             </p>
           </div>
 
@@ -117,7 +116,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-border/40 pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            {new Date().getFullYear()} DiseñosGratis.com. Todos los derechos reservados.
+            {new Date().getFullYear()} Disenosgratis.com. Todos los derechos reservados.
           </p>
         </div>
       </div>

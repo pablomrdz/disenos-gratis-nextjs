@@ -26,6 +26,7 @@ interface EditorToolbarProps {
     defaultFontFamily?: string
     designSlug?: string
     designCategory?: string
+    isLoteria?: boolean
 }
 
 // We'll manage this in state now so it updates dynamically
@@ -41,8 +42,9 @@ const FONT_SIZES = [14, 18, 24, 32, 48, 64, 80]
 
 type ToolTab = 'text' | 'shapes' | 'assets' | 'properties'
 
-export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defaultFontFamily = 'Arial', designSlug, designCategory }: EditorToolbarProps) {
-    const [activeTab, setActiveTab] = useState<ToolTab>('text')
+export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defaultFontFamily = 'Arial', designSlug, designCategory, isLoteria = false }: EditorToolbarProps) {
+    // Auto-open 'assets' tab for lotería templates, 'text' for others
+    const [activeTab, setActiveTab] = useState<ToolTab>(isLoteria && designSlug ? 'assets' : 'text')
     const [isFontLoading, setIsFontLoading] = useState(false)
     const [, setRevision] = useState(0)
     const [fontFamilies, setFontFamilies] = useState<string[]>(DESIGN_FONTS.map(f => f.name))

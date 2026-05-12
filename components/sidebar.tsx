@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Crown, TrendingUp, Clock, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { GoogleAd } from '@/components/google-ad'
+import { AdBanner } from '@/components/ad-banner'
 import type { Design } from '@/lib/types'
 
 interface SidebarProps {
@@ -14,31 +14,10 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
   return (
     <aside className="space-y-6">
       <div className="mx-auto max-w-[300px]">
-        <GoogleAd adUnitName="sidebar" height={600} />
+        <AdBanner slot="sidebar" minHeight={600} />
       </div>
 
-      {/* VIP Banner */}
-      <Card className="overflow-hidden border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-500">
-              <Crown className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground">Hazte VIP</h3>
-              <p className="text-sm text-muted-foreground">
-                Desbloquea todo el contenido premium
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/vip"
-            className="mt-4 flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-medium text-white transition-all hover:from-amber-600 hover:to-orange-600"
-          >
-            Obtener Acceso VIP
-          </Link>
-        </CardContent>
-      </Card>
+      {/* VIP Banner removed — Phase 1: all content is free */}
 
       {/* Popular Downloads */}
       {popularDesigns.length > 0 && (
@@ -67,12 +46,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
                     {design.downloads.toLocaleString()} descargas
                   </p>
                 </div>
-                {design.is_vip && (
-                  <Badge className="shrink-0 bg-amber-500/10 text-amber-600" variant="outline">
-                    <Crown className="mr-1 h-3 w-3" />
-                    VIP
-                  </Badge>
-                )}
+
               </Link>
             ))}
           </CardContent>

@@ -104,22 +104,7 @@ export function DesignCard({ design }: DesignCardProps) {
             </Button>
           </div>
 
-          {/* VIP Badge - Smaller */}
-          {isVip && (
-            <div className="absolute left-2 top-2 z-10">
-              <Badge className="h-4 gap-1 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] text-white px-1.5 font-bold shadow-sm">
-                <Crown className="h-2 w-2" />
-                VIP
-              </Badge>
-            </div>
-          )}
-          {!isVip && (
-             <div className="absolute left-2 top-2 z-10">
-              <Badge className="h-4 gap-1 border-emerald-500/30 bg-emerald-500/90 text-[9px] text-white px-1.5 font-bold shadow-sm backdrop-blur-sm">
-                Gratis
-              </Badge>
-             </div>
-          )}
+          {/* Badges removed — Phase 1: all content is free */}
         </div>
 
         <CardContent className="p-2 relative flex flex-col justify-between min-h-[90px]">

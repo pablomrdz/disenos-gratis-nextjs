@@ -5,7 +5,7 @@ import { HeroSection } from '@/components/hero-section'
 import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
-import { GoogleAd } from '@/components/google-ad'
+import { AdBanner } from '@/components/ad-banner'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
 
@@ -57,7 +57,7 @@ export default function HomePage() {
 
       {/* Ad Mobile Top */}
       <div className="lg:hidden mx-auto px-4 mt-8">
-        <GoogleAd adUnitName="home mobile" height={100} />
+        <AdBanner slot="home mobile" minHeight={100} />
       </div>
 
       {/* Categories */}
@@ -97,7 +97,7 @@ export default function HomePage() {
 
             {/* Inline Ad after designs */}
             <div className="mt-8">
-              <GoogleAd adUnitName="in feed para listas" height={250} />
+              <AdBanner slot="in feed para listas" minHeight={250} />
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
 
       {/* Ad Mobile Bottom */}
       <div className="lg:hidden mx-auto px-4 mb-8">
-        <GoogleAd adUnitName="home mobile" height={100} />
+        <AdBanner slot="home mobile" minHeight={100} />
       </div>
 
       {/* Newsletter / CTA Section */}

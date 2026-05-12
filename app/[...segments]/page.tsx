@@ -20,7 +20,7 @@ import {
 // Components
 import { Badge } from '@/components/ui/badge'
 import { AdBanner } from '@/components/ad-banner'
-import { GoogleAd } from '@/components/google-ad'
+
 import { DesignGrid } from '@/components/design-grid'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { Sidebar } from '@/components/sidebar'
@@ -166,9 +166,9 @@ async function CategoryContent({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-8">
-      <GoogleAd adUnitName="in feed para listas" height={250} />
+      <AdBanner slot="in feed para listas" minHeight={250} />
       <DesignGrid designs={designs} showAds={true} adFrequency={6} columns={3} />
-      <GoogleAd adUnitName="in feed para listas" height={250} />
+      <AdBanner slot="in feed para listas" minHeight={250} />
     </div>
   )
 }
@@ -374,19 +374,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                       priority
                       sizes="(max-width: 1024px) 100vw, 66vw"
                     />
-                    {isVip && (
-                      <div className="absolute left-4 top-4">
-                        <Badge className="gap-1.5 border-amber-500/30 bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-white shadow-lg">
-                          <Crown className="h-3.5 w-3.5" />
-                          Contenido VIP
-                        </Badge>
-                      </div>
-                    )}
-                    <div className="absolute right-4 top-4">
-                      <Badge className={`border ${getTypeColor()}`}>
-                        {getTypeLabel()}
-                      </Badge>
-                    </div>
+                    {/* Badges removed — Phase 1: all content is free */}
                   </div>
                 </div>
 

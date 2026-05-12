@@ -57,7 +57,7 @@ export default function PrivacyPage() {
                     <ul className="list-disc pl-6 space-y-2 mt-2">
                         <li>Personalizar su experiencia y responder a sus necesidades individuales.</li>
                         <li>Mantener y mejorar nuestro sitio web basándonos en las estadísticas de uso.</li>
-                        <li>Procesar las transacciones de membresía VIP de manera segura.</li>
+
                         <li>Enviar correos periódicos con nuevos recursos (solo si se ha suscrito explícitamente).</li>
                     </ul>
                 </section>

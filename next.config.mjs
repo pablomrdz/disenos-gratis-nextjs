@@ -1,3 +1,5 @@
+import redirects from './redirects.mjs'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
@@ -26,47 +28,8 @@ const nextConfig = {
     ],
   },
   async redirects() {
-    return [
-      {
-        source: '/tutorials',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tutoriales',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tutorials/:path*',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar/',
-        destination: '/designs/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar',
-        permanent: true,
-      },
-    ]
+    return redirects
   },
-  /*async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/',
-          destination: 'https://wp.disenosgratis.com/',
-          basePath: false,
-        },
-      ],
-      fallback: [
-        {
-          source: '/:path*',
-          destination: 'https://wp.disenosgratis.com/:path*',
-          basePath: false,
-        },
-      ],
-    };
-  },*/
 }
 
 export default nextConfig

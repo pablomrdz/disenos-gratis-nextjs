@@ -312,16 +312,15 @@ export function DownloadSection({ design, isVip }: DownloadSectionProps) {
                 </div>
               )}
 
-              {/* Edit Design Button */}
-              {design.category === 'Plantillas' && (
+              {/* Personalizar y Descargar CTA */}
+              {(design.category === 'Plantillas' || (design.slug && design.slug.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes('loteria'))) && (
                 <Link href={`/edit/${design.slug || design.id}`}>
                   <Button
                     size="lg"
-                    variant="outline"
-                    className="gap-2 rounded-xl border-primary/30 bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all"
+                    className="gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] transition-all text-base font-bold px-6"
                   >
                     <Pencil className="h-5 w-5" />
-                    Editar Diseño
+                    Personalizar y Descargar Gratis
                   </Button>
                 </Link>
               )}

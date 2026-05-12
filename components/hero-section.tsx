@@ -37,9 +37,9 @@ export function HeroSection() {
             </div>
 
             <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Encuentra el diseño{' '}
+              Diseños y plantillas gratis para{' '}
               <span className="bg-gradient-to-r from-primary-dark via-primary to-primary-light bg-clip-text text-transparent">
-                perfecto
+                DTF, sublimación y más
               </span>
             </h1>
 
@@ -79,12 +79,6 @@ export function HeroSection() {
                   Ver Todos los Diseños
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="gap-2 border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20">
-                <Link href="/vip">
-                  <Sparkles className="h-4 w-4 text-amber-500" />
-                  Acceso VIP
-                </Link>
-              </Button>
             </div>
 
             {/* Stats */}
@@ -106,7 +100,7 @@ export function HeroSection() {
               <div>
                 <div className="flex items-center justify-center gap-1 text-2xl font-bold text-foreground lg:justify-start">
                   <Users className="h-5 w-5 text-emerald-500" />
-                  25K+
+                  10K+
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">Creadores</p>
               </div>

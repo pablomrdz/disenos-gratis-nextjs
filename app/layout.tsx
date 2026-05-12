@@ -20,11 +20,11 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Diseños Gratis - Recursos Gráficos Premium & Gratis',
-    template: '%s | Diseños Gratis',
+    default: 'Diseños y plantillas gratis para DTF, sublimación y más | Diseñosgratis.com',
+    template: '%s | Diseñosgratis.com',
   },
-  description: 'Descubre miles de plantillas de Canva, CapCut, fuentes y recursos de diseño para redes sociales y branding. Descargas gratis y VIP disponibles.',
-  keywords: ['plantillas de diseño', 'canva gratis', 'capcut gratis', 'tipografías', 'redes sociales', 'recursos gráficos'],
+  description: 'Descarga diseños, fondos, texturas, plantillas y archivos. Recursos para sublimación, DTF, vinil textil y proyectos creativos.',
+  keywords: ['diseños gratis', 'plantillas sublimación', 'DTF', 'vinil textil', 'fondos y texturas', 'recursos gráficos', 'corte láser'],
   authors: [{ name: 'Equipo Diseños Gratis' }],
   creator: 'Diseños Gratis',
   publisher: 'Diseños Gratis',
@@ -39,8 +39,8 @@ export const metadata: Metadata = {
     locale: 'es_MX',
     url: 'https://disenosgratis.com',
     siteName: 'Diseños Gratis',
-    title: 'Diseños Gratis - Recursos Gráficos Premium & Gratis',
-    description: 'Descubre miles de plantillas editables, fuentes y recursos de diseño gratis.',
+    title: 'Diseños y plantillas gratis para DTF, sublimación y más | Diseñosgratis.com',
+    description: 'Descarga diseños, fondos, texturas, plantillas y archivos. Recursos para sublimación, DTF, vinil textil y proyectos creativos.',
     images: [
       {
         url: '/og-image.jpg',
@@ -52,8 +52,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Diseños Gratis - Recursos Gráficos Premium & Gratis',
-    description: 'Descubre miles de plantillas editables, fuentes y recursos de diseño gratis.',
+    title: 'Diseños y plantillas gratis para DTF, sublimación y más | Diseñosgratis.com',
+    description: 'Descarga diseños, fondos, texturas, plantillas y archivos. Recursos para sublimación, DTF, vinil textil y proyectos creativos.',
     images: ['/og-image.jpg'],
   },
   robots: {

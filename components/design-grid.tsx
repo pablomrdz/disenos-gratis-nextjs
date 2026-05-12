@@ -1,6 +1,6 @@
 import { DesignCard } from '@/components/design-card'
 import { FontCard } from '@/components/font-card'
-import { GoogleAd } from '@/components/google-ad'
+import { AdBanner } from '@/components/ad-banner'
 import { normalizeText, cn } from '@/lib/utils'
 import type { Design } from '@/lib/types'
 
@@ -37,9 +37,9 @@ export function DesignGrid({
         if ('type' in item && item.type === 'ad') {
           return (
             <div key={item.id} className="sm:col-span-2">
-              <GoogleAd
-                adUnitName="in feed para listas"
-                height={280}
+              <AdBanner
+                slot="in feed para listas"
+                minHeight={280}
               />
             </div>
           )
