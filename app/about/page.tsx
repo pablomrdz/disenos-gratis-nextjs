@@ -24,7 +24,7 @@ export default function AboutPage() {
                 <div>
                     <h2 className="text-2xl font-bold text-foreground">¿Qué Ofrecemos?</h2>
                     <p className="mt-4 text-muted-foreground leading-relaxed">
-                        Ofrecemos miles de recursos gratuitos y una membresía VIP para aquellos que buscan diseños exclusivos y soporte prioritario. Nuestro catálogo se actualiza semanalmente con las últimas tendencias.
+                        Ofrecemos miles de recursos gratuitos de alta calidad para emprendedores y creadores de contenido. Nuestro catálogo se actualiza semanalmente con las últimas tendencias.
                     </p>
                 </div>
             </div>

@@ -30,7 +30,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                     {popularCategories.map((item) => (
                         <li key={item.category}>
                             <Link
-                                href={`/category/${slugify(item.category)}`}
+                                href={`/${slugify(item.category)}`}
                                 className="group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
                             >
                                 <span className="text-foreground/80 group-hover:text-foreground">

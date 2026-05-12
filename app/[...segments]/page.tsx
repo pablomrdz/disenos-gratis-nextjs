@@ -8,7 +8,6 @@ import rehypeRaw from 'rehype-raw'
 import {
   Download,
   ExternalLink,
-  Crown,
   Calendar,
   Tag,
   ArrowLeft,
@@ -75,8 +74,9 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
     return { title: 'Design Not Found' }
   }
 
-  const encodedSegments = segments.map(s => encodeURIComponent(s))
-  const canonicalUrl = `https://disenosgratis.com/${encodedSegments.join('/')}`
+  // Ensure canonical URL uses clean slugified segments (no accents)
+  const cleanSegments = segments.map(s => slugify(decodeURIComponent(s)))
+  const canonicalUrl = `https://disenosgratis.com/${cleanSegments.join('/')}`
   
   const title = design.title || 'Untitled Design'
   const rawDescription = design.description || 'Descarga gratis este recurso gráfico de alta calidad'
@@ -189,11 +189,9 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
 
     // Check if the URL encoded form doesn't match the clean slug we want internally
     const cleanSlug = slugify(decodedSlug)
-    if (rawSlug !== cleanSlug && encodeURIComponent(cleanSlug) !== rawSlug) {
-      // Opcional: Redirigir a slug limpio permanente (Ej: de 'sublimaci%C3%B3n' a 'sublimacion')
-      // pero el NextJS Link usa el href literal. 
-      // Si decidimos normalizar acentos en URLs:
-      // permanentRedirect(`/${cleanSlug}`);
+    if (rawSlug !== cleanSlug && decodeURIComponent(rawSlug) !== cleanSlug) {
+      // Redirect accented category URLs to clean versions (e.g. sublimación → sublimacion)
+      permanentRedirect(`/${cleanSlug}`)
     }
 
     const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
@@ -261,23 +259,26 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
   const description = design.description || 'No description available'
   const rawCategory: string = design.category || 'general'
   
-  // FIX: Validar comparando siempre versiones "clean"
-  const primaryCategoryClean = getPrimaryCategory(rawCategory)
+  // FIX: Validar comparando siempre versiones estrictamente slugified (sin acentos)
+  const primaryCategoryClean = slugify(getPrimaryCategory(rawCategory))
   
-  if (categoryPath.length > 0) {
-    const firstSegmentClean = slugify(categoryPath[0])
-    
-    if (primaryCategoryClean !== firstSegmentClean) {
-       permanentRedirect(`/${primaryCategoryClean}/${encodeURIComponent(slug)}`)
+  // Safety: never redirect if we can't determine a valid category
+  if (primaryCategoryClean && primaryCategoryClean !== 'uncategorized') {
+    if (categoryPath.length > 0) {
+      const firstSegmentClean = slugify(categoryPath[0])
+      
+      if (primaryCategoryClean !== firstSegmentClean) {
+         permanentRedirect(`/${primaryCategoryClean}/${slug}`)
+      }
+    } else {
+      permanentRedirect(`/${primaryCategoryClean}/${slug}`)
     }
-  } else {
-    permanentRedirect(`/${primaryCategoryClean}/${encodeURIComponent(slug)}`)
   }
 
   const tags = Array.isArray(design.tags) ? design.tags : []
   const downloads = design.downloads ?? 0
   const designType = design.type || 'internal'
-  const isVip = Boolean(design.is_vip)
+
   const createdAt = design.created_at ? new Date(design.created_at) : new Date()
 
   const normalizedCat = normalizeText(rawCategory);
@@ -301,15 +302,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
       .slice(0, 4)
   }
 
-  const getTypeLabel = () => {
-    if (isVip) return 'Pack VIP'
-    return 'Gratis'
-  }
 
-  const getTypeColor = () => {
-    if (isVip) return 'bg-amber-500/10 text-amber-600 border-amber-500/30'
-    return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
-  }
 
   return (
     <>
@@ -434,7 +427,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
 
               {!isBlog && (
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <DownloadSection design={design} isVip={isVip} />
+                  <DownloadSection design={design} isVip={false} />
                 </div>
               )}
 

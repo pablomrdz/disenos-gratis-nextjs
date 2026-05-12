@@ -57,8 +57,8 @@ export default function NotFound() {
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Buscar diseños, plantillas, vectores..."
                         className="w-full rounded-full border border-input bg-background py-3.5 pl-12 pr-28 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-                        autoFocus
                     />
+
                     <button
                         type="submit"
                         className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
@@ -75,7 +75,7 @@ export default function NotFound() {
                     {POPULAR_CATEGORIES.map((cat) => (
                         <Link
                             key={cat.slug}
-                            href={`/category/${cat.slug}`}
+                            href={`/${cat.slug}`}
                             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-4 py-2 text-sm font-medium text-foreground transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary"
                         >
                             <Palette className="h-3.5 w-3.5" />

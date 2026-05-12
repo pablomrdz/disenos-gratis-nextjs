@@ -1,0 +1,37 @@
+[
+  {
+    "status": "error",
+    "slug": "viva-mexico-lettering-descarga-gratis",
+    "phase": "upload",
+    "error": "The specified bucket does not exist.",
+    "s3Key": "uploads/2025/09/viva-mexico-lettering-digital.webp"
+  },
+  {
+    "status": "error",
+    "slug": "virgen-guadalupe-semitonos-dtf-png-gratis",
+    "phase": "upload",
+    "error": "The specified bucket does not exist.",
+    "s3Key": "uploads/2025/09/virgen-guadalupe-semitonos-dtf-png.webp"
+  },
+  {
+    "status": "error",
+    "slug": "squirtle-japones-semitonos-dtf-png-gratis",
+    "phase": "upload",
+    "error": "The specified bucket does not exist.",
+    "s3Key": "uploads/2025/09/squirtle-estilo-japones-semitono-dtf.webp"
+  },
+  {
+    "status": "error",
+    "slug": "vectores-los-4-fantasticos-para-sublimacion",
+    "phase": "upload",
+    "error": "The specified bucket does not exist.",
+    "s3Key": "uploads/2025/08/vectores-los-4-fantasticos-descarga-gratis-para-sublimacion.webp"
+  },
+  {
+    "status": "error",
+    "slug": "plantilla-taza-labubu-real-psg-bayern",
+    "phase": "upload",
+    "error": "The specified bucket does not exist.",
+    "s3Key": "uploads/2025/08/plantillas-taza-labubu-real-madrid-psg-bayern-sublimacion.webp"
+  }
+]

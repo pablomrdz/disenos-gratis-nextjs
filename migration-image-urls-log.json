@@ -1,0 +1,727 @@
+{
+  "timestamp": "2026-05-12T22:12:09.566Z",
+  "isDryRun": false,
+  "summary": {
+    "updated": 65,
+    "skipped": 3,
+    "errors": 0,
+    "total": 68
+  },
+  "changes": [
+    {
+      "id": "d94ac67c-6fa4-4ed8-b53d-21af33b72ab9",
+      "slug": "viva-mexico-lettering-descarga-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/09/viva-mexico-lettering-digital.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/09/viva-mexico-lettering-digital.webp"
+        }
+      ]
+    },
+    {
+      "id": "3634b2e9-fca2-47f8-90ca-1098b2a1b6b5",
+      "slug": "virgen-guadalupe-semitonos-dtf-png-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/09/virgen-guadalupe-semitonos-dtf-png.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/09/virgen-guadalupe-semitonos-dtf-png.webp"
+        }
+      ]
+    },
+    {
+      "id": "0aa16395-b72d-4f3c-80c0-ab41f503a188",
+      "slug": "squirtle-japones-semitonos-dtf-png-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/09/squirtle-estilo-japones-semitono-dtf.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/09/squirtle-estilo-japones-semitono-dtf.webp"
+        }
+      ]
+    },
+    {
+      "id": "ebf7b9e6-38f6-4bd0-9950-a7cbebf8b645",
+      "slug": "vectores-los-4-fantasticos-para-sublimacion",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/08/vectores-los-4-fantasticos-descarga-gratis-para-sublimacion.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/08/vectores-los-4-fantasticos-descarga-gratis-para-sublimacion.webp"
+        }
+      ]
+    },
+    {
+      "id": "ce45a6f3-5251-4b97-85e5-bb6341d03462",
+      "slug": "plantilla-taza-labubu-real-psg-bayern",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/08/plantillas-taza-labubu-real-madrid-psg-bayern-sublimacion.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/08/plantillas-taza-labubu-real-madrid-psg-bayern-sublimacion.webp"
+        }
+      ]
+    },
+    {
+      "id": "20da31f7-acf8-422e-9781-b10bea7bfaf4",
+      "slug": "pack-fondos-virtuales-zoom-meet-teams-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/pack-fondos-virtuales-zoom-meet-teams-hd.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/pack-fondos-virtuales-zoom-meet-teams-hd.webp"
+        }
+      ]
+    },
+    {
+      "id": "62f1a247-1e8e-40aa-adf1-3bb966a13fc3",
+      "slug": "tipografias-halloween-gratis-pack-ttf",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/tipografias-halloween-preview.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/tipografias-halloween-preview.webp"
+        }
+      ]
+    },
+    {
+      "id": "f06d2219-e4db-48a8-bde4-63cb8d701fd1",
+      "slug": "charmander-japones-semitonos-dtf-png-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/charmander-japones-semitonos-dtf.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/charmander-japones-semitonos-dtf.webp"
+        }
+      ]
+    },
+    {
+      "id": "919e1bac-8e18-44fa-bdae-f985b450aceb",
+      "slug": "pack-disenos-dtf-gratis-png-semitonos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/pack-disenos-dtf-gratis-png-semitonos.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/pack-disenos-dtf-gratis-png-semitonos.webp"
+        }
+      ]
+    },
+    {
+      "id": "945a9d87-9ed9-48e7-9db7-39e16199a61e",
+      "slug": "pack-paisajes-naturaleza-descargar-imagen-de-paisaje",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/pack-paisajes-naturaleza-descargar-imagen-de-paisaje.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/pack-paisajes-naturaleza-descargar-imagen-de-paisaje.webp"
+        }
+      ]
+    },
+    {
+      "id": "f842593c-6e49-4ca3-96ff-f0988a8acc24",
+      "slug": "bandas-en-color-magenta-dtf-solucion",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/como-corregir-bandas-en-color-magenta.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/como-corregir-bandas-en-color-magenta.webp"
+        }
+      ]
+    },
+    {
+      "id": "36a81eef-9254-4273-80e7-e92830c014eb",
+      "slug": "personajes-de-halloween-vector-infantil-calabaza-bruja-vampiro-calavera-esqueleto",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/personajes-halloween-infantiles-vectorizados-ai-svg-png.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/personajes-halloween-infantiles-vectorizados-ai-svg-png.webp"
+        }
+      ]
+    },
+    {
+      "id": "d00160bc-a706-4f21-aa54-940dc53c6e23",
+      "slug": "pack-de-velas-png-fondo-transparente",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/velas-png-transparentes-pack.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/velas-png-transparentes-pack.webp"
+        }
+      ]
+    },
+    {
+      "id": "e4e2cee9-24d3-4f4d-9e7b-e49be2849a9c",
+      "slug": "invitacion-cumpleanos-editable-dragon-ball",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/invitacion-cumpleanos-editable-dragon-ball.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/invitacion-cumpleanos-editable-dragon-ball.webp"
+        }
+      ]
+    },
+    {
+      "id": "930a8382-dc2a-491f-8969-7ea7e7611f51",
+      "slug": "mejores-marcas-de-playeras-para-sublimacion-y-serigrafia",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/mejores-marcas-playeras-para-sublimacion.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/mejores-marcas-playeras-para-sublimacion.webp"
+        }
+      ]
+    },
+    {
+      "id": "82440e92-97e1-419a-af18-bd1d18121110",
+      "slug": "como-sublimar-una-playera-guia-practica-2025",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/como-sublimar-playera-guia-2025-heat-press-180c-checklist.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/como-sublimar-playera-guia-2025-heat-press-180c-checklist.webp"
+        }
+      ]
+    },
+    {
+      "id": "b4f3b171-3bc9-4658-95ee-80fa7a7c1c68",
+      "slug": "como-imprimir-foto-con-celular-en-dtf",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/imprimir-foto-celular-en-dtf-paso-a-paso.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/imprimir-foto-celular-en-dtf-paso-a-paso.webp"
+        }
+      ]
+    },
+    {
+      "id": "5952073b-241d-4922-bc74-342f77498360",
+      "slug": "plantilla-invitacion-baby-shower-borreguito",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/plantilla-invitacion-baby-shower-borreguito.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/plantilla-invitacion-baby-shower-borreguito.webp"
+        }
+      ]
+    },
+    {
+      "id": "a32ac396-71ab-458f-a1f0-1f196b678068",
+      "slug": "fondos-de-navidad-png-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/fondos-de-navidad-pack-muestras-2025.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/fondos-de-navidad-pack-muestras-2025.webp"
+        }
+      ]
+    },
+    {
+      "id": "aa98986d-6ec2-4f54-9db0-5d8fdcd101ef",
+      "slug": "adios-a-los-datos-aburridos-tu-guia-secreta-para-disenar-infografias-irresistibles",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2026/01/guia-diseno-infografias-entretenidas-infotainment.png",
+          "to": "https://assets.disenosgratis.com/uploads/2026/01/guia-diseno-infografias-entretenidas-infotainment.webp"
+        }
+      ]
+    },
+    {
+      "id": "b7bb91d5-5121-4c88-b3bb-960f2676af86",
+      "slug": "logos-dragon-ball-png",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/logos-dragon-ball-pack-png-gratis.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/logos-dragon-ball-pack-png-gratis.webp"
+        }
+      ]
+    },
+    {
+      "id": "cb366032-f0bc-471b-b661-e788c621e208",
+      "slug": "sigue-siendo-negocio-la-sublimacion-en-2025",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/sigue-siendo-negocio-la-sublimacion.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/sigue-siendo-negocio-la-sublimacion.webp"
+        }
+      ]
+    },
+    {
+      "id": "4ecec010-13c0-48a0-91e8-2bed9fcbbf77",
+      "slug": "pack-disenos-para-tazas-navidenas-pdf-png",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/11/pack-de-disenos-para-tazas-navidenas.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/11/pack-de-disenos-para-tazas-navidenas.webp"
+        }
+      ]
+    },
+    {
+      "id": "dc6f788c-a6b0-43ca-8933-63123b8d96f6",
+      "slug": "diseno-de-la-abejita-plim-plim-para-cumpleanos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/03/disenos-gratis-imagen-destacada-diseno-abejita-plim-plim.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/03/disenos-gratis-imagen-destacada-diseno-abejita-plim-plim.webp"
+        }
+      ]
+    },
+    {
+      "id": "92de49df-1e0d-4855-a8ba-0c2c77238392",
+      "slug": "diseno-de-shakira-las-mujeres-ya-no-lloran-world-tour",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/03/disenos-gratis-imagen-destacada-diseno-Shakira-world-tour-las-mujeres-ya-no-lloran-2025.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/03/disenos-gratis-imagen-destacada-diseno-Shakira-world-tour-las-mujeres-ya-no-lloran-2025.webp"
+        }
+      ]
+    },
+    {
+      "id": "b003420c-46c4-4e3a-a424-544ef655b2bf",
+      "slug": "diseno-gratuito-de-plim-plim-para-proyectos-infantiles",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/disenos-gratis-imagen-destacada-diseno-Plim-Plim.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/disenos-gratis-imagen-destacada-diseno-Plim-Plim.webp"
+        }
+      ]
+    },
+    {
+      "id": "dc595910-b7e6-4aab-a8c5-d6e18b40ef79",
+      "slug": "diseno-de-justin-bieber-para-conciertos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/03/imagen-destacada-disenos-gratis-Justin-Bieber-para-conciertos.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/03/imagen-destacada-disenos-gratis-Justin-Bieber-para-conciertos.webp"
+        }
+      ]
+    },
+    {
+      "id": "7cdf0975-5e62-405e-a3fc-112691660f13",
+      "slug": "diseno-de-mis-pastelitos-para-tutus-personalizados",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/03/imagen-destacada-disenos-gratis-mis-pastelitos-para-tutus.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/03/imagen-destacada-disenos-gratis-mis-pastelitos-para-tutus.webp"
+        }
+      ]
+    },
+    {
+      "id": "6484b4bf-4d41-4982-91ce-b213609e76f7",
+      "slug": "20-plantillas-gratis-para-mugs-de-amor-y-amistad-descarga-png",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2026/01/portada-mugs-amor-amistad-20-disenos-gratis.png",
+          "to": "https://assets.disenosgratis.com/uploads/2026/01/portada-mugs-amor-amistad-20-disenos-gratis.webp"
+        }
+      ]
+    },
+    {
+      "id": "ecc1d648-7327-4dea-8823-c801acf1cce3",
+      "slug": "diseno-gratuito-de-gallina-pintadita-en-tonos-pastel",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/disenos-gratis-imagen-destacada-diseno-gallina-pintadita-otnos-rosa-pastel.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/disenos-gratis-imagen-destacada-diseno-gallina-pintadita-otnos-rosa-pastel.webp"
+        }
+      ]
+    },
+    {
+      "id": "436f0207-b4d6-4613-9547-7f82e8493e3c",
+      "slug": "diseno-darth-vader-sublimacion-dtf-vinil-y-corte-en-plotter",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-Darth-Vader-Star-Wars.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-Darth-Vader-Star-Wars.webp"
+        }
+      ]
+    },
+    {
+      "id": "38695c7a-f26c-46b4-8d86-fd9067496bd1",
+      "slug": "diseno-del-rayo-mcqueen-plantilla-para-sublimacion-dtf-y-corte-de-vinil",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-Rayo-Macqueen.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-Rayo-Macqueen.webp"
+        }
+      ]
+    },
+    {
+      "id": "d23880ae-0f1c-43ca-849c-5d71268bc81b",
+      "slug": "diseno-gratuito-plantilla-de-sally-carrera-para-sublimacion-y-corte-de-vinil",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-Sally-Carrera.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-Sally-Carrera.webp"
+        }
+      ]
+    },
+    {
+      "id": "6d62c46d-0352-4f77-b813-eb6442b6827c",
+      "slug": "diseno-de-stitch-para-sublimacion-dtf-y-vinil-textil",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-diseno-de-Stitch.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-diseno-de-Stitch.webp"
+        }
+      ]
+    },
+    {
+      "id": "dde3ec10-64bb-4ff8-b7a5-91d96758b8ed",
+      "slug": "diseno-gratuito-de-niall-horan-the-show-para-conciertos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/disenos-gratis-imagen-destacada-Niall-Horan-The-Show.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/disenos-gratis-imagen-destacada-Niall-Horan-The-Show.webp"
+        }
+      ]
+    },
+    {
+      "id": "f65ee858-3272-4549-b060-8009eb9db14b",
+      "slug": "diseno-itachi-akatsuki-vector-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-diseno-de-Itachi-Akatsuki-Naruto.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-diseno-de-Itachi-Akatsuki-Naruto.webp"
+        }
+      ]
+    },
+    {
+      "id": "f3429308-35aa-4bb9-8a6e-fdaec4d53e04",
+      "slug": "diseno-gratis-rugrats-para-sublimacion-playeras-dtf",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-diseno-de-Rugrats.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-diseno-de-Rugrats.webp"
+        }
+      ]
+    },
+    {
+      "id": "e03225e2-ce43-41f1-8fbc-ef3d92e2c852",
+      "slug": "pack-disenos-dia-de-las-madres-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/imagen-destacada-disenos-gratis-pack-de-disenos-dia-de-las-madres.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/imagen-destacada-disenos-gratis-pack-de-disenos-dia-de-las-madres.webp"
+        }
+      ]
+    },
+    {
+      "id": "39b011f2-8d51-41e2-aa67-1646c039fc78",
+      "slug": "diseno-lilo-stitch-dtf-sublimacion-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/imagen-destacada-disenos-gratis-diseno-de-lilo-y-stitch-con-helado.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/imagen-destacada-disenos-gratis-diseno-de-lilo-y-stitch-con-helado.webp"
+        }
+      ]
+    },
+    {
+      "id": "e6dff8d1-a7d4-41b1-a64c-ad003089673a",
+      "slug": "arte-para-sublimacion-album-bad-bunny-diseno-gratis-dtf",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-Debi-Tirar-Mas-Fotos-Bad-Bunny_2.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-Debi-Tirar-Mas-Fotos-Bad-Bunny_2.webp"
+        }
+      ]
+    },
+    {
+      "id": "f29a4168-23a3-4788-bdc2-c297797f6692",
+      "slug": "programas-editar-archivos-ai-psd-png-studio3",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-descarga-programas-gratis.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-descarga-programas-gratis.webp"
+        }
+      ]
+    },
+    {
+      "id": "dc2ccb15-b2e4-4a77-a8e5-0e5bf284573a",
+      "slug": "pack-diseno-el-mejor-papa-del-mundo-gratis-10-formatos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/miniatura-disenos-gratis-el-mejor-papa-del-mundo.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/miniatura-disenos-gratis-el-mejor-papa-del-mundo.webp"
+        }
+      ]
+    },
+    {
+      "id": "24d7eace-3a3a-4d4b-9c11-8576bac89c81",
+      "slug": "pack-disenos-stitch-sublimacion-corte-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/disenos-gratis-pack-disenos-de-stitch.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/disenos-gratis-pack-disenos-de-stitch.webp"
+        }
+      ]
+    },
+    {
+      "id": "64256c50-844f-40f8-b19d-43e58bee24ab",
+      "slug": "sublimacion-diseno-papa-superheroe-sublimacion-gratis-10-formatos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/miniatura-disenos-gratis-papa-super-heroe.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/miniatura-disenos-gratis-papa-super-heroe.webp"
+        }
+      ]
+    },
+    {
+      "id": "6b73a40a-cfcf-4696-8d3d-85a49ecdebad",
+      "slug": "diseno-dia-del-padre-padre-y-abuelo-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/miniatura-disenos-gratis-diseno-padre-y-abuelo-dia-del-padre-2025.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/miniatura-disenos-gratis-diseno-padre-y-abuelo-dia-del-padre-2025.webp"
+        }
+      ]
+    },
+    {
+      "id": "213c02d8-88bd-49d7-9351-b18dbfb8e750",
+      "slug": "diseno-papa-e-hijos-dia-del-padre-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/miniatura-disenos-gratis-diseno-papa-e-hijos.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/miniatura-disenos-gratis-diseno-papa-e-hijos.webp"
+        }
+      ]
+    },
+    {
+      "id": "3610df14-2eff-45ec-88f2-23ff6d2dce08",
+      "slug": "diseno-gratis-primer-dia-del-padre-para-sublimar",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/06/miniatura-disenos-gratis-diseno-primer-dia-del-padre.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/06/miniatura-disenos-gratis-diseno-primer-dia-del-padre.webp"
+        }
+      ]
+    },
+    {
+      "id": "64acf854-34b8-4cf0-8495-537f6db813ae",
+      "slug": "diseno-labubu-sublimacion-playeras-tazas-ai-eps-png",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/06/Diseno-de-Labubu-para-sublimacion-en-tazas-y-playeras.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/06/Diseno-de-Labubu-para-sublimacion-en-tazas-y-playeras.webp"
+        }
+      ]
+    },
+    {
+      "id": "d47e5cb8-f7e1-40e4-ba72-a593684a362f",
+      "slug": "logo-pokemon-png-gratis-descarga",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/07/imagen-destacada-disenos-gratis-log-de-pokemon-png.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/07/imagen-destacada-disenos-gratis-log-de-pokemon-png.webp"
+        }
+      ]
+    },
+    {
+      "id": "8853ac7b-3682-47a9-b43d-63520f622487",
+      "slug": "imagen-png-goku-fondo-transparente-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/07/Imagen-PNG-de-Goku-con-fondo-transparente-para-sublimar-camisetas-y-tazas-dtf-lista-para-descargar-gratis.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/07/Imagen-PNG-de-Goku-con-fondo-transparente-para-sublimar-camisetas-y-tazas-dtf-lista-para-descargar-gratis.webp"
+        }
+      ]
+    },
+    {
+      "id": "1dca0095-9e20-4134-9a7c-77ae16230f8a",
+      "slug": "imagen-png-stitch-fondo-transparente-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/07/Miniatura-Imagen-PNG-de-Stitch-con-fondo-transparente-para-sublimar-camisetas-tazas-y-proyectos-creativos.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/07/Miniatura-Imagen-PNG-de-Stitch-con-fondo-transparente-para-sublimar-camisetas-tazas-y-proyectos-creativos.webp"
+        }
+      ]
+    },
+    {
+      "id": "b4b5480b-03fe-4e58-a335-e78cca8c2a05",
+      "slug": "impresion-dtf-playeras",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/07/impresion-dtf-playeras-miniatura.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/07/impresion-dtf-playeras-miniatura.webp"
+        }
+      ]
+    },
+    {
+      "id": "3c4dd691-f63e-43e0-a4c2-45c2468ce1a7",
+      "slug": "lalo-y-stitch-semitono-png-gratis-para-dtf",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/07/Diseno-de-Lalo-y-Stitch-en-png-y-semitono.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/07/Diseno-de-Lalo-y-Stitch-en-png-y-semitono.webp"
+        }
+      ]
+    },
+    {
+      "id": "3d5a7c42-e55c-4fb3-97fd-dbb3f256b55f",
+      "slug": "personajes-mario-bros-png-disenos-sublimar-dtf-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/07/post-mario-bros.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/07/post-mario-bros.webp"
+        }
+      ]
+    },
+    {
+      "id": "3b4af777-ff9d-4528-b188-6042d4055d33",
+      "slug": "disenos-gratis-para-dtf-que-venden",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/06/miniatura-disenos-gratis-para-DTF-que-realmente-venden.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/06/miniatura-disenos-gratis-para-DTF-que-realmente-venden.webp"
+        }
+      ]
+    },
+    {
+      "id": "7da0d359-1048-40ad-b5a2-e37676601267",
+      "slug": "diseno-bluey-bingo-cumpleanos-sublimacion-playeras",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/03/miniatura-disenos-gratis-diseno-de-bluey-y-bingo.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/03/miniatura-disenos-gratis-diseno-de-bluey-y-bingo.webp"
+        }
+      ]
+    },
+    {
+      "id": "30dee219-5ce4-4726-9fca-c6bfded7952a",
+      "slug": "logo-one-piece-png-wanted-posters",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2026/01/logo-one-piece-png-pack-carteles-wanted-luffy-gear-5.png",
+          "to": "https://assets.disenosgratis.com/uploads/2026/01/logo-one-piece-png-pack-carteles-wanted-luffy-gear-5.webp"
+        }
+      ]
+    },
+    {
+      "id": "4bb04f6f-4107-4377-8f32-aa775c9c690f",
+      "slug": "como-usar-disenos-sublimacion",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/como-usar-disenos-de-sublimacion-guia-paso-a-paso.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/como-usar-disenos-de-sublimacion-guia-paso-a-paso.webp"
+        }
+      ]
+    },
+    {
+      "id": "9d20aee9-ccf0-4a79-92d9-09f4368ec39e",
+      "slug": "como-sublimar-guia-paso-a-paso",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/como-sublimar-paso-a-paso-guia-tiempos-y-temperaturas.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/como-sublimar-paso-a-paso-guia-tiempos-y-temperaturas.webp"
+        }
+      ]
+    },
+    {
+      "id": "91dc7508-fe9b-40b7-8e4c-a664496fb55f",
+      "slug": "foto-instantanea-polaroid-png-gratis",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/foto-instantanea-polaroid-png.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/foto-instantanea-polaroid-png.webp"
+        }
+      ]
+    },
+    {
+      "id": "7c9d2681-026d-40d7-a7cf-169aebba21b6",
+      "slug": "disenar-imagenes-gratis-online",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/05/imagen-destacada-disenos-gratis-donde-disenar-imagenes.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/05/imagen-destacada-disenos-gratis-donde-disenar-imagenes.webp"
+        }
+      ]
+    },
+    {
+      "id": "bc215528-d8d9-455f-af99-75e9a27a8267",
+      "slug": "diseno-de-bluey-bingo-y-familia-para-fiesta-de-cumpleanos",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/04/imagen-destacada-disenos-gratis-Bluey-Bingo-y-familia-para-cumpleanos.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/04/imagen-destacada-disenos-gratis-Bluey-Bingo-y-familia-para-cumpleanos.webp"
+        }
+      ]
+    },
+    {
+      "id": "30ddfcff-ad86-441f-97ee-eda396043336",
+      "slug": "plantilla-taza-harry-styles-descarga-gratis-sublimacion",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/08/plantilla-taza-harry-styles-disenosgratis.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/08/plantilla-taza-harry-styles-disenosgratis.webp"
+        }
+      ]
+    },
+    {
+      "id": "50090637-b75f-4a1d-869e-88456b9e2feb",
+      "slug": "bandera-mexico-png-brochazos-fondo-transparente",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/08/bandera-mexico-brochazos-fondo-transparente.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/08/bandera-mexico-brochazos-fondo-transparente.webp"
+        }
+      ]
+    },
+    {
+      "id": "6eed0b89-2abd-4081-b2b9-25c5b4b90747",
+      "slug": "plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar",
+      "fields": [
+        {
+          "field": "image_url",
+          "from": "https://disenosgratis.com/wp-content/uploads/2025/10/plantilla-loteria-mexicana-para-sublimacion.png",
+          "to": "https://assets.disenosgratis.com/uploads/2025/10/plantilla-loteria-mexicana-para-sublimacion.webp"
+        }
+      ]
+    }
+  ]
+}

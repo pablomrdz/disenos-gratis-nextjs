@@ -49,14 +49,14 @@ export default function TermsPage() {
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-bold text-foreground mb-4 font-heading">3. Membresía VIP</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-4 font-heading">3. Modelo de Contenido Gratuito</h2>
                     <p>
-                        La membresía VIP otorga acceso preferencial a descargas directas y contenido exclusivo. Al suscribirse, usted entiende que:
+                        Todo el contenido disponible en DiseñosGratis.com es de acceso libre y gratuito. Al descargar nuestros recursos, usted entiende que:
                     </p>
                     <ul className="list-disc pl-6 space-y-2 mt-2">
-                        <li>El pago es por el servicio de acceso y curaduría, no por la compra de derechos de autor.</li>
-                        <li>Debido a la naturaleza digital e irrevocable de los productos descargables, <strong>no ofrecemos reembolsos</strong> una vez que se ha descargado algún material, salvo excepciones técnicas comprobables.</li>
-                        <li>Puede cancelar su suscripción en cualquier momento para evitar futuros cargos.</li>
+                        <li>Los recursos se proporcionan de forma gratuita para uso personal y comercial, sujetos a las condiciones de la sección 2.</li>
+                        <li>Nos reservamos el derecho de modificar el modelo de acceso en el futuro, lo cual será comunicado oportunamente.</li>
+                        <li>La disponibilidad de los recursos no está garantizada de forma indefinida.</li>
                     </ul>
                 </section>
 

@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { Crown, TrendingUp, Clock, Star } from 'lucide-react'
+import { TrendingUp, Clock, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AdBanner } from '@/components/ad-banner'
 import type { Design } from '@/lib/types'
+import { slugify } from '@/lib/utils'
 
 interface SidebarProps {
   popularDesigns?: Design[]
@@ -17,7 +18,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
         <AdBanner slot="sidebar" minHeight={600} />
       </div>
 
-      {/* VIP Banner removed — Phase 1: all content is free */}
+
 
       {/* Popular Downloads */}
       {popularDesigns.length > 0 && (
@@ -32,7 +33,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
             {popularDesigns.slice(0, 5).map((design, index) => (
               <Link
                 key={design.id}
-                href={`/designs/${design.slug}`}
+                href={`/${slugify((design.category || 'general').split(',')[0].trim())}/${design.slug}`}
                 className="group flex items-start gap-3"
               >
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
@@ -66,7 +67,7 @@ export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProp
             {recentDesigns.slice(0, 5).map((design) => (
               <Link
                 key={design.id}
-                href={`/designs/${design.slug}`}
+                href={`/${slugify((design.category || 'general').split(',')[0].trim())}/${design.slug}`}
                 className="group flex items-start gap-3"
               >
                 <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">

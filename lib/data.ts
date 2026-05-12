@@ -286,19 +286,30 @@ export async function getCategories(): Promise<Category[]> {
 export function getPrimaryCategory(rawCategory: string | undefined | null): string {
   if (!rawCategory) return 'uncategorized';
 
+  // Helper: strict slug (no accents, no special chars)
+  const toSlug = (str: string) =>
+    str
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')  // strip diacritics
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+
   // 1. Try exact match first (normalized)
-  const normalized = rawCategory.toLowerCase().trim().replace(/\s+/g, '-');
+  const normalized = toSlug(rawCategory);
   if (ALLOWED_SLUGS.includes(normalized)) return normalized;
 
   // 2. Split by comma and find the first valid one
   const parts = rawCategory.split(',').map(p => p.trim());
   for (const part of parts) {
-    const partSlug = part.toLowerCase().replace(/\s+/g, '-');
+    const partSlug = toSlug(part);
     if (ALLOWED_SLUGS.includes(partSlug)) return partSlug;
   }
 
   // 3. Fallback: if no valid strict match, just return the first part cleaned
-  return parts[0].toLowerCase().replace(/\s+/g, '-');
+  return toSlug(parts[0]);
 }
 
 export async function getDesignsByTag(tag: string, limit: number = 20): Promise<Design[]> {

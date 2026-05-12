@@ -204,8 +204,6 @@ export function Header() {
             )}
           </div>
 
-          {/* VIP Button removed — Phase 1: all content is free */}
-
           {/* Mobile menu button */}
           <Button
             variant="ghost"

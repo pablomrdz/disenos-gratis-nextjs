@@ -115,7 +115,7 @@ export default function HomePage() {
             Mantente al Día
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Recibe notificaciones sobre nuevas plantillas, fuentes y contenido VIP exclusivo.
+            Recibe notificaciones sobre nuevas plantillas, fuentes y contenido exclusivo.
             Únete a nuestra comunidad de más de 25,000 creadores.
           </p>
           <form className="mx-auto mt-8 flex max-w-md gap-3">
