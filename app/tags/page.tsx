@@ -7,6 +7,15 @@ export const dynamic = 'force-dynamic'
 export default async function TagsPage() {
     const tags = await getAllTags()
 
+    const POPULAR_CATEGORIES = [
+        { name: 'Sublimación', slug: 'sublimacion' },
+        { name: 'Vectores', slug: 'vectores' },
+        { name: 'Plantillas', slug: 'plantillas' },
+        { name: 'DTF', slug: 'dtf' },
+        { name: 'Tipografías', slug: 'tipografias' },
+        { name: 'Corte Láser', slug: 'corte-laser' },
+    ]
+
     // Format tags for display (handle hyphenated slugs if they came from WP)
     const formattedTags = tags.map(tag => ({
         original: tag,
@@ -92,13 +101,13 @@ export default async function TagsPage() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold mb-8">¿Prefieres buscar por categoría?</h2>
                     <div className="flex flex-wrap justify-center gap-4">
-                        {['Sublimación', 'DTF', 'Corte Láser', 'Vectores', 'Tipografías'].map((cat) => (
+                        {POPULAR_CATEGORIES.map((cat) => (
                             <Link
-                                key={cat}
-                                href={`/category/${cat.toLowerCase().replace(/ /g, '-')}`}
+                                key={cat.slug}
+                                href={`/${cat.slug}`}
                                 className="rounded-full bg-white/10 px-6 py-2 text-sm font-bold border border-white/20 hover:bg-white hover:text-slate-900 transition-all"
                             >
-                                {cat}
+                                {cat.name}
                             </Link>
                         ))}
                     </div>

@@ -28,7 +28,7 @@ export function DesignCard({ design }: DesignCardProps) {
 
   return (
     <Card
-      className="group overflow-hidden border-border/50 bg-card transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
+      className="group overflow-hidden border-border/50 bg-card p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -79,6 +79,11 @@ export function DesignCard({ design }: DesignCardProps) {
               {mainCategory.replace('-', ' ')}
             </Link>
           </div>
+          {design.excerpt && (
+            <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground">
+              {design.excerpt}
+            </p>
+          )}
         </div>
         <div className="flex items-center justify-between gap-1.5 mt-auto pt-1">
           <span className="flex items-center gap-0.5 text-[9px] text-muted-foreground whitespace-nowrap shrink-0">

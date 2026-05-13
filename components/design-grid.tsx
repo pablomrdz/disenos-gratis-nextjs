@@ -28,10 +28,19 @@ export function DesignGrid({
     }
   })
 
+  // Detect if grid mainly contains fonts
+  const fontCount = designs.filter(d => {
+    const normalizedCat = normalizeText(d.category || '');
+    return d.type === 'font' || normalizedCat.includes('tipografia') || normalizedCat.includes('fuente');
+  }).length;
+  const isFontGrid = designs.length > 0 && fontCount > designs.length / 2;
+
   return (
     <div className={cn(
-      "grid gap-6 grid-cols-2",
-      columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"
+      "grid gap-6",
+      isFontGrid 
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+        : cn("grid-cols-2", columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4")
     )}>
       {items.map((item) => {
         if ('type' in item && item.type === 'ad') {

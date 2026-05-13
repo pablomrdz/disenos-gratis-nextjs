@@ -13,7 +13,7 @@ interface BlogCardProps {
 export function BlogCard({ post, featured = false }: BlogCardProps) {
   if (featured) {
     return (
-      <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
+      <Card className="group overflow-hidden border-border/50 p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
         <div className="grid md:grid-cols-2">
           {/* Image */}
           <div className="relative aspect-video overflow-hidden bg-muted md:aspect-auto md:min-h-[300px]">
@@ -64,7 +64,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
   }
 
   return (
-    <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
+    <Card className="group overflow-hidden border-border/50 p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
       {/* Thumbnail */}
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
         <Image

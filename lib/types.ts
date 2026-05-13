@@ -4,6 +4,8 @@ export interface Design {
   id: string
   title: string
   description: string
+  excerpt?: string | null
+  content?: string | null
   slug: string
   thumbnail_url: string
   image_url?: string
