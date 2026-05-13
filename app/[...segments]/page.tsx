@@ -29,6 +29,7 @@ import { FontPreviewInteractive } from '@/components/font-preview-interactive'
 import { TechnicalInfo } from '@/components/technical-info'
 import { ImageGallery } from '@/components/image-gallery'
 import { RelatedSearches } from '@/components/related-searches'
+import { RichText } from '@/components/rich-text'
 
 // Utils and Lib
 import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getPrimaryCategory, ALLOWED_SLUGS } from '@/lib/data'
@@ -395,7 +396,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 <h1
                   className={cn(
                     "text-balance font-bold text-foreground",
-                    isBlog ? "text-3xl sm:text-4xl lg:text-5xl font-serif" : "text-2xl sm:text-3xl lg:text-4xl"
+                    isBlog ? "text-3xl sm:text-4xl lg:text-5xl" : "text-2xl sm:text-3xl lg:text-4xl"
                   )}
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
@@ -437,7 +438,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
 
               <div className={cn(
                 "mt-6",
-                isBlog ? "font-serif text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
+                isBlog ? "text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
               )}>
                 <h2 className="sr-only">Descripción</h2>
 
@@ -446,24 +447,15 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 </div>
 
                 {/* WordPress migrated content (SEO) */}
-                {design.content && design.content.trim().length > 0 && (() => {
-                  const sanitizedContent = design.content
-                    .replace(/<div id="ez-toc-container".*?<\/div>/s, '')
-                    .trim();
-                  if (!sanitizedContent) return null;
-                  return (
-                    <div className="border-t border-border/40 pt-6">
-                      <div
-                        className="prose prose-slate dark:prose-invert lg:prose-xl max-w-none"
-                        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                      />
-                    </div>
-                  );
-                })()}
+                {design.content && design.content.trim().length > 0 && (
+                  <div className="border-t border-border/40 pt-6">
+                    <RichText content={design.content} />
+                  </div>
+                )}
 
                 {/* Fallback: original description via Markdown */}
                 {(!design.content || design.content.trim().length === 0) && (
-                  <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <div className="prose prose-slate lg:prose-lg dark:prose-invert max-w-none prose-a:text-primary prose-a:font-semibold hover:prose-a:underline">
                     <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                       {design.description || ''}
                     </ReactMarkdown>

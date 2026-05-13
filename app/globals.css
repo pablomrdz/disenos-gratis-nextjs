@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -124,5 +125,22 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Custom Typography Styles */
+  .prose blockquote {
+    @apply border-l-4 border-l-primary bg-slate-50 py-3 pr-4 pl-5 text-slate-700 italic rounded-r-lg;
+  }
+  .dark .prose blockquote {
+    @apply bg-slate-900 text-slate-300;
+  }
+  .prose h4 {
+    @apply text-xl font-bold mt-8 mb-4 text-slate-900;
+  }
+  .dark .prose h4 {
+    @apply text-slate-100;
+  }
+  .prose img {
+    @apply w-full h-auto rounded-xl shadow-md object-contain;
   }
 }

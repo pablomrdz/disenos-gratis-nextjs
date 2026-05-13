@@ -6,10 +6,11 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Sidebar } from '@/components/sidebar'
 import { AdBanner } from '@/components/ad-banner'
 import { JsonLd } from '@/components/json-ld'
-import { getDesignBySlug, getDesigns } from '@/lib/data'
+import { getDesignBySlug, getPopularCategories } from '@/lib/data'
+import { RichText } from '@/components/rich-text'
+import { StickySidebar } from '@/components/sticky-sidebar'
 
 // ISR: Static with 1 hour revalidation
 export const revalidate = 3600
@@ -54,9 +55,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params
-  const [post, allDesigns] = await Promise.all([
+  const [post, popularCategories] = await Promise.all([
     getDesignBySlug(slug),
-    getDesigns({ limit: 10, excludeCategory: 'blog' }),
+    getPopularCategories(6)
   ])
 
   if (!post) {
@@ -65,7 +66,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const title = post.title || 'Untitled Post'
   const createdAt = post.created_at ? new Date(post.created_at) : new Date()
-  const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
+  const tags = Array.isArray(post.tags) ? post.tags : []
 
   return (
     <>
@@ -91,9 +92,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Main Content */}
       <section className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr,300px]">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8">
             {/* Main Column */}
-            <div className="max-w-3xl">
+            <div className="col-span-12 lg:col-span-8 xl:col-span-9 max-w-3xl mx-auto lg:mx-0">
               <Link
                 href="/blog"
                 className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
@@ -119,7 +120,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               )}
 
               {/* Title & Meta */}
-              <h1 className="text-3xl font-bold text-foreground sm:text-4xl font-serif text-balance">
+              <h1 className="text-3xl font-bold text-foreground sm:text-4xl text-balance">
                 {title}
               </h1>
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -142,12 +143,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               {/* Content */}
-              <div className="font-serif text-lg leading-relaxed text-foreground/90">
-                <div className="prose prose-slate dark:prose-invert max-w-none prose-a:text-primary prose-a:font-semibold hover:prose-a:underline">
-                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                    {post.description || ''}
-                  </ReactMarkdown>
-                </div>
+              <div className="mt-6 text-foreground/90">
+                {post.content && post.content.trim().length > 0 ? (
+                  <RichText content={post.content} />
+                ) : (
+                  <div className="prose prose-slate lg:prose-lg dark:prose-invert max-w-none prose-a:text-primary prose-a:font-semibold hover:prose-a:underline">
+                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                      {post.description || ''}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
 
               {/* Bottom Ad */}
@@ -157,9 +162,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             {/* Sidebar */}
-            <div className="hidden lg:block">
-              <Sidebar popularDesigns={popularDesigns} />
-            </div>
+            <aside className="col-span-12 lg:col-span-4 xl:col-span-3">
+              <StickySidebar
+                popularCategories={popularCategories}
+                tags={tags}
+              />
+            </aside>
           </div>
         </div>
       </section>
