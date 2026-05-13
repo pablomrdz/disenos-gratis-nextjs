@@ -100,6 +100,16 @@ export default function RootLayout({
           strategy="afterInteractive" 
           crossOrigin="anonymous" 
         />
+        {/* Microsoft Clarity Tracking Code */}
+        <Script id="clarity-script" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "wqjwv2mcae");
+          `}
+        </Script>
       </head>
       <body className="font-sans antialiased">
         <div className="flex min-h-screen flex-col">
