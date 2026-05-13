@@ -445,11 +445,30 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                   <AdBanner slot="9549519747" responsive={true} />
                 </div>
 
-                <div className="prose prose-slate dark:prose-invert max-w-none prose-a:text-primary prose-a:font-semibold hover:prose-a:underline">
-                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                    {design.description || ''}
-                  </ReactMarkdown>
-                </div>
+                {/* WordPress migrated content (SEO) */}
+                {design.content && design.content.trim().length > 0 && (() => {
+                  const sanitizedContent = design.content
+                    .replace(/<div id="ez-toc-container".*?<\/div>/s, '')
+                    .trim();
+                  if (!sanitizedContent) return null;
+                  return (
+                    <div className="border-t border-border/40 pt-6">
+                      <div
+                        className="prose prose-slate dark:prose-invert lg:prose-xl max-w-none"
+                        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                      />
+                    </div>
+                  );
+                })()}
+
+                {/* Fallback: original description via Markdown */}
+                {(!design.content || design.content.trim().length === 0) && (
+                  <div className="prose prose-slate dark:prose-invert max-w-none">
+                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                      {design.description || ''}
+                    </ReactMarkdown>
+                  </div>
+                )}
 
                 <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
                   <AdBanner slot="9549519747" responsive={true} />

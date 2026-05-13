@@ -24,7 +24,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
             <div className="rounded-xl border border-border/50 bg-card p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <Folder className="h-5 w-5 text-primary" />
-                    <h3 className="font-semibold text-foreground">Categorías Populares</h3>
+                    <h3 className="font-semibold text-foreground">Categorías</h3>
                 </div>
                 <ul className="space-y-2">
                     {popularCategories.map((item) => (
@@ -47,7 +47,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                     href="/designs"
                     className="mt-4 block text-center text-sm text-primary hover:underline"
                 >
-                    Ver todas las categorías
+                    Ver todo el catalogo
                 </Link>
             </div>
 
