@@ -15,19 +15,14 @@ export function ImageGallery({ images }: { images?: string[] | null }) {
         <h3 className="mb-3 text-sm font-semibold text-foreground">Galería de Imágenes</h3>
         <div className="flex w-full snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scrollbar-hide">
           {images.map((url, idx) => (
-            <div 
-               key={idx} 
+            <img
+               key={idx}
+               src={url}
+               alt={`Imagen de galería ${idx + 1}`}
                onClick={() => setSelectedImage(url)}
-               className="relative flex items-center justify-center aspect-video w-[80%] shrink-0 snap-center sm:w-[60%] md:w-[45%] overflow-hidden rounded-xl border border-border/50 bg-slate-50 dark:bg-slate-900/50 shadow-sm transition-transform hover:scale-[1.02] cursor-pointer"
-            >
-              <Image
-                src={url}
-                alt={`Imagen de galería ${idx + 1}`}
-                fill
-                className="object-contain p-2"
-                sizes="(max-width: 640px) 80vw, (max-width: 1024px) 60vw, 40vw"
-              />
-            </div>
+               className="h-48 sm:h-64 w-auto max-w-[85vw] shrink-0 snap-center rounded-2xl shadow-md border border-border/20 transition-transform hover:scale-[1.02] cursor-pointer object-contain bg-background"
+               loading="lazy"
+            />
           ))}
         </div>
       </div>
