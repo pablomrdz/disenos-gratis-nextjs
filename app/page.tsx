@@ -6,6 +6,7 @@ import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
 import { AdBanner } from '@/components/ad-banner'
+import { AdSlot } from '@/components/ad-slot'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
 
@@ -16,7 +17,7 @@ export const revalidate = 3600
 
 
 async function TopDesigns() {
-  const designs = await getDesigns({ limit: 8, tag: 'Top del mes', excludeCategory: 'blog' })
+  const designs = await getDesigns({ limit: 100, tag: 'Top del mes', excludeCategory: 'blog' })
 
   if (!designs || designs.length === 0) return null
 
@@ -39,7 +40,7 @@ async function TopDesigns() {
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
-      <DesignGrid designs={designs} showAds={false} />
+      <DesignGrid designs={designs} showAds={false} columns={4} />
     </div>
   )
 }
@@ -60,9 +61,6 @@ export default function HomePage() {
         <AdBanner slot="home mobile" minHeight={100} />
       </div>
 
-      {/* Categories */}
-      <CategorySection />
-
       {/* Main Content - Full Width */}
       <section className="pt-0 sm:pt-8 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -71,6 +69,11 @@ export default function HomePage() {
           <Suspense fallback={<DesignGridSkeleton />}>
             <TopDesigns />
           </Suspense>
+
+          {/* Ad Slot 1 - Desktop (after Top del Mes) */}
+          <div className="hidden lg:flex justify-center mb-12 w-full">
+            <AdSlot format="728x90" slotId="home-top-desktop" />
+          </div>
 
           <div className="flex items-end justify-between">
             <div>
@@ -107,6 +110,9 @@ export default function HomePage() {
       <div className="lg:hidden mx-auto px-4 mb-8">
         <AdBanner slot="home mobile" minHeight={100} />
       </div>
+
+      {/* Categories moved to bottom */}
+      <CategorySection />
 
       {/* Newsletter / CTA Section */}
       <section className="border-t border-border/40 bg-muted/30 py-16">

@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
 import { AdSlot } from '@/components/ad-slot'
-import { getDesignsByTag, getDesigns, getPopularCategories } from '@/lib/data'
+import { getDesignsByTag, getDesigns, getPopularCategories, getTaxonomyBySlug } from '@/lib/data'
 import { Tag } from 'lucide-react'
+import { slugify } from '@/lib/utils'
+import { RichText } from '@/components/rich-text'
 
 // Force SSR for SEO
 export const dynamic = 'force-dynamic'
@@ -17,10 +19,12 @@ interface TagPageProps {
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
     const { slug } = await params
     const decodedTag = decodeURIComponent(slug)
+    const cleanSlug = slugify(decodedTag)
+    const taxonomy = await getTaxonomyBySlug(cleanSlug, 'tag')
 
     return {
-        title: `Diseños con la etiqueta: ${decodedTag}`,
-        description: `Explora nuestra colección de diseños etiquetados con "${decodedTag}". Descarga vectores, plantillas y recursos gráficos gratis.`,
+        title: taxonomy?.seo_title || `Diseños con la etiqueta: ${decodedTag}`,
+        description: taxonomy?.seo_description || `Explora nuestra colección de diseños etiquetados con "${decodedTag}". Descarga vectores, plantillas y recursos gráficos gratis.`,
     }
 }
 
@@ -44,6 +48,10 @@ export default async function TagPage({ params }: TagPageProps) {
     const allDesigns = await getDesigns({ limit: 10 })
     const popularDesigns = [...allDesigns].sort((a, b) => b.downloads - a.downloads).slice(0, 5)
 
+    // Fetch taxonomy for this tag
+    const cleanSlug = slugify(decodedTag)
+    const taxonomy = await getTaxonomyBySlug(cleanSlug, 'tag')
+
     if (taggedDesigns.length === 0) {
         // Logic for empty tag or 404? 
         // For now we show the page but with empty state or similar
@@ -59,12 +67,19 @@ export default async function TagPage({ params }: TagPageProps) {
                             <Tag className="w-8 h-8 text-primary" />
                         </div>
                         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl capitalize">
-                            {displayName}
+                            {taxonomy?.name || displayName}
                         </h1>
                     </div>
-                    <p className="mt-2 text-lg text-muted-foreground max-w-2xl">
-                        Explora todos los recursos y diseños etiquetados bajo "{displayName}".
-                    </p>
+                    
+                    {taxonomy?.description ? (
+                        <div className="mt-6 prose prose-slate max-w-none text-left">
+                            <RichText content={taxonomy.description} />
+                        </div>
+                    ) : (
+                        <p className="mt-2 text-lg text-muted-foreground max-w-2xl">
+                            Explora todos los recursos y diseños etiquetados bajo "{displayName}".
+                        </p>
+                    )}
                 </div>
             </div>
 

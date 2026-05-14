@@ -32,7 +32,7 @@ import { RelatedSearches } from '@/components/related-searches'
 import { RichText } from '@/components/rich-text'
 
 // Utils and Lib
-import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getPrimaryCategory, ALLOWED_SLUGS } from '@/lib/data'
+import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getPrimaryCategory, ALLOWED_SLUGS, getTaxonomyBySlug } from '@/lib/data'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { detectContentType, extractDownloadLink } from '@/lib/content-utils'
 import { cn, slugify, normalizeText, getCategoryIcon, getCategoryColor } from '@/lib/utils'
@@ -55,12 +55,15 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
   // --- Caso 1: CATEGORÍA ---
   if (segments.length === 1) {
     const slug = decodeURIComponent(segments[0])
+    const cleanSlug = slugify(slug)
+    const taxonomy = await getTaxonomyBySlug(cleanSlug, 'category')
+
     const categoryName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     const canonicalUrl = `https://disenosgratis.com/${slug}`
     
     return {
-      title: `${categoryName} - Categoría | Diseños Gratis`,
-      description: `Explora nuestra mejor colección de diseños para ${categoryName}. Descargas gratuitas.`,
+      title: taxonomy?.seo_title || `${categoryName} - Categoría | Diseños Gratis`,
+      description: taxonomy?.seo_description || `Explora nuestra mejor colección de diseños para ${categoryName}. Descargas gratuitas.`,
       alternates: {
         canonical: canonicalUrl,
       },
@@ -199,6 +202,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
     const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
 
     const categoryName = decodedSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    const taxonomy = await getTaxonomyBySlug(cleanSlug, 'category')
 
     return (
       <>
@@ -210,13 +214,19 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               </div>
               <div>
                 <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  {categoryName}
+                  {taxonomy?.name || categoryName}
                 </h1>
                 <p className="mt-1 text-lg text-muted-foreground">
                   Explora nuestra colección de diseños para {categoryName}
                 </p>
               </div>
             </div>
+            
+            {taxonomy?.description && (
+              <div className="mt-8 prose prose-slate max-w-none">
+                <RichText content={taxonomy.description} />
+              </div>
+            )}
           </div>
         </section>
 
@@ -354,11 +364,42 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 Volver a {(categoryPath[0] || primaryCategoryClean).replace(/-/g, ' ')}
               </Link>
 
+              <div className="mb-6">
+                <h1
+                  className={cn(
+                    "text-balance font-bold text-foreground",
+                    isBlog ? "text-3xl sm:text-4xl lg:text-5xl" : "text-2xl sm:text-3xl lg:text-4xl"
+                  )}
+                  dangerouslySetInnerHTML={{ __html: title }}
+                />
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <Link href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`} className="transition-opacity hover:opacity-80">
+                    <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
+                      {(categoryPath[0] || primaryCategoryClean).replace('-', ' ')}
+                    </Badge>
+                  </Link>
+                  {!isBlog && (
+                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <Download className="h-4 w-4" />
+                      {downloads.toLocaleString()} descargas
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    {createdAt.toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                </div>
+              </div>
+
               <div className="space-y-6">
                 <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
                   <div className={cn(
                     "relative",
-                    isBlog ? "aspect-[16/9]" : "aspect-[4/3] sm:aspect-video"
+                    isBlog ? "aspect-[16/9]" : "aspect-[16/9] sm:aspect-[4/3]"
                   )}>
                     <Image
                       src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
@@ -392,38 +433,8 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 )}
               </div>
 
-              <div className="mt-8">
-                <h1
-                  className={cn(
-                    "text-balance font-bold text-foreground",
-                    isBlog ? "text-3xl sm:text-4xl lg:text-5xl" : "text-2xl sm:text-3xl lg:text-4xl"
-                  )}
-                  dangerouslySetInnerHTML={{ __html: title }}
-                />
-                <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
-                  <AdBanner slot="9549519747" responsive={true} />
-                </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Link href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`} className="transition-opacity hover:opacity-80">
-                    <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
-                      {(categoryPath[0] || primaryCategoryClean).replace('-', ' ')}
-                    </Badge>
-                  </Link>
-                  {!isBlog && (
-                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Download className="h-4 w-4" />
-                      {downloads.toLocaleString()} descargas
-                    </span>
-                  )}
-                  <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    {createdAt.toLocaleDateString('es-ES', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </span>
-                </div>
+              <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
+                <AdBanner slot="9549519747" responsive={true} />
               </div>
 
               {!isBlog && (

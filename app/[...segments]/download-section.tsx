@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { AdSlot } from '@/components/ad-slot'
 import { createClient } from '@supabase/supabase-js'
 import type { Design } from '@/lib/types'
 
@@ -160,7 +161,7 @@ export function DownloadSection({ design }: DownloadSectionProps) {
 
               {/* ── Phase: LOADING (progress bar) ────────── */}
               {phase === 'loading' && (
-                <div className="space-y-2">
+                <div className="space-y-4 flex flex-col items-center">
                   <button
                     disabled
                     className="
@@ -191,6 +192,11 @@ export function DownloadSection({ design }: DownloadSectionProps) {
                       {getProgressText()}
                     </span>
                   </button>
+                  
+                  {/* AdSync Ad Slot */}
+                  <div className="w-full flex justify-center animate-in fade-in zoom-in-95 duration-500 delay-150">
+                    <AdSlot format="responsive" slotId="download-wait" />
+                  </div>
                 </div>
               )}
 

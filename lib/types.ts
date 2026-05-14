@@ -64,6 +64,18 @@ export interface Category {
   icon: string
 }
 
+export interface Taxonomy {
+  id: string
+  slug: string
+  name: string
+  description?: string | null
+  type: 'category' | 'tag'
+  seo_title?: string | null
+  seo_description?: string | null
+  created_at: string
+  updated_at: string
+}
+
 // Database types for Supabase
 export interface Database {
   public: {
@@ -87,6 +99,11 @@ export interface Database {
         Row: Category
         Insert: Omit<Category, 'id'>
         Update: Partial<Omit<Category, 'id'>>
+      }
+      taxonomies: {
+        Row: Taxonomy
+        Insert: Omit<Taxonomy, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Taxonomy, 'id'>>
       }
       downloads_stats: {
         Row: {

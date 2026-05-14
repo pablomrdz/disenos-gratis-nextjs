@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from './supabase'
 import { mockDesigns, mockTutorials, mockBlogPosts, mockCategories } from './mock-data'
-import type { Design, Tutorial, BlogPost, Category } from './types'
+import type { Design, Tutorial, BlogPost, Category, Taxonomy } from './types'
 
 // Always use real Supabase when URL is configured
 const USE_MOCK = false
@@ -387,6 +387,25 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 
   if (error) {
     console.error('Error fetching category:', error)
+    return null
+  }
+
+  return data
+}
+
+export async function getTaxonomyBySlug(slug: string, type: 'category' | 'tag'): Promise<Taxonomy | null> {
+  const supabase = createServerSupabaseClient()
+  const { data, error } = await supabase
+    .from('taxonomies')
+    .select('*')
+    .eq('slug', slug)
+    .eq('type', type)
+    .single()
+
+  if (error) {
+    if (error.code !== 'PGRST116') {
+      console.error(`Error fetching taxonomy for ${slug} (${type}):`, error)
+    }
     return null
   }
 

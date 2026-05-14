@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Download, Users } from 'lucide-react'
 
 const footerLinks = {
   resources: [
@@ -28,6 +28,38 @@ export function Footer() {
   return (
     <footer className="border-t border-border/40 bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        
+        {/* Stats Section moved from Hero */}
+        <div className="grid grid-cols-3 gap-4 border-b border-border/40 pb-12 mb-12">
+          <div className="text-center sm:text-left flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Download className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-foreground">50K+</div>
+              <p className="text-sm text-muted-foreground">Descargas Libres</p>
+            </div>
+          </div>
+          <div className="text-center sm:text-left flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10">
+              <Sparkles className="h-6 w-6 text-amber-500" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-foreground">1000+</div>
+              <p className="text-sm text-muted-foreground">Plantillas Premium</p>
+            </div>
+          </div>
+          <div className="text-center sm:text-left flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
+              <Users className="h-6 w-6 text-emerald-500" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-foreground">10K+</div>
+              <p className="text-sm text-muted-foreground">Creadores Activos</p>
+            </div>
+          </div>
+        </div>
+
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-1">

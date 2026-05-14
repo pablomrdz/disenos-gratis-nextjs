@@ -14,17 +14,23 @@ interface DesignGridProps {
 export function DesignGrid({
   designs,
   showAds = true,
-  adFrequency = 8,
+  adFrequency = 8, // kept for backward compatibility if needed, but we'll override logic
   columns = 4
 }: DesignGridProps) {
-  const items: (Design | { type: 'ad'; id: string })[] = []
+  const items: (Design | { type: 'ad'; id: string; isMobile?: boolean; isBoth?: boolean })[] = []
 
   designs.forEach((design, index) => {
     items.push(design)
 
-    // Insert ad after every adFrequency items
-    if (showAds && (index + 1) % adFrequency === 0 && index < designs.length - 1) {
-      items.push({ type: 'ad', id: `ad-feed-${index}` })
+    if (showAds) {
+      // Anuncio exclusivo para móvil cada 4 (oculto en desktop)
+      if ((index + 1) % 4 === 0 && index < designs.length - 1 && (index + 1) % 8 !== 0) {
+        items.push({ type: 'ad', id: `ad-mobile-${index}`, isMobile: true })
+      }
+      // Anuncio para desktop y móvil cada 8
+      if ((index + 1) % 8 === 0 && index < designs.length - 1) {
+        items.push({ type: 'ad', id: `ad-both-${index}`, isBoth: true })
+      }
     }
   })
 
@@ -40,12 +46,13 @@ export function DesignGrid({
       "grid gap-6",
       isFontGrid 
         ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
-        : cn("grid-cols-2", columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4")
+        : cn("grid-cols-1 sm:grid-cols-2", columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4")
     )}>
       {items.map((item) => {
         if ('type' in item && item.type === 'ad') {
+          const adClasses = item.isMobile ? "col-span-full block sm:hidden" : "col-span-full"
           return (
-            <div key={item.id} className="sm:col-span-2">
+            <div key={item.id} className={adClasses}>
               <AdBanner
                 slot="in feed para listas"
                 minHeight={280}
