@@ -62,23 +62,33 @@ export default async function TagPage({ params }: TagPageProps) {
         <>
             <div className="bg-muted/30 py-12 border-b border-border/40">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center sm:text-left">
-                    <div className="flex items-center justify-center sm:justify-start gap-3 mb-4">
-                        <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100">
-                            <Tag className="w-8 h-8 text-primary" />
-                        </div>
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl capitalize">
-                            {taxonomy?.name || displayName}
-                        </h1>
-                    </div>
-                    
-                    {taxonomy?.description ? (
-                        <div className="mt-6 prose prose-slate max-w-none text-left">
-                            <RichText content={taxonomy.description} />
-                        </div>
+                    {taxonomy ? (
+                        <>
+                            {!taxonomy.description && (
+                                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl capitalize mb-4">
+                                    {taxonomy.name}
+                                </h1>
+                            )}
+                            {taxonomy.description && (
+                                <div className="prose prose-slate max-w-none text-left">
+                                    <RichText content={taxonomy.description} />
+                                </div>
+                            )}
+                        </>
                     ) : (
-                        <p className="mt-2 text-lg text-muted-foreground max-w-2xl">
-                            Explora todos los recursos y diseños etiquetados bajo "{displayName}".
-                        </p>
+                        <>
+                            <div className="flex items-center justify-center sm:justify-start gap-3 mb-4">
+                                <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100">
+                                    <Tag className="w-8 h-8 text-primary" />
+                                </div>
+                                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl capitalize">
+                                    {displayName}
+                                </h1>
+                            </div>
+                            <p className="mt-2 text-lg text-muted-foreground max-w-2xl">
+                                Explora todos los recursos y diseños etiquetados bajo "{displayName}".
+                            </p>
+                        </>
                     )}
                 </div>
             </div>

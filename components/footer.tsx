@@ -28,7 +28,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/40 bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        
+
         {/* Stats Section moved from Hero */}
         <div className="grid grid-cols-3 gap-4 border-b border-border/40 pb-12 mb-12">
           <div className="text-center sm:text-left flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4">
@@ -37,7 +37,7 @@ export function Footer() {
             </div>
             <div>
               <div className="text-2xl font-bold text-foreground">50K+</div>
-              <p className="text-sm text-muted-foreground">Descargas Libres</p>
+              <p className="text-sm text-muted-foreground">Descargas gratuitas</p>
             </div>
           </div>
           <div className="text-center sm:text-left flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4">
@@ -46,7 +46,7 @@ export function Footer() {
             </div>
             <div>
               <div className="text-2xl font-bold text-foreground">1000+</div>
-              <p className="text-sm text-muted-foreground">Plantillas Premium</p>
+              <p className="text-sm text-muted-foreground">Plantillas editables</p>
             </div>
           </div>
           <div className="text-center sm:text-left flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4">
@@ -54,8 +54,8 @@ export function Footer() {
               <Users className="h-6 w-6 text-emerald-500" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground">10K+</div>
-              <p className="text-sm text-muted-foreground">Creadores Activos</p>
+              <div className="text-2xl font-bold text-foreground">40K+</div>
+              <p className="text-sm text-muted-foreground">Usuarios activos</p>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Recursos de diseño premium para creadores, marketers y marcas. Plantillas gratuitas listas para imprimir.
+              Recursos de diseño de alta calidad para creadores, marketers y emprendedores. Plantillas editables listas para imprimir.
             </p>
           </div>
 

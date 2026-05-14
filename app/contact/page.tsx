@@ -17,7 +17,7 @@ export default function ContactPage() {
                 </p>
             </div>
 
-            <div className="mt-16 grid gap-8 md:grid-cols-3">
+            <div className="mt-6 grid gap-8 md:grid-cols-2">
                 {/* Email Card */}
                 <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-muted/30 p-8 text-center transition-all hover:bg-muted/50 hover:shadow-lg">
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20">

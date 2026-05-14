@@ -208,23 +208,32 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
       <>
         <section className="border-b border-border/40 bg-muted/30">
           <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-4">
-              <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${getCategoryColor(decodedSlug)}`}>
-                {getCategoryIcon(decodedSlug)}
-              </div>
+            {taxonomy ? (
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  {taxonomy?.name || categoryName}
-                </h1>
-                <p className="mt-1 text-lg text-muted-foreground">
-                  Explora nuestra colección de diseños para {categoryName}
-                </p>
+                {!taxonomy.description && (
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                    {taxonomy.name}
+                  </h1>
+                )}
+                {taxonomy.description && (
+                  <div className="prose prose-slate max-w-none">
+                    <RichText content={taxonomy.description} />
+                  </div>
+                )}
               </div>
-            </div>
-            
-            {taxonomy?.description && (
-              <div className="mt-8 prose prose-slate max-w-none">
-                <RichText content={taxonomy.description} />
+            ) : (
+              <div className="flex items-center gap-4">
+                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${getCategoryColor(decodedSlug)}`}>
+                  {getCategoryIcon(decodedSlug)}
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                    {categoryName}
+                  </h1>
+                  <p className="mt-1 text-lg text-muted-foreground">
+                    Explora nuestra colección de diseños para {categoryName}
+                  </p>
+                </div>
               </div>
             )}
           </div>
