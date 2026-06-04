@@ -237,11 +237,9 @@ export function DownloadSection({ design }: DownloadSectionProps) {
 
         {/* AdSync Ad Unit permanently mounted */}
         <div
-          className="w-full mt-8 min-h-[250px] flex justify-center transition-all duration-500"
-          style={{
-            visibility: phase === 'ready' ? 'visible' : 'hidden',
-            opacity: phase === 'ready' ? 1 : 0,
-          }}
+          className={`w-full mt-8 min-h-[250px] flex justify-center transition-opacity duration-500 ${
+            phase === 'ready' ? 'opacity-100' : 'opacity-0 h-[250px] overflow-hidden'
+          }`}
         >
           <AdUnit
             slot="1352493197"
