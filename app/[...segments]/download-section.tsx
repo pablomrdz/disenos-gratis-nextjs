@@ -192,17 +192,6 @@ export function DownloadSection({ design }: DownloadSectionProps) {
                       {getProgressText()}
                     </span>
                   </button>
-                  
-                  {/* AdSync Ad Slot */}
-                  <div className="w-full mt-8 min-h-[250px] flex justify-center animate-in fade-in zoom-in-95 duration-500 delay-150">
-                    <AdUnit
-                      slot="1352493197"
-                      format="fluid"
-                      layoutKey="-fb+5w+4e-db+86"
-                      style={{ display: "block" }}
-                      className="w-full"
-                    />
-                  </div>
                 </div>
               )}
 
@@ -244,6 +233,23 @@ export function DownloadSection({ design }: DownloadSectionProps) {
               </Link>
             )}
           </div>
+        </div>
+
+        {/* AdSync Ad Unit permanently mounted */}
+        <div
+          className="w-full mt-8 min-h-[250px] flex justify-center transition-all duration-500"
+          style={{
+            visibility: phase === 'ready' ? 'visible' : 'hidden',
+            opacity: phase === 'ready' ? 1 : 0,
+          }}
+        >
+          <AdUnit
+            slot="1352493197"
+            format="fluid"
+            layoutKey="-fb+5w+4e-db+86"
+            style={{ display: "block" }}
+            className="w-full"
+          />
         </div>
       </CardContent>
     </Card>

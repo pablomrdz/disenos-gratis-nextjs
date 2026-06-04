@@ -17,12 +17,15 @@ export default function AdUnit({
   className,
 }: AdUnitProps) {
   useEffect(() => {
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (error) {
-      console.error('AdSense error', error);
-    }
+    const timer = setTimeout(() => {
+      try {
+        // @ts-ignore
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (error) {
+        console.error('AdSense error', error);
+      }
+    }, 500); // 500ms de gracia para que React termine de pintar
+    return () => clearTimeout(timer);
   }, []);
 
   return (
