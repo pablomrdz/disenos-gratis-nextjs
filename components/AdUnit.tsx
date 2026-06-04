@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface AdUnitProps {
   slot: string;
@@ -16,22 +16,43 @@ export default function AdUnit({
   style,
   className,
 }: AdUnitProps) {
+  const adRef = useRef<HTMLModElement>(null);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      try {
-        // @ts-ignore
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (error) {
-        console.error('AdSense error', error);
+    let retries = 0;
+    const MAX_RETRIES = 20; // 20 × 500ms = 10s max
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    const checkSizeAndPush = () => {
+      const element = adRef.current;
+      // Verificamos si existe y tiene dimensiones reales
+      if (element && element.offsetWidth > 0) {
+        try {
+          // @ts-ignore
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+          console.error('AdSense Error:', e);
+        }
+      } else if (retries < MAX_RETRIES) {
+        // Si mide 0, reintenta en 500ms hasta que el layout se calcule
+        retries++;
+        timeoutId = setTimeout(checkSizeAndPush, 500);
       }
-    }, 500); // 500ms de gracia para que React termine de pintar
-    return () => clearTimeout(timer);
+    };
+
+    checkSizeAndPush();
+
+    // Cleanup: cancel pending retry on unmount
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
     <ins
+      ref={adRef}
       className={`adsbygoogle ${className || ''}`}
-      style={style || { display: 'block' }}
+      style={style || { display: 'block', minHeight: '250px' }}
       data-ad-client="ca-pub-1784471620247875"
       data-ad-slot={slot}
       {...(format ? { 'data-ad-format': format } : {})}

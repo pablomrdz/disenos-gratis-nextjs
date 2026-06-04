@@ -237,8 +237,9 @@ export function DownloadSection({ design }: DownloadSectionProps) {
 
         {/* AdSync Ad Unit permanently mounted */}
         <div
-          className={`w-full mt-8 min-h-[250px] flex justify-center transition-opacity duration-500 ${
-            phase === 'ready' ? 'opacity-100' : 'opacity-0 h-[250px] overflow-hidden'
+          style={{ width: '100%', minHeight: '250px' }}
+          className={`mt-8 flex justify-center transition-opacity duration-500 ${
+            phase === 'ready' ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <AdUnit
