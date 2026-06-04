@@ -1,6 +1,6 @@
 import { DesignCard } from '@/components/design-card'
 import { FontCard } from '@/components/font-card'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import { normalizeText, cn } from '@/lib/utils'
 import type { Design } from '@/lib/types'
 

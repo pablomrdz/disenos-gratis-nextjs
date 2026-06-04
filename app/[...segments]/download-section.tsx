@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import { createClient } from '@supabase/supabase-js'
 import type { Design } from '@/lib/types'
 

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Folder, Tag as TagIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import { formatCategoryName } from '@/lib/content-utils'
 import { slugify } from '@/lib/utils'
 

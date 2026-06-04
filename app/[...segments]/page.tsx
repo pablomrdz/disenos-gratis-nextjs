@@ -18,7 +18,7 @@ import {
 
 // Components
 import { Badge } from '@/components/ui/badge'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 
 import { DesignGrid } from '@/components/design-grid'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import { getDesigns, getCategories } from '@/lib/data'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'

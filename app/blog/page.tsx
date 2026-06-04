@@ -4,7 +4,7 @@ import { Video, ExternalLink } from 'lucide-react'
 import { TutorialCard } from '@/components/tutorial-card'
 import { DesignCard } from '@/components/design-card'
 import { Sidebar } from '@/components/sidebar'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import { Button } from '@/components/ui/button'
 import { getTutorials, getDesigns } from '@/lib/data'
 

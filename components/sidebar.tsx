@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { TrendingUp, Clock, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import type { Design } from '@/lib/types'
 import { slugify } from '@/lib/utils'
 

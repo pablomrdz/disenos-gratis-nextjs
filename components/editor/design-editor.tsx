@@ -6,7 +6,7 @@ import { EditorCanvas } from './editor-canvas'
 import { EditorToolbar } from './editor-toolbar'
 import { EditorHeader } from './editor-header'
 import { loadCustomFontFromSupabase } from '@/lib/font-loader'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import type { Design } from '@/lib/types'
 
 // ── LocalStorage persistence helpers ────────────────────────────

@@ -5,7 +5,7 @@ import { HeroSection } from '@/components/hero-section'
 import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
-import { AdUnit } from '@/components/AdUnit'
+import AdUnit from '@/components/AdUnit'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
 
