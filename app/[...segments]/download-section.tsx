@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { AdSlot } from '@/components/ad-slot'
+import { AdUnit } from '@/components/AdUnit'
 import { createClient } from '@supabase/supabase-js'
 import type { Design } from '@/lib/types'
 
@@ -194,8 +194,14 @@ export function DownloadSection({ design }: DownloadSectionProps) {
                   </button>
                   
                   {/* AdSync Ad Slot */}
-                  <div className="w-full flex justify-center animate-in fade-in zoom-in-95 duration-500 delay-150">
-                    <AdSlot format="responsive" slotId="download-wait" />
+                  <div className="w-full mt-8 min-h-[250px] flex justify-center animate-in fade-in zoom-in-95 duration-500 delay-150">
+                    <AdUnit
+                      slot="1352493197"
+                      format="fluid"
+                      layoutKey="-fb+5w+4e-db+86"
+                      style={{ display: "block" }}
+                      className="w-full"
+                    />
                   </div>
                 </div>
               )}

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
-import { AdSlot } from '@/components/ad-slot'
+import { AdUnit } from '@/components/AdUnit'
 import { getDesignsByTag, getDesigns, getPopularCategories, getTaxonomyBySlug } from '@/lib/data'
 import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
@@ -94,8 +94,13 @@ export default async function TagPage({ params }: TagPageProps) {
             </div>
 
             <div className="py-8 bg-slate-50 border-b border-slate-200">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <AdSlot variant="inline" className="bg-white shadow-sm border border-slate-200 rounded-lg" />
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[90px] flex justify-center">
+                    <AdUnit
+                        slot="9549519747"
+                        format="auto"
+                        style={{ display: "block" }}
+                        className="w-full bg-white shadow-sm border border-slate-200 rounded-lg"
+                    />
                 </div>
             </div>
 

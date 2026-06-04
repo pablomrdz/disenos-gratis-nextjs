@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Search as SearchIcon } from 'lucide-react'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
-import { AdSlot } from '@/components/ad-slot'
+import { AdUnit } from '@/components/AdUnit'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { getDesigns } from '@/lib/data'
 import type { Design } from '@/lib/types'
@@ -107,8 +107,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       {/* Hero Ad */}
       <section className="py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AdSlot variant="hero" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[90px] flex justify-center">
+          <AdUnit
+            slot="9549519747"
+            format="auto"
+            style={{ display: "block" }}
+            className="w-full"
+          />
         </div>
       </section>
 

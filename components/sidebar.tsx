@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { TrendingUp, Clock, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 import type { Design } from '@/lib/types'
 import { slugify } from '@/lib/utils'
 
@@ -14,8 +14,11 @@ interface SidebarProps {
 export function Sidebar({ popularDesigns = [], recentDesigns = [] }: SidebarProps) {
   return (
     <aside className="space-y-6">
-      <div className="mx-auto max-w-[300px]">
-        <AdBanner slot="sidebar" minHeight={600} />
+      <div className="mx-auto min-h-[250px] w-[300px]">
+        <AdUnit
+          slot="3806846005"
+          style={{ display: "inline-block", width: "300px", height: "250px" }}
+        />
       </div>
 
 

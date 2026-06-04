@@ -6,7 +6,7 @@ import { EditorCanvas } from './editor-canvas'
 import { EditorToolbar } from './editor-toolbar'
 import { EditorHeader } from './editor-header'
 import { loadCustomFontFromSupabase } from '@/lib/font-loader'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 import type { Design } from '@/lib/types'
 
 // ── LocalStorage persistence helpers ────────────────────────────
@@ -142,7 +142,11 @@ export function DesignEditor({ design }: DesignEditorProps) {
 
             {/* Desktop Ad Banner — 728x90 leaderboard, above the editor workspace */}
             <div className="hidden md:flex items-center justify-center border-b border-border/30 bg-muted/20 py-1" style={{ minHeight: 94 }}>
-                <AdBanner slot="editor leaderboard" responsive={false} width={728} height={90} />
+                <AdUnit
+                    slot="9549519747"
+                    format="auto"
+                    style={{ display: "inline-block", width: "728px", height: "90px" }}
+                />
             </div>
 
             {/* Main Editor Area */}
@@ -196,7 +200,11 @@ export function DesignEditor({ design }: DesignEditorProps) {
 
                     {/* Mobile Ad Banner — 320x50 fixed at bottom */}
                     <div className="flex md:hidden items-center justify-center border-t border-border/30 bg-muted/20 py-1 shrink-0" style={{ minHeight: 54 }}>
-                        <AdBanner slot="editor mobile" responsive={false} width={320} height={50} />
+                        <AdUnit
+                            slot="6765960189"
+                            format="auto"
+                            style={{ display: "inline-block", width: "320px", height: "50px" }}
+                        />
                     </div>
                 </div>
             </div>

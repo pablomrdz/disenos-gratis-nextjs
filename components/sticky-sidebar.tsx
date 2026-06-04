@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { Folder, Tag as TagIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { AdPlaceholder } from '@/components/ad-placeholder'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 import { formatCategoryName } from '@/lib/content-utils'
 import { slugify } from '@/lib/utils'
 
@@ -16,8 +15,11 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
     return (
         <div className={`sticky top-8 space-y-6 ${className || ''}`}>
             {/* Top Ad - 300x250 */}
-            <div className="flex justify-center">
-                <AdBanner slot="3806846005" responsive={false} width="300px" height="250px" />
+            <div className="flex justify-center min-h-[250px] w-[300px] mx-auto">
+                <AdUnit
+                    slot="3806846005"
+                    style={{ display: "inline-block", width: "300px", height: "250px" }}
+                />
             </div>
 
             {/* Bloque 1: Categorías Populares */}
@@ -52,8 +54,11 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
             </div>
 
             {/* Bottom Ad - 300x250 */}
-            <div className="flex justify-center">
-                <AdBanner slot="3806846005" responsive={false} width="300px" height="250px" />
+            <div className="flex justify-center min-h-[250px] w-[300px] mx-auto">
+                <AdUnit
+                    slot="3806846005"
+                    style={{ display: "inline-block", width: "300px", height: "250px" }}
+                />
             </div>
 
             {/* Bloque 3: Etiquetas Relacionadas */}

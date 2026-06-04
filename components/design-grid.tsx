@@ -1,6 +1,6 @@
 import { DesignCard } from '@/components/design-card'
 import { FontCard } from '@/components/font-card'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 import { normalizeText, cn } from '@/lib/utils'
 import type { Design } from '@/lib/types'
 
@@ -52,10 +52,13 @@ export function DesignGrid({
         if ('type' in item && item.type === 'ad') {
           const adClasses = item.isMobile ? "col-span-full block sm:hidden" : "col-span-full"
           return (
-            <div key={item.id} className={adClasses}>
-              <AdBanner
-                slot="in feed para listas"
-                minHeight={280}
+            <div key={item.id} className={cn("min-h-[250px] w-full flex justify-center", adClasses)}>
+              <AdUnit
+                slot="1352493197"
+                format="fluid"
+                layoutKey="-fb+5w+4e-db+86"
+                style={{ display: "block" }}
+                className="w-full"
               />
             </div>
           )

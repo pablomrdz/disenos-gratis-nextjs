@@ -4,8 +4,7 @@ import { Video, ExternalLink } from 'lucide-react'
 import { TutorialCard } from '@/components/tutorial-card'
 import { DesignCard } from '@/components/design-card'
 import { Sidebar } from '@/components/sidebar'
-import { AdSlot } from '@/components/ad-slot'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 import { Button } from '@/components/ui/button'
 import { getTutorials, getDesigns } from '@/lib/data'
 
@@ -92,8 +91,14 @@ export default async function TutorialsPage() {
           <div className="grid gap-8 lg:grid-cols-[1fr,300px]">
             {/* Tutorial Grid */}
             <div>
-              <div className="mb-8">
-                <AdBanner slot="in feed para listas" minHeight={250} />
+              <div className="mb-8 min-h-[250px] w-full flex justify-center">
+                <AdUnit
+                  slot="1352493197"
+                  format="fluid"
+                  layoutKey="-fb+5w+4e-db+86"
+                  style={{ display: "block" }}
+                  className="w-full"
+                />
               </div>
 
               {blogPosts.length > 0 ? (
@@ -111,8 +116,14 @@ export default async function TutorialsPage() {
               )}
 
               {/* Bottom Ad */}
-              <div className="mt-8">
-                <AdBanner slot="in feed para listas" minHeight={250} />
+              <div className="mt-8 min-h-[250px] w-full flex justify-center">
+                <AdUnit
+                  slot="1352493197"
+                  format="fluid"
+                  layoutKey="-fb+5w+4e-db+86"
+                  style={{ display: "block" }}
+                  className="w-full"
+                />
               </div>
             </div>
 

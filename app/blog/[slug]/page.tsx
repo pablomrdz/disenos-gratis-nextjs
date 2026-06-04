@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 import { JsonLd } from '@/components/json-ld'
 import { getDesignBySlug, getPopularCategories } from '@/lib/data'
 import { RichText } from '@/components/rich-text'
@@ -138,8 +138,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               {/* Ad */}
-              <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
-                <AdBanner slot="9549519747" responsive={true} />
+              <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                <AdUnit
+                  slot="9549519747"
+                  format="auto"
+                  style={{ display: "block" }}
+                  className="w-full"
+                />
               </div>
 
               {/* Content */}
@@ -156,8 +161,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               {/* Bottom Ad */}
-              <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
-                <AdBanner slot="9549519747" responsive={true} />
+              <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                <AdUnit
+                  slot="9549519747"
+                  format="auto"
+                  style={{ display: "block" }}
+                  className="w-full"
+                />
               </div>
             </div>
 

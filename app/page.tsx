@@ -5,8 +5,7 @@ import { HeroSection } from '@/components/hero-section'
 import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
 import { Sidebar } from '@/components/sidebar'
-import { AdBanner } from '@/components/ad-banner'
-import { AdSlot } from '@/components/ad-slot'
+import { AdUnit } from '@/components/AdUnit'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
 
@@ -57,8 +56,13 @@ export default function HomePage() {
       <HeroSection />
 
       {/* Ad Mobile Top */}
-      <div className="lg:hidden mx-auto px-4 mt-8">
-        <AdBanner slot="home mobile" minHeight={100} />
+      <div className="lg:hidden mx-auto px-4 mt-8 min-h-[100px] flex justify-center">
+        <AdUnit
+          slot="6765960189"
+          format="auto"
+          style={{ display: "block" }}
+          className="w-full"
+        />
       </div>
 
       {/* Main Content - Full Width */}
@@ -71,8 +75,13 @@ export default function HomePage() {
           </Suspense>
 
           {/* Ad Slot 1 - Desktop (after Top del Mes) */}
-          <div className="hidden lg:flex justify-center mb-12 w-full">
-            <AdSlot format="728x90" slotId="home-top-desktop" />
+          <div className="hidden lg:flex justify-center mb-12 w-full min-h-[90px]">
+            <AdUnit
+              slot="9549519747"
+              format="auto"
+              style={{ display: "block" }}
+              className="w-full"
+            />
           </div>
 
           <div className="flex items-end justify-between">
@@ -99,16 +108,27 @@ export default function HomePage() {
             </Suspense>
 
             {/* Inline Ad after designs */}
-            <div className="mt-8">
-              <AdBanner slot="in feed para listas" minHeight={250} />
+            <div className="mt-8 min-h-[250px] w-full flex justify-center">
+              <AdUnit
+                slot="1352493197"
+                format="fluid"
+                layoutKey="-fb+5w+4e-db+86"
+                style={{ display: "block" }}
+                className="w-full"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Ad Mobile Bottom */}
-      <div className="lg:hidden mx-auto px-4 mb-8">
-        <AdBanner slot="home mobile" minHeight={100} />
+      <div className="lg:hidden mx-auto px-4 mb-8 min-h-[100px] flex justify-center">
+        <AdUnit
+          slot="6765960189"
+          format="auto"
+          style={{ display: "block" }}
+          className="w-full"
+        />
       </div>
 
       {/* Categories moved to bottom */}

@@ -18,7 +18,7 @@ import {
 
 // Components
 import { Badge } from '@/components/ui/badge'
-import { AdBanner } from '@/components/ad-banner'
+import { AdUnit } from '@/components/AdUnit'
 
 import { DesignGrid } from '@/components/design-grid'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
@@ -170,9 +170,25 @@ async function CategoryContent({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-8">
-      <AdBanner slot="in feed para listas" minHeight={250} />
+      <div className="min-h-[250px] w-full flex justify-center">
+        <AdUnit
+          slot="1352493197"
+          format="fluid"
+          layoutKey="-fb+5w+4e-db+86"
+          style={{ display: "block" }}
+          className="w-full"
+        />
+      </div>
       <DesignGrid designs={designs} showAds={true} adFrequency={6} columns={3} />
-      <AdBanner slot="in feed para listas" minHeight={250} />
+      <div className="min-h-[250px] w-full flex justify-center">
+        <AdUnit
+          slot="1352493197"
+          format="fluid"
+          layoutKey="-fb+5w+4e-db+86"
+          style={{ display: "block" }}
+          className="w-full"
+        />
+      </div>
     </div>
   )
 }
@@ -442,8 +458,13 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 )}
               </div>
 
-              <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
-                <AdBanner slot="9549519747" responsive={true} />
+              <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                <AdUnit
+                  slot="9549519747"
+                  format="auto"
+                  style={{ display: "block" }}
+                  className="w-full"
+                />
               </div>
 
               {!isBlog && (
@@ -462,8 +483,13 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               )}>
                 <h2 className="sr-only">Descripción</h2>
 
-                <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
-                  <AdBanner slot="9549519747" responsive={true} />
+                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                  <AdUnit
+                    slot="9549519747"
+                    format="auto"
+                    style={{ display: "block" }}
+                    className="w-full"
+                  />
                 </div>
 
                 {/* WordPress migrated content (SEO) */}
@@ -482,8 +508,13 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                   </div>
                 )}
 
-                <div className="min-h-[100px] w-full flex justify-center overflow-hidden my-6">
-                  <AdBanner slot="9549519747" responsive={true} />
+                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                  <AdUnit
+                    slot="9549519747"
+                    format="auto"
+                    style={{ display: "block" }}
+                    className="w-full"
+                  />
                 </div>
                 
                 <RelatedSearches keywords={design.related_keywords} />
