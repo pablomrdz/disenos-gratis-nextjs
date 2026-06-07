@@ -13,7 +13,7 @@ import {
   ArrowLeft,
   ChevronRight,
   Type,
-  Play
+Play
 } from 'lucide-react'
 
 // Components
@@ -22,7 +22,6 @@ import AdUnit from '@/components/AdUnit'
 
 import { DesignGrid } from '@/components/design-grid'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
-import { Sidebar } from '@/components/sidebar'
 import { JsonLd } from '@/components/json-ld'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import { FontPreviewInteractive } from '@/components/font-preview-interactive'
@@ -32,7 +31,7 @@ import { RelatedSearches } from '@/components/related-searches'
 import { RichText } from '@/components/rich-text'
 
 // Utils and Lib
-import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getPrimaryCategory, ALLOWED_SLUGS, getTaxonomyBySlug } from '@/lib/data'
+import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getAllTags, getPrimaryCategory, ALLOWED_SLUGS, getTaxonomyBySlug } from '@/lib/data'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { detectContentType, extractDownloadLink } from '@/lib/content-utils'
 import { cn, slugify, normalizeText, getCategoryIcon, getCategoryColor } from '@/lib/utils'
@@ -179,7 +178,7 @@ async function CategoryContent({ slug }: { slug: string }) {
           className="w-full"
         />
       </div>
-      <DesignGrid designs={designs} showAds={true} adFrequency={6} columns={3} />
+      <DesignGrid designs={designs} showAds={true} adFrequency={6} />
       <div className="min-h-[250px] w-full flex justify-center">
         <AdUnit
           slot="1352493197"
@@ -214,8 +213,10 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
       permanentRedirect(`/${cleanSlug}`)
     }
 
-    const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
-    const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
+    const [popularCategories, allTags] = await Promise.all([
+      getPopularCategories(6),
+      getAllTags(),
+    ])
 
     const categoryName = decodedSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     const taxonomy = await getTaxonomyBySlug(cleanSlug, 'category')
@@ -256,15 +257,18 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
         </section>
 
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-8 lg:flex-row">
-            <div className="flex-1">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="lg:col-span-3 min-w-0">
               <Suspense fallback={<DesignGridSkeleton />}>
                 <CategoryContent slug={decodedSlug} />
               </Suspense>
             </div>
 
-            <aside className="w-full lg:w-[300px]">
-              <Sidebar popularDesigns={popularDesigns} />
+            <aside className="hidden lg:block">
+              <StickySidebar
+                popularCategories={popularCategories}
+                tags={allTags.slice(0, 20)}
+              />
             </aside>
           </div>
         </div>

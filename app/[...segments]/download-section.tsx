@@ -235,18 +235,19 @@ export function DownloadSection({ design }: DownloadSectionProps) {
           </div>
         </div>
 
-        {/* AdSync Ad Unit permanently mounted */}
+        {/* AdSync Ad Unit — collapses to zero height until download starts */}
         <div
-          style={{ width: '100%', minHeight: '250px' }}
-          className={`mt-8 flex justify-center transition-opacity duration-500 ${
-            phase === 'ready' ? 'opacity-100' : 'opacity-0'
+          className={`flex justify-center transition-all duration-500 overflow-hidden ${
+            phase === 'loading' || phase === 'ready'
+              ? 'max-h-[350px] opacity-100 mt-6'
+              : 'max-h-0 opacity-0'
           }`}
         >
           <AdUnit
             slot="1352493197"
             format="fluid"
             layoutKey="-fb+5w+4e-db+86"
-            style={{ display: "block" }}
+            style={{ display: "block", width: "100%" }}
             className="w-full"
           />
         </div>

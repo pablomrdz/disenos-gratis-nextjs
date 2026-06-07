@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
-import { Sidebar } from '@/components/sidebar'
+import { StickySidebar } from '@/components/sticky-sidebar'
 import AdUnit from '@/components/AdUnit'
-import { getDesignsByTag, getDesigns, getPopularCategories, getTaxonomyBySlug } from '@/lib/data'
+import { getDesignsByTag, getPopularCategories, getAllTags, getTaxonomyBySlug } from '@/lib/data'
 import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
 import { RichText } from '@/components/rich-text'
@@ -41,22 +41,13 @@ export default async function TagPage({ params }: TagPageProps) {
     if (decodedTag === 'dia-del-padre') displayName = 'Día del Padre';
     if (decodedTag === 'cumpleanos') displayName = 'Cumpleaños';
 
-    // Fetch designs for this tag
-    const taggedDesigns = await getDesignsByTag(decodedTag, 100)
-
-    // Fetch popular designs for sidebar (reuse logic or fetch general popular)
-    const allDesigns = await getDesigns({ limit: 10 })
-    const popularDesigns = [...allDesigns].sort((a, b) => b.downloads - a.downloads).slice(0, 5)
-
-    // Fetch taxonomy for this tag
-    const cleanSlug = slugify(decodedTag)
-    const taxonomy = await getTaxonomyBySlug(cleanSlug, 'tag')
-
-    if (taggedDesigns.length === 0) {
-        // Logic for empty tag or 404? 
-        // For now we show the page but with empty state or similar
-        // Or we can just render it.
-    }
+    // Fetch resources in parallel
+    const [taggedDesigns, popularCategories, allTags, taxonomy] = await Promise.all([
+        getDesignsByTag(decodedTag, 100),
+        getPopularCategories(6),
+        getAllTags(),
+        getTaxonomyBySlug(slugify(decodedTag), 'tag')
+    ])
 
     return (
         <>
@@ -106,9 +97,9 @@ export default async function TagPage({ params }: TagPageProps) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid gap-8 lg:grid-cols-[1fr,300px]">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                         {/* Main Content */}
-                        <main>
+                        <main className="lg:col-span-3 min-w-0">
                             {taggedDesigns.length > 0 ? (
                                 <>
                                     <p className="mb-6 text-sm text-muted-foreground">Mostrando {taggedDesigns.length} resultados</p>
@@ -144,7 +135,10 @@ export default async function TagPage({ params }: TagPageProps) {
 
                         {/* Sidebar */}
                         <aside className="hidden lg:block">
-                            <Sidebar popularDesigns={popularDesigns} />
+                            <StickySidebar
+                                popularCategories={popularCategories}
+                                tags={allTags.slice(0, 20)}
+                            />
                         </aside>
                     </div>
                 </div>
@@ -152,3 +146,4 @@ export default async function TagPage({ params }: TagPageProps) {
         </>
     )
 }
+

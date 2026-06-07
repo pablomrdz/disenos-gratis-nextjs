@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { Video, ExternalLink } from 'lucide-react'
 import { TutorialCard } from '@/components/tutorial-card'
 import { DesignCard } from '@/components/design-card'
-import { Sidebar } from '@/components/sidebar'
+import { StickySidebar } from '@/components/sticky-sidebar'
 import AdUnit from '@/components/AdUnit'
 import { Button } from '@/components/ui/button'
-import { getTutorials, getDesigns } from '@/lib/data'
+import { getDesigns, getPopularCategories, getAllTags } from '@/lib/data'
 
 // Force SSR for SEO
 // ISR: Static with 1 hour revalidation
@@ -36,12 +36,11 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export default async function TutorialsPage() {
-  const [blogPosts, allDesigns] = await Promise.all([
+  const [blogPosts, popularCategories, allTags] = await Promise.all([
     getDesigns({ category: 'blog' }),
-    getDesigns({ limit: 10, excludeCategory: 'blog' }),
+    getPopularCategories(6),
+    getAllTags(),
   ])
-
-  const popularDesigns = [...allDesigns].sort((a, b) => b.downloads - a.downloads).slice(0, 5)
 
   return (
     <>
@@ -83,14 +82,12 @@ export default async function TutorialsPage() {
         </div>
       </section>
 
-
-
       {/* Main Content */}
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr,300px]">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Tutorial Grid */}
-            <div>
+            <div className="lg:col-span-3 min-w-0">
               <div className="mb-8 min-h-[250px] w-full flex justify-center">
                 <AdUnit
                   slot="1352493197"
@@ -128,14 +125,16 @@ export default async function TutorialsPage() {
             </div>
 
             {/* Sidebar */}
-            <div className="hidden lg:block">
-              <div className="mx-auto max-w-[300px]">
-                <Sidebar popularDesigns={popularDesigns} />
-              </div>
-            </div>
+            <aside className="hidden lg:block">
+              <StickySidebar
+                popularCategories={popularCategories}
+                tags={allTags.slice(0, 20)}
+              />
+            </aside>
           </div>
         </div>
       </section>
     </>
   )
 }
+

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import { Search as SearchIcon } from 'lucide-react'
 import { DesignGrid } from '@/components/design-grid'
-import { Sidebar } from '@/components/sidebar'
+import { StickySidebar } from '@/components/sticky-sidebar'
 import AdUnit from '@/components/AdUnit'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import { getDesigns } from '@/lib/data'
+import { getPopularCategories, getAllTags } from '@/lib/data'
 import type { Design } from '@/lib/types'
 
 // ISR: Static with 1 hour revalidation
@@ -73,12 +73,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q } = await searchParams
   const query = q?.trim() || ''
 
-  const [searchResults, allDesigns] = await Promise.all([
+  const [searchResults, popularCategories, allTags] = await Promise.all([
     searchDesigns(query),
-    getDesigns({ limit: 10 }),
+    getPopularCategories(6),
+    getAllTags(),
   ])
-
-  const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
 
   return (
     <>
@@ -120,9 +119,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {/* Main Content */}
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-8 lg:flex-row">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Main Column */}
-            <div className="flex-1">
+            <div className="lg:col-span-3 min-w-0">
               {searchResults.length > 0 ? (
                 <DesignGrid designs={searchResults} />
               ) : query ? (
@@ -144,13 +143,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               )}
             </div>
 
-            {/* Sidebar - Moves below on mobile */}
-            <div className="w-full lg:w-[300px]">
-              <Sidebar popularDesigns={popularDesigns} />
-            </div>
+            {/* Sidebar */}
+            <aside className="hidden lg:block">
+              <StickySidebar
+                popularCategories={popularCategories}
+                tags={allTags.slice(0, 20)}
+              />
+            </aside>
           </div>
         </div>
       </section>
     </>
   )
 }
+

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import { DesignGrid } from '@/components/design-grid'
-import { Sidebar } from '@/components/sidebar'
+import { StickySidebar } from '@/components/sticky-sidebar'
 import AdUnit from '@/components/AdUnit'
-import { getDesigns, getCategories } from '@/lib/data'
+import { getDesigns, getCategories, getPopularCategories, getAllTags } from '@/lib/data'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn, slugify } from '@/lib/utils'
 import { redirect } from 'next/navigation'
 
 // Force SSR for SEO
@@ -39,14 +39,17 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
   // Fetch Categories for the pills
   const categories = await getCategories();
 
-  // Combine static "All" with fetched categories
+  // Combine static "All" with fetched categories, exclude 'blog'
   const categoryFilters = [
     { name: 'Todos', slug: 'all' },
-    ...categories
+    ...categories.filter(c => c.slug !== 'blog')
   ]
 
-  const allDesigns = await getDesigns({ limit: 10, excludeCategory: 'blog' })
-  const popularDesigns = [...allDesigns].sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0)).slice(0, 5)
+  // Fetch data for StickySidebar
+  const [popularCategories, allTags] = await Promise.all([
+    getPopularCategories(6),
+    getAllTags(),
+  ])
 
   return (
     <>
@@ -70,8 +73,8 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
                   <Link
                     key={cat.slug}
                     href={cat.slug === 'all'
-                      ? `/designs${type ? `?type=${type}` : ''}${vip ? `${type ? '&' : '?'}vip=${vip}` : ''}`
-                      : `/designs?category=${cat.slug}${type ? `&type=${type}` : ''}${vip ? `&vip=${vip}` : ''}`}
+                      ? '/designs'
+                      : `/${cat.slug}`}
                     scroll={false}
                   >
                     <div
@@ -107,9 +110,9 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
       {/* Main Content */}
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-16 lg:grid-cols-[1fr_300px]">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Design Grid */}
-            <div className="min-w-0">
+            <div className="lg:col-span-3 min-w-0">
               <div className="mb-4 text-sm text-muted-foreground flex items-center justify-between">
                 <span>Mostrando {designs.length} diseños</span>
                 {(category || type || vip) && (
@@ -130,11 +133,12 @@ export default async function DesignsPage({ searchParams }: DesignsPageProps) {
               )}
             </div>
 
-            {/* Sidebar - Sticky */}
-            <aside className="hidden lg:block relative">
-              <div className="sticky top-24">
-                <Sidebar popularDesigns={popularDesigns} />
-              </div>
+            {/* Sidebar - StickySidebar unificada */}
+            <aside className="hidden lg:block">
+              <StickySidebar
+                popularCategories={popularCategories}
+                tags={allTags.slice(0, 20)}
+              />
             </aside>
           </div>
         </div>

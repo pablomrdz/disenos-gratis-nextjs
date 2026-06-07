@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/json-ld'
@@ -118,6 +119,7 @@ export default function RootLayout({
           <Footer />
         </div>
         <Analytics />
+        <GoogleAnalytics gaId="G-QPKCT2ZXX0" />
       </body>
     </html>
   )
