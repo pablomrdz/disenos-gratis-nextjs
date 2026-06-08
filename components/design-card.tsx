@@ -31,13 +31,13 @@ export function DesignCard({ design }: DesignCardProps) {
 
   return (
     <Card
-      className="group overflow-hidden border-border/50 bg-card p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
+      className="group overflow-hidden border-border/50 bg-card p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg flex flex-col h-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative aspect-[3/2] overflow-hidden bg-muted">
         {isPlantilla && (
-          <div className="absolute top-3 left-3 bg-slate-900/95 text-white font-semibold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-md backdrop-blur-sm z-10 border border-slate-800 flex items-center gap-1">
+          <div className="absolute top-3 left-3 bg-[#50b5cb]/10 text-[#3ba4bc] border border-[#50b5cb]/20 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm backdrop-blur-md z-10 flex items-center gap-1">
             <span>✨</span> Editable Online
           </div>
         )}
@@ -76,7 +76,7 @@ export function DesignCard({ design }: DesignCardProps) {
         </div>
       </div>
 
-      <CardContent className="p-2 relative flex flex-col justify-between min-h-[90px]">
+      <CardContent className="p-2 relative flex flex-col justify-between min-h-[90px] flex-1">
         <div>
           <div className="group/link block relative z-10">
             {/* Title needs to decode entities like &#8211; */}
@@ -102,7 +102,7 @@ export function DesignCard({ design }: DesignCardProps) {
             </p>
           )}
         </div>
-        <div className="flex items-center justify-between gap-1.5 mt-auto pt-1">
+        <div className="flex items-center justify-between gap-1.5 mt-auto pt-4">
           <span className="flex items-center gap-0.5 text-[9px] text-muted-foreground whitespace-nowrap shrink-0">
             <Download className="h-2 w-2" />
             {(design.downloads ?? 0).toLocaleString()}
