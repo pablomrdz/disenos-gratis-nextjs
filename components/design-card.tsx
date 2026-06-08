@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Download, Eye } from 'lucide-react'
+import { Download, Eye, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import type { Design } from '@/lib/types'
@@ -26,6 +26,9 @@ export function DesignCard({ design }: DesignCardProps) {
   const mainCategory = (design.category || 'general').split(',')[0].trim()
   const siloUrl = `/${slugify(mainCategory)}/${design.slug || design.id}`
 
+  // Check if this design belongs to plantillas category
+  const isPlantilla = slugify(design.category || '').includes('plantillas')
+
   return (
     <Card
       className="group overflow-hidden border-border/50 bg-card p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
@@ -33,6 +36,11 @@ export function DesignCard({ design }: DesignCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative aspect-[3/2] overflow-hidden bg-muted">
+        {isPlantilla && (
+          <div className="absolute top-3 left-3 bg-slate-900/95 text-white font-semibold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-md backdrop-blur-sm z-10 border border-slate-800 flex items-center gap-1">
+            <span>✨</span> Editable Online
+          </div>
+        )}
         <Link href={siloUrl}>
           <Image
             src={imgSrc}
@@ -48,8 +56,17 @@ export function DesignCard({ design }: DesignCardProps) {
         {/* Overlay on hover - Compact & Simplified */}
         <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-3 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
           <div className="flex items-center text-white text-[10px] font-bold uppercase tracking-wider">
-            <Download className="mr-1.5 h-3.5 w-3.5" />
-            Descargar
+            {isPlantilla ? (
+              <>
+                <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-400" />
+                Personalizar ⚡
+              </>
+            ) : (
+              <>
+                <Download className="mr-1.5 h-3.5 w-3.5" />
+                Descargar
+              </>
+            )}
           </div>
           <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto shadow-sm" asChild onClick={(e) => e.stopPropagation()}>
             <Link href={siloUrl}>
@@ -92,9 +109,18 @@ export function DesignCard({ design }: DesignCardProps) {
           </span>
           <div className="relative z-10">
             <Link href={siloUrl}>
-              <Button size="sm" className="h-7 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white border-none text-[10px] font-bold px-4 transition-all duration-300">
-                Descargar
-              </Button>
+              {isPlantilla ? (
+                <button className="bg-gradient-to-r from-[#50b5cb] to-blue-600 text-white font-medium text-sm px-4 py-2 rounded-lg shadow-sm hover:from-[#40a4b9] hover:to-blue-700 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer flex items-center justify-center">
+                  Personalizar Ahora ⚡
+                </button>
+              ) : (
+                <Button 
+                  size="sm" 
+                  className="h-7 rounded-full border-none text-[10px] font-bold px-4 transition-all duration-300 bg-primary/10 text-primary hover:bg-primary hover:text-white"
+                >
+                  Descargar
+                </Button>
+              )}
             </Link>
           </div>
         </div>

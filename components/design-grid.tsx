@@ -8,7 +8,7 @@ interface DesignGridProps {
   designs: Design[]
   showAds?: boolean
   adFrequency?: number
-  columns?: 3 | 4
+  columns?: 2 | 3 | 4
 }
 
 export function DesignGrid({
@@ -46,7 +46,14 @@ export function DesignGrid({
       "grid gap-6",
       isFontGrid 
         ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
-        : cn("grid-cols-1 sm:grid-cols-2", columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4")
+        : cn(
+            "grid-cols-1 sm:grid-cols-2",
+            columns === 2 
+              ? "lg:grid-cols-2" 
+              : columns === 3 
+                ? "lg:grid-cols-3" 
+                : "lg:grid-cols-4"
+          )
     )}>
       {items.map((item) => {
         if ('type' in item && item.type === 'ad') {

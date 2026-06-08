@@ -178,7 +178,7 @@ async function CategoryContent({ slug }: { slug: string }) {
           className="w-full"
         />
       </div>
-      <DesignGrid designs={designs} showAds={true} adFrequency={6} />
+      <DesignGrid designs={designs} showAds={true} adFrequency={6} columns={slugify(slug).includes('plantillas') ? 2 : 4} />
       <div className="min-h-[250px] w-full flex justify-center">
         <AdUnit
           slot="1352493197"
