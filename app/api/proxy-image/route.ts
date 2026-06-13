@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(buffer, {
             headers: {
                 'Content-Type': contentType,
-                'Cache-Control': 'public, max-age=86400',
+                'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=86400',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, OPTIONS',
             },
