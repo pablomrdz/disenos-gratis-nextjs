@@ -19,11 +19,28 @@ export async function loadFont(fontFamily: string, url?: string): Promise<boolea
     }
 
     try {
-        const fontFace = new FontFace(fontFamily, `url(${url})`);
+        const cleanUrl = url.split(/[?#]/)[0];
+        let formatStr = '';
+        if (cleanUrl.toLowerCase().endsWith('.otf')) {
+            formatStr = " format('opentype')";
+        } else if (cleanUrl.toLowerCase().endsWith('.ttf')) {
+            formatStr = " format('truetype')";
+        } else if (cleanUrl.toLowerCase().endsWith('.woff2')) {
+            formatStr = " format('woff2')";
+        } else if (cleanUrl.toLowerCase().endsWith('.woff')) {
+            formatStr = " format('woff')";
+        }
+
+        const fontFace = new FontFace(fontFamily, `url(${url})${formatStr}`);
         const loadedFace = await fontFace.load();
         document.fonts.add(loadedFace);
+
+        console.log("🟢 FONT LOADER - Fuente registrada oficialmente:", loadedFace.family, "- Status:", loadedFace.status);
+        console.log("📋 FONT LOADER - Inventario completo en memoria:", Array.from(document.fonts).map(f => f.family));
+
         return true;
     } catch (error) {
+        console.error("❌ FONT LOADER - Error crítico en el registro nativo:", error);
         console.error(`[FontLoader] Failed to load font "${fontFamily}" from ${url}:`, error);
         return false;
     }
@@ -42,33 +59,63 @@ export const DESIGN_FONTS = [
     { name: 'Courier New', system: true },
 ]
 
+const pendingFontPromises = new Map<string, Promise<string>>();
+
 export async function loadCustomFontFromSupabase(fontRef: string): Promise<string> {
+    console.log("📥 FONT LOADER - Función invocada. Pasando las compuertas con ref:", fontRef);
+    
     if (!fontRef) return 'Roboto';
 
+    // Clean any rogue quotes from database or string manipulation
+    const cleanFontRef = fontRef.replace(/['"]/g, "").trim();
+
     // Parse the file name and desired font family name
-    const isFile = /\.(ttf|otf|woff2?)$/i.test(fontRef);
-    const fileName = isFile ? fontRef : `${fontRef}.ttf`;
-    const fontFamily = fontRef.replace(/\.[^/.]+$/, "");
+    const isFile = /\.(ttf|otf|woff2?)$/i.test(cleanFontRef);
+    const fileName = isFile ? cleanFontRef : `${cleanFontRef}.ttf`;
+    const fontFamily = cleanFontRef.replace(/\.[^/.]+$/, "");
 
-    const url = `https://vmlcdhbnqlipioswzore.supabase.co/storage/v1/object/public/fonts/${fileName}`;
+    if (pendingFontPromises.has(fontFamily)) {
+        console.log("⚡ FONT LOADER - Caché hit (en proceso/cargado) para:", fontFamily);
+        return pendingFontPromises.get(fontFamily)!;
+    }
 
-    try {
-        const success = await loadFont(fontFamily, url);
-        if (success) {
+    const loadPromise = (async () => {
+        console.log("⏳ FONT LOADER - Intentando obtener URL de Supabase...");
+        const url = `https://vmlcdhbnqlipioswzore.supabase.co/storage/v1/object/public/fonts/${fileName}`;
+        console.log("📍 FONT LOADER - URL obtenida:", url);
+
+        console.log("⏳ FONT LOADER - Iniciando fetch nativo del binario...");
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`Fallo de red: HTTP ${res.status}`);
+            
+            const contentType = res.headers.get("content-type") || "";
+            
+            // Si nos devuelve texto o json, el archivo está corrupto en el storage
+            if (contentType.includes("text") || contentType.includes("json")) {
+                console.error("❌ FONT LOADER - El archivo en Supabase está corrupto o es un error enmascarado. Type:", contentType);
+                throw new Error("Archivo inválido en el storage");
+            }
+
+            const fontBuffer = await res.arrayBuffer();
+            const fontFace = new FontFace(fontFamily, fontBuffer);
+            await fontFace.load();
+            document.fonts.add(fontFace);
+
             // Add it to our global catalog so the toolbar dropdown displays it
             if (!DESIGN_FONTS.find(f => f.name === fontFamily)) {
                 DESIGN_FONTS.unshift({ name: fontFamily, url });
             }
             return fontFamily;
+        } catch (error) {
+            console.error(`[FontLoader] Error loading ${fontRef} from Supabase:`, error);
+            pendingFontPromises.delete(fontFamily);
+            return "";
         }
-    } catch (error) {
-        console.error(`[FontLoader] Error loading ${fontRef} from Supabase:`, error);
-    }
+    })();
 
-    // Google font fallback
-    const fallbackFont = 'Montserrat';
-    await loadFont(fallbackFont, 'https://fonts.gstatic.com/s/montserrat/v25/JTUHjIg1_i6t8kCHKm453RRSOseX7rAc-527noWr.woff2');
-    return fallbackFont;
+    pendingFontPromises.set(fontFamily, loadPromise);
+    return loadPromise;
 }
 
 export async function fetchAllFontsFromSupabase() {
@@ -103,7 +150,7 @@ export async function fetchAllFontsFromSupabase() {
 
             const isFont = /\.(ttf|otf|woff2?)$/i.test(file.name);
             if (isFont) {
-                const fontFamily = file.name.replace(/\.[^/.]+$/, "");
+                const fontFamily = file.name.replace(/['"]/g, "").replace(/\.[^/.]+$/, "").trim();
                 const url = `https://vmlcdhbnqlipioswzore.supabase.co/storage/v1/object/public/fonts/${file.name}`;
 
                 // Prevent duplicates

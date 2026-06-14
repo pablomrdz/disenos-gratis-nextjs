@@ -446,18 +446,36 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
 
                 {isFont && (
                   <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-6 sm:p-8">
-                    <h3 className="mb-4 text-sm font-medium text-primary flex items-center gap-2">
-                      <Type className="h-4 w-4" />
-                      Probador de texto (Simulación)
-                    </h3>
-                    <FontPreviewInteractive
-                      isLarge={false}
-                      className="w-full"
-                      initialText={title.includes('Halloween') ? 'Trick or Treat - Noche de Brujas' : undefined}
-                    />
-                    <p className="mt-4 text-[10px] text-muted-foreground italic">
-                      Nota: Esta es una vista previa del diseño. La tipografía real se obtiene al descargar el archivo.
-                    </p>
+                    {design.font_family ? (
+                      <>
+                        <h3 className="mb-4 text-sm font-medium text-primary flex items-center gap-2">
+                          <Type className="h-4 w-4" />
+                          Probador de texto en vivo
+                        </h3>
+                        <FontPreviewInteractive
+                          isLarge={false}
+                          className="w-full"
+                          fontFamilyName={design.font_family}
+                          initialText={title.includes('Halloween') ? 'Trick or Treat - Noche de Brujas' : undefined}
+                        />
+                        <p className="mt-4 text-[10px] text-muted-foreground italic">
+                          Nota: Esta es una vista previa interactiva. Descarga la tipografía para usarla en tus proyectos.
+                        </p>
+                      </>
+                    ) : (
+                      <div className="text-center py-4">
+                        <h3 className="mb-2 text-sm font-semibold text-primary flex items-center justify-center gap-2">
+                          <Type className="h-4 w-4" />
+                          Vista previa no disponible
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          Este recurso es un <strong>pack de múltiples fuentes</strong>.
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Descarga el archivo completo para ver e instalar todas las tipografías incluidas.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

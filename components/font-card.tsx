@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Download, Type } from 'lucide-react'
@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { Design } from '@/lib/types'
 
 import { slugify } from '@/lib/utils'
+import { loadCustomFontFromSupabase } from '@/lib/font-loader'
 
 interface FontCardProps {
   font: Design
@@ -16,30 +17,63 @@ interface FontCardProps {
 
 export function FontCard({ font }: FontCardProps) {
   const [previewText, setPreviewText] = useState('Texto de prueba')
+  const [loadedFontFamily, setLoadedFontFamily] = useState<string | null>(null)
+
+  console.log("🎴 GRID CARD - Item:", font.title, "-> Font Prop:", font.font_family);
+
+  useEffect(() => {
+    if (!font.font_family) return;
+
+    let isMounted = true;
+    const fontRef = font.font_family.replace(/['"]/g, "").trim();
+
+    async function load() {
+      try {
+        const family = await loadCustomFontFromSupabase(fontRef);
+        if (!family) return;
+
+        await document.fonts.ready;
+        if (isMounted) {
+            const cleanName = family.replace(/['"]/g, "").replace(/\.[^/.]+$/, "").trim();
+            setTimeout(() => {
+                if (isMounted) setLoadedFontFamily(cleanName);
+            }, 50);
+        }
+      } catch (err) {
+        if (isMounted) setLoadedFontFamily('sans-serif');
+      }
+    }
+    
+    load();
+    
+    return () => { isMounted = false; };
+  }, [font.font_family]);
 
   const mainCategory = (font.category || 'Tipografías').split(',')[0].trim()
   const siloUrl = `/${slugify(mainCategory)}/${font.slug || font.id}`
 
+  const appliedFontFamily = loadedFontFamily ? `'${loadedFontFamily}', sans-serif` : 'sans-serif';
+
   return (
     <Card className="group overflow-hidden border-border/50 p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
       {/* Main Image Preview (Visual appeal) */}
-      <div className="relative aspect-[3/2] overflow-hidden bg-muted">
-        <Link href={siloUrl}>
+      <Link href={siloUrl} className="block w-full">
+        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted">
           <Image
             src={font.image_url || font.thumbnail_url || "/placeholder.svg"}
             alt={font.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
 
       {/* Interactive Text Previewer */}
       <div className="border-b border-border/50 bg-muted/30">
         <div className="p-3 flex flex-col gap-2">
           <div 
             className="flex min-h-[60px] items-center justify-center rounded-md bg-background px-4 py-2 shadow-inner overflow-hidden"
-            style={{ fontFamily: font.font_family || 'sans-serif' }}
+            style={{ fontFamily: appliedFontFamily }}
           >
             <span className="text-xl sm:text-2xl text-center break-words line-clamp-2">{previewText || 'Texto de prueba'}</span>
           </div>
@@ -51,6 +85,7 @@ export function FontCard({ font }: FontCardProps) {
               placeholder="Escribe para probar..."
               className="w-full rounded-md border border-border/50 bg-background px-3 py-1.5 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
               onClick={(e) => e.stopPropagation()}
+              style={{ fontFamily: appliedFontFamily }}
             />
             <Type className="absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground opacity-50 pointer-events-none" />
           </div>

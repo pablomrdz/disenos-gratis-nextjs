@@ -35,13 +35,13 @@ export function DesignCard({ design }: DesignCardProps) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative aspect-[3/2] overflow-hidden bg-muted">
-        {isPlantilla && (
-          <div className="absolute top-3 left-3 bg-[#50b5cb]/10 text-[#3ba4bc] border border-[#50b5cb]/20 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm backdrop-blur-md z-10 flex items-center gap-1">
-            <span>✨</span> Editable Online
-          </div>
-        )}
-        <Link href={siloUrl}>
+      <Link href={siloUrl} className="block w-full">
+        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted">
+          {isPlantilla && (
+            <div className="absolute top-3 left-3 bg-[#50b5cb]/10 text-[#3ba4bc] border border-[#50b5cb]/20 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm backdrop-blur-md z-30 flex items-center gap-1">
+              <span>✨</span> Editable Online
+            </div>
+          )}
           <Image
             src={imgSrc}
             alt={design.title}
@@ -51,30 +51,30 @@ export function DesignCard({ design }: DesignCardProps) {
             onError={() => setImgError(true)}
             unoptimized={imgSrc.includes('supabase.co')}
           />
-        </Link>
 
-        {/* Overlay on hover - Compact & Simplified */}
-        <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-3 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="flex items-center text-white text-[10px] font-bold uppercase tracking-wider">
-            {isPlantilla ? (
-              <>
-                <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-400" />
-                Personalizar ⚡
-              </>
-            ) : (
-              <>
-                <Download className="mr-1.5 h-3.5 w-3.5" />
-                Descargar
-              </>
-            )}
+          {/* Overlay on hover - Compact & Simplified */}
+          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-3 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="flex items-center text-white text-[10px] font-bold uppercase tracking-wider">
+              {isPlantilla ? (
+                <>
+                  <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-400" />
+                  Personalizar ⚡
+                </>
+              ) : (
+                <>
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                  Descargar
+                </>
+              )}
+            </div>
+            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto shadow-sm" asChild onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-center w-full h-full">
+                <Eye className="h-4 w-4" />
+              </div>
+            </Button>
           </div>
-          <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto shadow-sm" asChild onClick={(e) => e.stopPropagation()}>
-            <Link href={siloUrl}>
-              <Eye className="h-4 w-4" />
-            </Link>
-          </Button>
         </div>
-      </div>
+      </Link>
 
       <CardContent className="p-2 relative flex flex-col justify-between min-h-[90px] flex-1">
         <div>
