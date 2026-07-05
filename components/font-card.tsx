@@ -55,13 +55,14 @@ export function FontCard({ font }: FontCardProps) {
   const appliedFontFamily = loadedFontFamily ? `'${loadedFontFamily}', sans-serif` : 'sans-serif';
 
   return (
-    <Card className="group overflow-hidden border-border/50 p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
+    <div className="relative z-0 transition-transform duration-300 ease-out hover:-translate-y-1 hover:z-10 will-change-transform" style={{ isolation: 'isolate' }}>
+    <Card className="group border-border/50 p-0 gap-0 flex flex-col hover:border-primary/20 hover:shadow-2xl shadow-sm">
       {/* Main Image Preview (Visual appeal) */}
       <Link href={siloUrl} className="block w-full">
-        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted">
+        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted rounded-t-xl">
           <Image
             src={font.image_url || font.thumbnail_url || "/placeholder.svg"}
-            alt={font.title}
+            alt={font.alt_text || font.title || "Diseño editable gratis"}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -130,5 +131,6 @@ export function FontCard({ font }: FontCardProps) {
         </div>
       </CardContent>
     </Card>
+    </div>
   )
 }

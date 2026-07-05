@@ -7,13 +7,15 @@ import { DesignGrid } from '@/components/design-grid'
 import AdUnit from '@/components/AdUnit'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
+import { createServerSupabaseClient } from '@/lib/supabase'
+import type { Design } from '@/lib/types'
 
-// Force SSR for SEO
 // ISR: Static with 1 hour revalidation
 export const revalidate = 3600
 
 
 
+// ─── Sección 1: Top del Mes ───────────────────────────────────────────────────
 async function TopDesigns() {
   const designs = await getDesigns({ limit: 100, tag: 'Top del mes', excludeCategory: 'blog' })
 
@@ -43,9 +45,36 @@ async function TopDesigns() {
   )
 }
 
-async function FeaturedDesigns() {
-  const designs = await getDesigns({ limit: 16, excludeCategory: 'blog' })
-  return <DesignGrid designs={designs} showAds={true} adFrequency={8} />
+// ─── Sección 2: Diseños más recientes ────────────────────────────────────────
+async function RecentDesigns() {
+  const supabase = createServerSupabaseClient()
+  const { data, error } = await supabase
+    .from('designs')
+    .select('*')
+    .neq('category', 'blog')
+    .order('created_at', { ascending: false })
+    .limit(8)
+
+  if (error || !data) return null
+
+  return <DesignGrid designs={data as Design[]} showAds={false} columns={4} />
+}
+
+// ─── Sección 3: Explorar Catálogo (feed rastreable, excluye los primeros 8) ──
+async function CatalogFeed() {
+  const supabase = createServerSupabaseClient()
+
+  // Fetch a broader set for Google crawlability — offset 8 to avoid duplicating RecentDesigns
+  const { data, error } = await supabase
+    .from('designs')
+    .select('*')
+    .neq('category', 'blog')
+    .order('created_at', { ascending: false })
+    .range(8, 107)
+
+  if (error || !data || data.length === 0) return null
+
+  return <DesignGrid designs={data as Design[]} showAds={true} adFrequency={8} columns={4} />
 }
 
 export default function HomePage() {
@@ -68,7 +97,7 @@ export default function HomePage() {
       <section className="pt-0 sm:pt-8 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* Top del Mes */}
+          {/* ── Sección 1: Top del Mes ── */}
           <Suspense fallback={<DesignGridSkeleton />}>
             <TopDesigns />
           </Suspense>
@@ -83,13 +112,14 @@ export default function HomePage() {
             />
           </div>
 
-          <div className="flex items-end justify-between">
+          {/* ── Sección 2: Diseños más recientes ── */}
+          <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Diseños Destacados
+                Diseños más recientes
               </h2>
               <p className="mt-2 text-muted-foreground">
-                Plantillas seleccionadas para tus proyectos creativos
+                Las últimas plantillas y recursos añadidos al catálogo
               </p>
             </div>
             <Link
@@ -101,21 +131,46 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-8">
-            <Suspense fallback={<DesignGridSkeleton />}>
-              <FeaturedDesigns />
-            </Suspense>
+          <Suspense fallback={<DesignGridSkeleton />}>
+            <RecentDesigns />
+          </Suspense>
 
-            {/* Inline Ad after designs */}
-            <div className="mt-8 min-h-[250px] w-full flex justify-center">
-              <AdUnit
-                slot="1352493197"
-                format="fluid"
-                layoutKey="-fb+5w+4e-db+86"
-                style={{ display: "block" }}
-                className="w-full"
-              />
+          {/* Inline Ad after recent designs */}
+          <div className="mt-8 min-h-[250px] w-full flex justify-center">
+            <AdUnit
+              slot="1352493197"
+              format="fluid"
+              layoutKey="-fb+5w+4e-db+86"
+              style={{ display: "block" }}
+              className="w-full"
+            />
+          </div>
+
+          {/* ── Sección 3: Explorar Catálogo ── */}
+          <div className="flex items-end justify-between mb-8 mt-16">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                Explorar Catálogo
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Explora todo nuestro catálogo histórico de diseños gratuitos
+              </p>
             </div>
+          </div>
+
+          <Suspense fallback={<DesignGridSkeleton />}>
+            <CatalogFeed />
+          </Suspense>
+
+          {/* Inline Ad after catalog */}
+          <div className="mt-8 min-h-[250px] w-full flex justify-center">
+            <AdUnit
+              slot="1352493197"
+              format="fluid"
+              layoutKey="-fb+5w+4e-db+86"
+              style={{ display: "block" }}
+              className="w-full"
+            />
           </div>
         </div>
       </section>
@@ -161,3 +216,4 @@ export default function HomePage() {
     </>
   )
 }
+

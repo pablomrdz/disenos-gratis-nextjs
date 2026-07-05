@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Download, Eye, Sparkles } from 'lucide-react'
+import { Download, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import type { Design } from '@/lib/types'
@@ -30,13 +30,14 @@ export function DesignCard({ design }: DesignCardProps) {
   const isPlantilla = slugify(design.category || '').includes('plantillas')
 
   return (
+    <div className="relative z-0 transition-transform duration-300 ease-out hover:-translate-y-1 hover:z-10 will-change-transform" style={{ isolation: 'isolate' }}>
     <Card
-      className="group overflow-hidden border-border/50 bg-card p-0 gap-0 transition-all duration-300 hover:border-primary/20 hover:shadow-lg flex flex-col h-full"
+      className="group border-border/50 bg-card p-0 gap-0 flex flex-col h-full hover:border-primary/20 hover:shadow-2xl shadow-sm"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={siloUrl} className="block w-full">
-        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted">
+        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted rounded-t-xl">
           {isPlantilla && (
             <div className="absolute top-3 left-3 bg-[#50b5cb]/10 text-[#3ba4bc] border border-[#50b5cb]/20 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm backdrop-blur-md z-30 flex items-center gap-1">
               <span>✨</span> Editable Online
@@ -44,7 +45,7 @@ export function DesignCard({ design }: DesignCardProps) {
           )}
           <Image
             src={imgSrc}
-            alt={design.title}
+            alt={design.alt_text || design.title || "Diseño editable gratis"}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
@@ -52,26 +53,21 @@ export function DesignCard({ design }: DesignCardProps) {
             unoptimized={imgSrc.includes('supabase.co')}
           />
 
-          {/* Overlay on hover - Compact & Simplified */}
-          <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-3 transition-opacity duration-300 z-20 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="flex items-center text-white text-[10px] font-bold uppercase tracking-wider">
+          {/* Overlay on hover - Elegant & Minimalist */}
+          <div className={`absolute inset-0 bg-black/5 transition-opacity duration-300 z-20 flex items-center justify-center pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`flex items-center gap-2 bg-white/95 text-primary px-5 py-2.5 rounded-full shadow-xl backdrop-blur-sm transform transition-all duration-300 ${isHovered ? 'translate-y-0 scale-100' : 'translate-y-4 scale-95'}`}>
               {isPlantilla ? (
                 <>
-                  <Sparkles className="mr-1.5 h-3.5 w-3.5 text-amber-400" />
-                  Personalizar ⚡
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Personalizar</span>
                 </>
               ) : (
                 <>
-                  <Download className="mr-1.5 h-3.5 w-3.5" />
-                  Descargar
+                  <Download className="h-4 w-4" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Descargar</span>
                 </>
               )}
             </div>
-            <Button size="sm" variant="secondary" className="h-8 w-8 rounded-full p-0 pointer-events-auto shadow-sm" asChild onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-center w-full h-full">
-                <Eye className="h-4 w-4" />
-              </div>
-            </Button>
           </div>
         </div>
       </Link>
@@ -126,5 +122,6 @@ export function DesignCard({ design }: DesignCardProps) {
         </div>
       </CardContent>
     </Card>
+    </div>
   )
 }

@@ -432,7 +432,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                   )}>
                     <Image
                       src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
-                      alt={design.alt_text || title}
+                      alt={design.alt_text || design.title || "Diseño editable gratis"}
                       fill
                       className="object-cover"
                       priority
