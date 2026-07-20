@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Search as SearchIcon } from 'lucide-react'
 import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
-import AdUnit from '@/components/AdUnit'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { getPopularCategories, getAllTags } from '@/lib/data'
 import type { Design } from '@/lib/types'
@@ -101,18 +100,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Hero Ad */}
-      <section className="py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[90px] flex justify-center">
-          <AdUnit
-            slot="9549519747"
-            format="auto"
-            style={{ display: "block" }}
-            className="w-full"
-          />
         </div>
       </section>
 

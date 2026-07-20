@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface AdUnitProps {
   slot: string;
@@ -17,8 +17,15 @@ export default function AdUnit({
   className,
 }: AdUnitProps) {
   const adRef = useRef<HTMLModElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    
     let retries = 0;
     const MAX_RETRIES = 20; // 20 × 500ms = 10s max
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -46,7 +53,11 @@ export default function AdUnit({
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, []);
+  }, [isMounted, slot]);
+
+  if (!isMounted) {
+    return <div style={style || { display: 'block', minHeight: '250px' }} className={className || ''} />;
+  }
 
   return (
     <ins
@@ -55,6 +66,7 @@ export default function AdUnit({
       style={style || { display: 'block', minHeight: '250px' }}
       data-ad-client="ca-pub-1784471620247875"
       data-ad-slot={slot}
+      data-full-width-responsive="true"
       {...(format ? { 'data-ad-format': format } : {})}
       {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
     />

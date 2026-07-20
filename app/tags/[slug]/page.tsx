@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
-import AdUnit from '@/components/AdUnit'
 import { getDesignsByTag, getPopularCategories, getAllTags, getTaxonomyBySlug } from '@/lib/data'
 import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
@@ -84,17 +83,6 @@ export default async function TagPage({ params }: TagPageProps) {
                 </div>
             </div>
 
-            <div className="py-8 bg-slate-50 border-b border-slate-200">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[90px] flex justify-center">
-                    <AdUnit
-                        slot="9549519747"
-                        format="auto"
-                        style={{ display: "block" }}
-                        className="w-full bg-white shadow-sm border border-slate-200 rounded-lg"
-                    />
-                </div>
-            </div>
-
             <div className="py-12">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -103,7 +91,7 @@ export default async function TagPage({ params }: TagPageProps) {
                             {taggedDesigns.length > 0 ? (
                                 <>
                                     <p className="mb-6 text-sm text-muted-foreground">Mostrando {taggedDesigns.length} resultados</p>
-                                    <DesignGrid designs={taggedDesigns} showAds={true} adFrequency={6} />
+                                    <DesignGrid designs={taggedDesigns} />
                                 </>
                             ) : (
                                 <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border p-12 text-center">

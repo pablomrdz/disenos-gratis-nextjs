@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Folder, Tag as TagIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import AdUnit from '@/components/AdUnit'
 import { formatCategoryName } from '@/lib/content-utils'
 import { slugify } from '@/lib/utils'
 
@@ -14,14 +13,6 @@ interface StickySidebarProps {
 export function StickySidebar({ popularCategories, tags, className }: StickySidebarProps) {
     return (
         <div className={`sticky top-8 space-y-6 ${className || ''}`}>
-            {/* Top Ad - 300x250 */}
-            <div className="flex justify-center min-h-[250px] w-[300px] mx-auto">
-                <AdUnit
-                    slot="3806846005"
-                    style={{ display: "inline-block", width: "300px", height: "250px" }}
-                />
-            </div>
-
             {/* Bloque 1: Categorías Populares */}
             <div className="rounded-xl border border-border/50 bg-card p-5">
                 <div className="flex items-center gap-2 mb-4">
@@ -51,14 +42,6 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                 >
                     Ver todo el catalogo
                 </Link>
-            </div>
-
-            {/* Bottom Ad - 300x250 */}
-            <div className="flex justify-center min-h-[250px] w-[300px] mx-auto">
-                <AdUnit
-                    slot="3806846005"
-                    style={{ display: "inline-block", width: "300px", height: "250px" }}
-                />
             </div>
 
             {/* Bloque 3: Etiquetas Relacionadas */}

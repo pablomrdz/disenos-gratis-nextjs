@@ -4,7 +4,6 @@ import { ArrowRight } from 'lucide-react'
 import { HeroSection } from '@/components/hero-section'
 import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
-import AdUnit from '@/components/AdUnit'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns } from '@/lib/data'
 import { createServerSupabaseClient } from '@/lib/supabase'
@@ -83,16 +82,6 @@ export default function HomePage() {
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Ad Mobile Top */}
-      <div className="lg:hidden mx-auto px-4 mt-8 min-h-[100px] flex justify-center">
-        <AdUnit
-          slot="6765960189"
-          format="auto"
-          style={{ display: "block" }}
-          className="w-full"
-        />
-      </div>
-
       {/* Main Content - Full Width */}
       <section className="pt-0 sm:pt-8 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -101,16 +90,6 @@ export default function HomePage() {
           <Suspense fallback={<DesignGridSkeleton />}>
             <TopDesigns />
           </Suspense>
-
-          {/* Ad Slot 1 - Desktop (after Top del Mes) */}
-          <div className="hidden lg:flex justify-center mb-12 w-full min-h-[90px]">
-            <AdUnit
-              slot="9549519747"
-              format="auto"
-              style={{ display: "block" }}
-              className="w-full"
-            />
-          </div>
 
           {/* ── Sección 2: Diseños más recientes ── */}
           <div className="flex items-end justify-between mb-8">
@@ -135,17 +114,6 @@ export default function HomePage() {
             <RecentDesigns />
           </Suspense>
 
-          {/* Inline Ad after recent designs */}
-          <div className="mt-8 min-h-[250px] w-full flex justify-center">
-            <AdUnit
-              slot="1352493197"
-              format="fluid"
-              layoutKey="-fb+5w+4e-db+86"
-              style={{ display: "block" }}
-              className="w-full"
-            />
-          </div>
-
           {/* ── Sección 3: Explorar Catálogo ── */}
           <div className="flex items-end justify-between mb-8 mt-16">
             <div>
@@ -161,29 +129,8 @@ export default function HomePage() {
           <Suspense fallback={<DesignGridSkeleton />}>
             <CatalogFeed />
           </Suspense>
-
-          {/* Inline Ad after catalog */}
-          <div className="mt-8 min-h-[250px] w-full flex justify-center">
-            <AdUnit
-              slot="1352493197"
-              format="fluid"
-              layoutKey="-fb+5w+4e-db+86"
-              style={{ display: "block" }}
-              className="w-full"
-            />
-          </div>
         </div>
       </section>
-
-      {/* Ad Mobile Bottom */}
-      <div className="lg:hidden mx-auto px-4 mb-8 min-h-[100px] flex justify-center">
-        <AdUnit
-          slot="6765960189"
-          format="auto"
-          style={{ display: "block" }}
-          className="w-full"
-        />
-      </div>
 
       {/* Categories moved to bottom */}
       <CategorySection />

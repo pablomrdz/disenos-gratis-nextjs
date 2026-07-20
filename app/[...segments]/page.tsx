@@ -169,25 +169,7 @@ async function CategoryContent({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-8">
-      <div className="min-h-[250px] w-full flex justify-center">
-        <AdUnit
-          slot="1352493197"
-          format="fluid"
-          layoutKey="-fb+5w+4e-db+86"
-          style={{ display: "block" }}
-          className="w-full"
-        />
-      </div>
-      <DesignGrid designs={designs} showAds={true} adFrequency={6} columns={slugify(slug).includes('plantillas') ? 2 : 4} />
-      <div className="min-h-[250px] w-full flex justify-center">
-        <AdUnit
-          slot="1352493197"
-          format="fluid"
-          layoutKey="-fb+5w+4e-db+86"
-          style={{ display: "block" }}
-          className="w-full"
-        />
-      </div>
+      <DesignGrid designs={designs} columns={slugify(slug).includes('plantillas') ? 2 : 4} />
     </div>
   )
 }
@@ -480,14 +462,27 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 )}
               </div>
 
+              {/* SLOT 1 (Debajo de Vista Previa) */}
               <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
                 <AdUnit
                   slot="9549519747"
                   format="auto"
-                  style={{ display: "block" }}
+                  style={{ display: "block", width: "100%" }}
                   className="w-full"
                 />
               </div>
+
+              {/* SLOT 2 (Pre-Download) */}
+              {!isBlog && (
+                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                  <AdUnit
+                    slot="8149719229"
+                    format="auto"
+                    style={{ display: "block", width: "100%" }}
+                    className="w-full"
+                  />
+                </div>
+              )}
 
               {!isBlog && (
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -505,15 +500,6 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               )}>
                 <h2 className="sr-only">Descripción</h2>
 
-                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
-                  <AdUnit
-                    slot="9549519747"
-                    format="auto"
-                    style={{ display: "block" }}
-                    className="w-full"
-                  />
-                </div>
-
                 {/* WordPress migrated content (SEO) */}
                 {design.content && design.content.trim().length > 0 && (
                   <div className="border-t border-border/40 pt-6">
@@ -529,15 +515,6 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                     </ReactMarkdown>
                   </div>
                 )}
-
-                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
-                  <AdUnit
-                    slot="9549519747"
-                    format="auto"
-                    style={{ display: "block" }}
-                    className="w-full"
-                  />
-                </div>
                 
                 <RelatedSearches keywords={design.related_keywords} />
               </div>
@@ -561,10 +538,23 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
             </div>
 
             <aside className="col-span-12 lg:col-span-4 xl:col-span-3">
-              <StickySidebar
-                popularCategories={popularCategories}
-                tags={tags}
-              />
+              <div className="sticky top-6 w-full max-w-[300px] mx-auto space-y-6">
+                {/* SLOT 3 (Sticky Sidebar - Solo Desktop) */}
+                <div className="hidden lg:flex justify-center min-h-[250px] w-full">
+                  <AdUnit
+                    slot="3806846005"
+                    format="auto"
+                    style={{ display: "block", width: "100%" }}
+                  />
+                </div>
+                <div>
+                  <StickySidebar
+                    popularCategories={popularCategories}
+                    tags={tags}
+                    className="!static !top-auto !space-y-0"
+                  />
+                </div>
+              </div>
             </aside>
           </div>
         </div>

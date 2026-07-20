@@ -10,7 +10,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import AdUnit from '@/components/AdUnit'
 import { createClient } from '@supabase/supabase-js'
 import type { Design } from '@/lib/types'
 
@@ -233,23 +232,6 @@ export function DownloadSection({ design }: DownloadSectionProps) {
               </Link>
             )}
           </div>
-        </div>
-
-        {/* AdSync Ad Unit — collapses to zero height until download starts */}
-        <div
-          className={`flex justify-center transition-all duration-500 overflow-hidden ${
-            phase === 'loading' || phase === 'ready'
-              ? 'max-h-[350px] opacity-100 mt-6'
-              : 'max-h-0 opacity-0'
-          }`}
-        >
-          <AdUnit
-            slot="1352493197"
-            format="fluid"
-            layoutKey="-fb+5w+4e-db+86"
-            style={{ display: "block", width: "100%" }}
-            className="w-full"
-          />
         </div>
       </CardContent>
     </Card>
