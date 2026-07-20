@@ -18,6 +18,7 @@ const footerLinks = {
     { name: 'Términos de Servicio', href: '/terms' },
   ],
   social: [
+    { name: 'Facebook', href: 'https://facebook.com/disenosgratis' },
     { name: 'Pinterest', href: 'https://mx.pinterest.com/disenosgratis/' },
     { name: 'TikTok', href: 'https://www.tiktok.com/@disenosgratis' },
     { name: 'Instagram', href: 'https://instagram.com/_disenosgratis/' }

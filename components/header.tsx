@@ -8,52 +8,141 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-// Mega Menu Data Structure - Expertly aligned with WordPress backend
+// Mega Menu Data Structure - Optimizada con Inteligencia de Search Console y Supabase
 const megaMenuCategories = [
   {
     title: 'Técnicas y Proyectos',
-    href: '/designs',
     items: [
-      { name: 'Sublimación', href: '/sublimacion', description: 'Plantillas y diseños para tazas, playeras y más.' },
-      { name: 'DTF / Impresión', href: '/dtf', description: 'Archivos listos para impresión textil y transfers.' },
-      { name: 'Corte y Grabado', href: '/corte-laser', description: 'Vectores para corte láser y plotter (SVG, DXF).' },
-      { name: 'Vinil Textil', href: '/vinil-textil', description: 'Diseños optimizados para corte en vinilo.' },
-      { name: 'Tipografías', href: '/tipografias', description: 'Fuentes premium para tus proyectos creativos.' },
+      { 
+        name: 'DTF / Impresión Textil', 
+        href: '/dtf', 
+        description: 'Archivos en 300 DPI y semitonos para impresión textil y transfers.' 
+      },
+      { 
+        name: 'Sublimación', 
+        href: '/sublimacion', 
+        description: 'Plantillas editables para tazas de 11oz, playeras, termos y cojines.' 
+      },
+      { 
+        name: 'Tipografías Deportivas', 
+        href: '/tipografias', 
+        description: 'Fuentes de números de jersey, Selección Mexicana 2026 y TTF/OTF.' 
+      },
+      { 
+        name: 'Corte y Grabado Láser', 
+        href: '/corte-laser', 
+        description: 'Vectores para MDF, acrílico, plotter y láser (SVG, DXF, CDR).' 
+      },
+      { 
+        name: 'Vinil Textil', 
+        href: '/vinil-textil', 
+        description: 'Diseños limpios a un color y multicapa para plotter de corte.' 
+      },
     ],
   },
   {
-    title: 'Formatos de Archivo',
-    href: '/designs',
+    title: 'Formatos y Recursos',
     items: [
-      { name: 'Imágenes PNG', href: '/tags/png', description: 'Recursos con fondo transparente en alta resolución.' },
-      { name: 'Vectores (SVG/Ai)', href: '/vectores', description: 'Archivos editables para Illustrator y Corel.' },
-      { name: 'Photoshop (PSD)', href: '/tags/psd', description: 'Plantillas editables en capas para Photoshop.' },
-      { name: 'Corte (Studio3/DXF)', href: '/tags/studio3', description: 'Archivos listos para Silhouette Cameo y Cricut.' },
-      { name: 'Fondos y Texturas', href: '/fondos-y-texturas', description: 'Papel digital y texturas para tus fondos.' },
+      { 
+        name: 'DTF en Semitonos', 
+        href: '/tags/semitono', 
+        description: 'Diseños con trama de puntos para ahorrar tinta y dar suavidad al tacto.' 
+      },
+      { 
+        name: 'Imágenes PNG sin Fondo', 
+        href: '/tags/png', 
+        description: 'Recursos transparentes en alta resolución listos para ensamblar tu arte.' 
+      },
+      { 
+        name: 'Vectores Editables (SVG/AI)', 
+        href: '/vectores', 
+        description: 'Archivos trazados editables en Illustrator, CorelDraw e Inkscape.' 
+      },
+      { 
+        name: 'Archivos Photoshop (PSD)', 
+        href: '/tags/psd', 
+        description: 'Plantillas en capas organizadas con objetos inteligentes para maquetar.' 
+      },
+      { 
+        name: 'Corte (Studio3 / Silhouette)', 
+        href: '/tags/silhouette', 
+        description: 'Archivos Studio3 y DXF optimizados para Silhouette Cameo y Cricut.' 
+      },
+      { 
+        name: 'Fondos y Texturas', 
+        href: '/fondos-y-texturas', 
+        description: 'Papeles digitales, fondos para Zoom y texturas retro de alta definición.' 
+      },
     ],
   },
   {
     title: 'Temas y Personajes',
-    href: '/tags/personajes',
     items: [
-      { name: 'Disney y Pixar', href: '/tags/disney', description: 'Mickey, Princesas y tus personajes favoritos.' },
-      { name: 'Anime y Manga', href: '/tags/anime', description: 'Diseños de Goku, Naruto y cultura japonesa.' },
-      { name: 'Películas', href: '/tags/peliculas', description: 'Inspiración en los mejores títulos del cine.' },
-      { name: 'Series de TV', href: '/tags/series', description: 'Tus shows favoritos en formato digital.' },
-      { name: 'Videojuegos / Gamers', href: '/tags/videojuegos', description: 'Recursos de tus juegos preferidos.' },
-      { name: 'Marcas y Logos', href: '/tags/logos', description: 'Vectores de marcas reconocidas.' },
+      { 
+        name: 'Disney y Pixar', 
+        href: '/tags/disney', 
+        description: 'Stitch, Toy Story 5, Mickey Mouse y Princesas en PNG y vectores.' 
+      },
+      { 
+        name: 'Anime y Manga', 
+        href: '/tags/anime', 
+        description: 'One Piece (Carteles Wanted), Dragon Ball, Pokémon y cultura geek.' 
+      },
+      { 
+        name: 'Tradiciones y Lotería', 
+        href: '/tags/loteria', 
+        description: 'Plantillas de Lotería Mexicana editables e imprimibles en PDF.' 
+      },
+      { 
+        name: 'Películas y Series', 
+        href: '/tags/peliculas', 
+        description: 'Diseños inspirados en los mejores estrenos de cine y shows de TV.' 
+      },
+      { 
+        name: 'Videojuegos / Gamers', 
+        href: '/tags/videojuegos', 
+        description: 'Personajes retro, gaming y vectores para la comunidad gamer.' 
+      },
+      { 
+        name: 'Marcas y Logos', 
+        href: '/tags/logos', 
+        description: 'Logotipos vectorizados de marcas reconocidas e isotipos limpios.' 
+      },
     ],
   },
   {
     title: 'Eventos y Festividades',
-    href: '/tags/eventos',
     items: [
-      { name: 'Día del Padre', href: '/tags/dia-del-padre', description: 'El regalo perfecto para papá en su día.' },
-      { name: 'Día de las Madres', href: '/tags/dia-de-las-madres', description: 'Diseños tiernos para celebrar a mamá.' },
-      { name: 'Amor y Amistad', href: '/tags/dia-del-amor-y-la-amistad', description: 'San Valentín y detalles románticos.' },
-      { name: 'Navidad / Halloween', href: '/tags/navidad', description: 'Todo para tus decoraciones de temporada.' },
-      { name: 'Cumpleaños / Fiestas', href: '/tags/cumpleanos', description: 'Recursos para fiestas inolvidables.' },
-      { name: 'Baby Shower', href: '/tags/baby-shower', description: 'Diseños dulces para la llegada del bebé.' },
+      { 
+        name: 'Día del Padre', 
+        href: '/tags/dia-del-padre', 
+        description: 'Vectores y plantillas de "Papá e Hijos" para playeras y tazas.' 
+      },
+      { 
+        name: 'Día de las Madres', 
+        href: '/tags/dia-de-las-madres', 
+        description: 'Diseños florales, frases emotivas y regalables para mamá.' 
+      },
+      { 
+        name: 'Navidad y Halloween', 
+        href: '/tags/halloween', 
+        description: 'Personajes de terror infantiles, brujas, calaveras y pino navideño.' 
+      },
+      { 
+        name: 'Fiestas Patrias y Religiosas', 
+        href: '/tags/revolucion-mexicana', 
+        description: 'Virgen de Guadalupe, Independencia, Día de Muertos y folklore.' 
+      },
+      { 
+        name: 'Cumpleaños y Fiestas', 
+        href: '/tags/cumpleanos', 
+        description: 'Kits imprimibles, invitaciones, toppers de pastel y banners.' 
+      },
+      { 
+        name: 'Baby Shower y Bautizos', 
+        href: '/tags/baby-shower', 
+        description: 'Diseños tiernos en acuarela y tonos pastel para eventos infantiles.' 
+      },
     ],
   },
 ];
@@ -103,7 +192,7 @@ export function Header() {
           />
         </Link>
 
-        {/* Desktop Mega Menu - CSS Only version for stability */}
+        {/* Desktop Mega Menu */}
         <nav className="hidden lg:flex lg:flex-1 lg:justify-center">
           <ul className="flex items-center gap-6">
             <li className="group relative py-4">
@@ -120,12 +209,10 @@ export function Header() {
                 <div className="grid grid-cols-4 gap-6">
                   {megaMenuCategories.map((group) => (
                     <div key={group.title} className="space-y-4">
-                      <Link
-                        href={group.href}
-                        className="block rounded-md px-2 py-1 text-sm font-bold text-black hover:bg-slate-100"
-                      >
+                      {/* Título de Columna NO Clickeable */}
+                      <h3 className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-slate-500 select-none">
                         {group.title}
-                      </Link>
+                      </h3>
                       <div className="space-y-1">
                         {group.items.map((item) => (
                           <Link
@@ -173,7 +260,7 @@ export function Header() {
                 className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-blue-800 px-4 py-1.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.03] active:scale-[0.97]"
               >
                 <Sparkles className="h-3.5 w-3.5" />
-                Editor de Plantillas
+                Edita y Descarga Online
               </Link>
             </li>
           </ul>
@@ -274,13 +361,6 @@ export function Header() {
                             <ChevronRight className="h-3 w-3 text-gray-300" />
                           </Link>
                         ))}
-                        <Link
-                          href={group.href}
-                          className="block mt-2 text-xs font-semibold text-primary px-2"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Ver todo en {group.title} →
-                        </Link>
                       </div>
                     )}
                   </div>
@@ -302,11 +382,9 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Sparkles className="h-4 w-4" />
-                Editor de Plantillas
+                Edita y Descarga Online
               </Link>
             </div>
-
-
 
             <p className="text-center text-xs text-gray-400 mt-8 mb-4">
               © {new Date().getFullYear()} DiseñosGratis.com

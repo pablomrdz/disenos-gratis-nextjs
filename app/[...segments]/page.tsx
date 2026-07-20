@@ -159,12 +159,7 @@ async function CategoryContent({ slug }: { slug: string }) {
   })
 
   if (designs.length === 0) {
-    return (
-      <div className="rounded-lg border border-dashed p-12 text-center">
-        <h2 className="text-xl font-semibold">No se encontraron diseños</h2>
-        <p className="mt-2 text-muted-foreground">No hemos encontrado diseños para esta categoría todavía ({slug}).</p>
-      </div>
-    )
+    notFound()
   }
 
   return (
