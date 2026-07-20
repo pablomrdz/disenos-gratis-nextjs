@@ -462,7 +462,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 )}
               </div>
 
-              {/* SLOT 1 (Debajo de Vista Previa) */}
+              {/* 2. SLOT 1 (Debajo de Vista Previa) */}
               <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
                 <AdUnit
                   slot="9549519747"
@@ -472,30 +472,15 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 />
               </div>
 
-              {/* SLOT 2 (Pre-Download) */}
+              {/* 3. Componente de Contenido HTML (Ficha técnica y Descripción) */}
               {!isBlog && (
-                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
-                  <AdUnit
-                    slot="8149719229"
-                    format="auto"
-                    style={{ display: "block", width: "100%" }}
-                    className="w-full"
-                  />
+                <div className="my-6">
+                  <TechnicalInfo design={design} />
                 </div>
-              )}
-
-              {!isBlog && (
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <DownloadSection design={design} isVip={false} />
-                </div>
-              )}
-
-              {!isBlog && (
-                <TechnicalInfo design={design} />
               )}
 
               <div className={cn(
-                "mt-6",
+                "my-6",
                 isBlog ? "text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
               )}>
                 <h2 className="sr-only">Descripción</h2>
@@ -518,6 +503,25 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 
                 <RelatedSearches keywords={design.related_keywords} />
               </div>
+
+              {/* 4. SLOT 2 (Pre-Download) */}
+              {!isBlog && (
+                <div className="min-h-[250px] w-full flex justify-center overflow-hidden my-6">
+                  <AdUnit
+                    slot="8149719229"
+                    format="auto"
+                    style={{ display: "block", width: "100%" }}
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              {/* 5. Componente / Caja del Botón de Descarga */}
+              {!isBlog && (
+                <div className="my-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <DownloadSection design={design} isVip={false} />
+                </div>
+              )}
 
               {relatedDesigns.length > 0 && (
                 <div className="mt-10 border-t border-border/40 pt-12">
