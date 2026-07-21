@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { Tag, Home, ChevronRight, Search } from 'lucide-react'
 import { getAllTags } from '@/lib/data'
 
-export const dynamic = 'force-dynamic'
+//export const dynamic = 'force-dynamic'
+export const revalidate = 86400
 
 export default async function TagsPage() {
     const tags = await getAllTags()

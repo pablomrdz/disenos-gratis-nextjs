@@ -9,7 +9,8 @@ import { cn, slugify } from '@/lib/utils'
 import { redirect } from 'next/navigation'
 
 // Force SSR for SEO
-export const dynamic = 'force-dynamic'
+//export const dynamic = 'force-dynamic'
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: 'Todos los Diseños y Plantillas',
