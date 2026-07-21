@@ -210,9 +210,9 @@ export function Header() {
                   {megaMenuCategories.map((group) => (
                     <div key={group.title} className="space-y-4">
                       {/* Título de Columna NO Clickeable */}
-                      <h3 className="px-2 py-1 text-xs font-bold uppercase tracking-wider text-slate-500 select-none">
+                      <span className="block px-2 py-1 text-xs font-bold uppercase tracking-wider text-slate-500 select-none">
                         {group.title}
-                      </h3>
+                      </span>
                       <div className="space-y-1">
                         {group.items.map((item) => (
                           <Link
