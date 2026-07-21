@@ -130,7 +130,7 @@ const megaMenuCategories = [
       },
       { 
         name: 'Fiestas Patrias y Religiosas', 
-        href: '/tags/revolucion-mexicana', 
+        href: '/tags/revolución-mexicana', 
         description: 'Virgen de Guadalupe, Independencia, Día de Muertos y folklore.' 
       },
       { 
