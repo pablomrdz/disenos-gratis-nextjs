@@ -8,26 +8,18 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const response = await fetch(url)
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch image mapping to status ${response.status}`)
-        }
-
-        const buffer = await response.arrayBuffer()
-        const contentType = response.headers.get('content-type') || 'image/png'
-
-        // Return the image with CORS headers
-        return new NextResponse(buffer, {
+        // Redirección permanente/temporal directa a la fuente original (Hetzner / Storage)
+        // Vercel NO procesa ni transmite el buffer de la imagen. Consumo = 0 MB.
+        return NextResponse.redirect(url, {
+            status: 307,
             headers: {
-                'Content-Type': contentType,
-                'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=86400',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Cache-Control': 'public, max-age=31536000, immutable',
             },
         })
     } catch (error) {
-        console.error('[proxy-image] Error fetching image:', error)
+        console.error('[proxy-image] Error redirecting image:', error)
         return NextResponse.json({ error: 'Failed to proxy image' }, { status: 500 })
     }
 }
