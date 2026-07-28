@@ -13,7 +13,7 @@ import { RichText } from '@/components/rich-text'
 import { StickySidebar } from '@/components/sticky-sidebar'
 
 // ISR: Static with 1 hour revalidation
-export const revalidate = 3600
+export const revalidate = 604800 // Cambiar 3600 -> 604800 (7 días)
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>

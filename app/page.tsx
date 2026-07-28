@@ -10,7 +10,7 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import type { DesignCard } from '@/lib/types'
 
 // ISR: Static with 1 hour revalidation
-export const revalidate = 3600
+export const revalidate = 86400 // Cambiamos de  3600 (1 hora) a 86400 (24 horas)
 
 
 

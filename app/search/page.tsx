@@ -7,7 +7,7 @@ import { getPopularCategories, getAllTags, DESIGN_CARD_FIELDS } from '@/lib/data
 import type { DesignCard } from '@/lib/types'
 
 // ISR: Static with 1 hour revalidation
-export const revalidate = 3600
+export const revalidate = 86400
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>

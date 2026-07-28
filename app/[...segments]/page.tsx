@@ -39,7 +39,7 @@ import type { Design, DesignCard } from '@/lib/types'
 
 import { DownloadSection } from './download-section'
 
-export const revalidate = 3600
+export const revalidate = 86400 // Cambiar 3600 -> 86400 (24 horas)
 
 interface DynamicPageProps {
   params: Promise<{ segments: string[] }>

@@ -4,7 +4,7 @@ import { getDesignBySlug } from '@/lib/data'
 import { DesignEditor } from '@/components/editor/design-editor'
 
 // ISR: Static with 1 hour revalidation
-export const revalidate = 3600
+export const revalidate = 604800
 
 interface EditPageProps {
     params: Promise<{ slug: string }>
