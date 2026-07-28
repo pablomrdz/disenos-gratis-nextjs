@@ -6,11 +6,11 @@ import Link from 'next/link'
 import { Download, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import type { Design } from '@/lib/types'
+import type { DesignCard as DesignCardType } from '@/lib/types'
 import { slugify, cn } from '@/lib/utils'
 
 interface DesignCardProps {
-  design: Design
+  design: DesignCardType
 }
 
 export function DesignCard({ design }: DesignCardProps) {

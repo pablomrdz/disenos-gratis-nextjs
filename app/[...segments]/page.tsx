@@ -31,11 +31,11 @@ import { RelatedSearches } from '@/components/related-searches'
 import { RichText } from '@/components/rich-text'
 
 // Utils and Lib
-import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getAllTags, getPrimaryCategory, ALLOWED_SLUGS, getTaxonomyBySlug } from '@/lib/data'
+import { getDesignBySlug, getDesigns, getTutorials, getRelatedAssetsFromRpc, getPopularCategories, getAllTags, getPrimaryCategory, ALLOWED_SLUGS, getTaxonomyBySlug, DESIGN_CARD_FIELDS } from '@/lib/data'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { detectContentType, extractDownloadLink } from '@/lib/content-utils'
 import { cn, slugify, normalizeText, getCategoryIcon, getCategoryColor } from '@/lib/utils'
-import type { Design } from '@/lib/types'
+import type { Design, DesignCard } from '@/lib/types'
 
 import { DownloadSection } from './download-section'
 
@@ -136,35 +136,37 @@ export async function generateStaticParams() {
 // Subcomponente de Data Fetching para Listado de Categoría
 async function CategoryContent({ slug }: { slug: string }) {
   const supabase = createServerSupabaseClient()
-  const { data: allDesigns, error } = await supabase
-    .from('designs')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1000)
 
-  if (error || !allDesigns) {
-    return (
-      <div className="rounded-lg border border-dashed p-12 text-center">
-        <p>Error loading designs.</p>
-      </div>
-    )
+  // Normalizar slug para matching server-side con ilike
+  const spaceVariation = slug.replace(/-/g, ' ')
+  const searchTerms = [slug, spaceVariation]
+
+  // Agregar variaciones con acentos para categorías conocidas
+  const accentMap: Record<string, string> = {
+    'recursos-graficos': 'recursos gráficos',
+    'sublimacion': 'sublimación',
+    'tipografias': 'tipografías',
+    'corte-laser': 'corte láser',
   }
+  const normalized = slug.toLowerCase().trim().replace(/\s+/g, '-')
+  if (accentMap[normalized]) searchTerms.push(accentMap[normalized])
 
-  const normalize = (str: string) => decodeURIComponent(str || '').toLowerCase().replace(/-/g, ' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
-  const targetSlug = normalize(slug)
-  
-  const designs = (allDesigns as Design[]).filter(d => {
-    const cat = normalize(d.category)
-    return cat.includes(targetSlug)
-  })
+  const orQuery = searchTerms.map(term => `category.ilike.%${term}%`).join(',')
 
-  if (designs.length === 0) {
+  const { data: designs, error } = await supabase
+    .from('designs')
+    .select(DESIGN_CARD_FIELDS)
+    .or(orQuery)
+    .order('created_at', { ascending: false })
+    .range(0, 47) // Paginación: máximo 48 items por carga
+
+  if (error || !designs || designs.length === 0) {
     notFound()
   }
 
   return (
     <div className="space-y-8">
-      <DesignGrid designs={designs} columns={slugify(slug).includes('plantillas') ? 2 : 4} />
+      <DesignGrid designs={designs as DesignCard[]} columns={slugify(slug).includes('plantillas') ? 2 : 4} />
     </div>
   )
 }

@@ -1,10 +1,10 @@
 import { DesignCard } from '@/components/design-card'
 import { FontCard } from '@/components/font-card'
 import { normalizeText, cn } from '@/lib/utils'
-import type { Design } from '@/lib/types'
+import type { DesignCard as DesignCardData } from '@/lib/types'
 
 interface DesignGridProps {
-  designs: Design[]
+  designs: DesignCardData[]
   showAds?: boolean
   adFrequency?: number
   columns?: 2 | 3 | 4

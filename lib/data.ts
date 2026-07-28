@@ -1,9 +1,13 @@
 import { createServerSupabaseClient } from './supabase'
 import { mockDesigns, mockTutorials, mockBlogPosts, mockCategories } from './mock-data'
-import type { Design, Tutorial, BlogPost, Category, Taxonomy } from './types'
+import type { Design, DesignCard, Tutorial, BlogPost, Category, Taxonomy } from './types'
 
 // Always use real Supabase when URL is configured
 const USE_MOCK = false
+
+/** Columnas mínimas para tarjetas – PROHIBIDO traer description, content, gallery_urls, related_keywords, etc.
+ *  No incluye tags ni created_at: Postgres los usa para filtrar/ordenar sin proyectarlos. */
+export const DESIGN_CARD_FIELDS = 'id, title, slug, image_url, category, downloads, alt_text, excerpt, font_family, is_vip'
 
 // Designs
 export async function getDesigns(options?: {
@@ -13,7 +17,7 @@ export async function getDesigns(options?: {
   isVip?: boolean
   excludeCategory?: string
   tag?: string
-}): Promise<Design[]> {
+}): Promise<DesignCard[]> {
   if (USE_MOCK) {
     let designs = [...mockDesigns]
     if (options?.category) {
@@ -36,7 +40,7 @@ export async function getDesigns(options?: {
 
   try {
     const supabase = createServerSupabaseClient()
-    let query = supabase.from('designs').select('*')
+    let query = supabase.from('designs').select(DESIGN_CARD_FIELDS)
 
     if (options?.category) {
       // Handle both hyphenated and space-separated versions of the category
@@ -253,7 +257,7 @@ export async function getCategories(): Promise<Category[]> {
   const supabase = createServerSupabaseClient()
   const { data, error } = await supabase
     .from('categories')
-    .select('*')
+    .select('id, name, slug, description, icon')
     .order('name', { ascending: true })
 
   if (error) {
@@ -312,7 +316,7 @@ export function getPrimaryCategory(rawCategory: string | undefined | null): stri
   return toSlug(parts[0]);
 }
 
-export async function getDesignsByTag(tag: string, limit: number = 20): Promise<Design[]> {
+export async function getDesignsByTag(tag: string, limit: number = 20): Promise<DesignCard[]> {
   if (USE_MOCK) {
     return mockDesigns.filter(d => d.tags && d.tags.includes(tag)).slice(0, limit)
   }
@@ -360,7 +364,7 @@ export async function getDesignsByTag(tag: string, limit: number = 20): Promise<
 
   const { data, error } = await supabase
     .from('designs')
-    .select('*')
+    .select(DESIGN_CARD_FIELDS)
     .or(orQuery)
     .limit(limit)
     .order('created_at', { ascending: false })
@@ -479,7 +483,7 @@ export async function getTopCategories(limit: number = 6): Promise<Array<{ categ
 }
 
 // Get related designs by RPC (Topical Authority Silo)
-export async function getRelatedAssetsFromRpc(designId: string, categoryName: string, limitCount: number = 4): Promise<Design[]> {
+export async function getRelatedAssetsFromRpc(designId: string, categoryName: string, limitCount: number = 4): Promise<DesignCard[]> {
   if (USE_MOCK) return []
   
   try {
@@ -506,7 +510,7 @@ export async function getRelatedDesignsByTags(
   designId: string,
   tags: string[],
   limit: number = 4
-): Promise<Design[]> {
+): Promise<DesignCard[]> {
   if (USE_MOCK || tags.length === 0) {
     return []
   }
@@ -515,9 +519,10 @@ export async function getRelatedDesignsByTags(
     const supabase = createServerSupabaseClient()
 
     // Get all designs except the current one
+    // Necesita tags para scoring client-side, se agrega solo aquí
     const { data, error } = await supabase
       .from('designs')
-      .select('*')
+      .select(DESIGN_CARD_FIELDS + ', tags')
       .neq('id', designId)
       .limit(50) // Get more to filter by tags
 

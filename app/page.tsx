@@ -5,9 +5,9 @@ import { HeroSection } from '@/components/hero-section'
 import { CategorySection } from '@/components/category-section'
 import { DesignGrid } from '@/components/design-grid'
 import { DesignGridSkeleton } from '@/components/design-card-skeleton'
-import { getDesigns } from '@/lib/data'
+import { getDesigns, DESIGN_CARD_FIELDS } from '@/lib/data'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import type { Design } from '@/lib/types'
+import type { DesignCard } from '@/lib/types'
 
 // ISR: Static with 1 hour revalidation
 export const revalidate = 3600
@@ -49,14 +49,14 @@ async function RecentDesigns() {
   const supabase = createServerSupabaseClient()
   const { data, error } = await supabase
     .from('designs')
-    .select('*')
+    .select(DESIGN_CARD_FIELDS)
     .neq('category', 'blog')
     .order('created_at', { ascending: false })
     .limit(8)
 
   if (error || !data) return null
 
-  return <DesignGrid designs={data as Design[]} showAds={false} columns={4} />
+  return <DesignGrid designs={data as DesignCard[]} showAds={false} columns={4} />
 }
 
 // ─── Sección 3: Explorar Catálogo (feed rastreable, excluye los primeros 8) ──
@@ -66,14 +66,14 @@ async function CatalogFeed() {
   // Fetch a broader set for Google crawlability — offset 8 to avoid duplicating RecentDesigns
   const { data, error } = await supabase
     .from('designs')
-    .select('*')
+    .select(DESIGN_CARD_FIELDS)
     .neq('category', 'blog')
     .order('created_at', { ascending: false })
     .range(8, 107)
 
   if (error || !data || data.length === 0) return null
 
-  return <DesignGrid designs={data as Design[]} showAds={true} adFrequency={8} columns={4} />
+  return <DesignGrid designs={data as DesignCard[]} showAds={true} adFrequency={8} columns={4} />
 }
 
 export default function HomePage() {

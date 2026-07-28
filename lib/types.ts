@@ -28,6 +28,13 @@ export interface Design {
   related_keywords?: string[] | null
 }
 
+/** Campos mínimos para tarjetas de diseño en grillas/catálogos.
+ *  NUNCA incluir: description, content, gallery_urls, related_keywords, download_url, etc. */
+export type DesignCard = Pick<Design,
+  'id' | 'title' | 'slug' | 'image_url' | 'category' |
+  'downloads' | 'alt_text' | 'excerpt' | 'font_family' | 'is_vip'
+> & { type?: DesignType; thumbnail_url?: string }
+
 export interface Tutorial {
   id: string
   title: string

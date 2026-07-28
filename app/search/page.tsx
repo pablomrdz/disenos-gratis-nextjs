@@ -3,8 +3,8 @@ import { Search as SearchIcon } from 'lucide-react'
 import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import { getPopularCategories, getAllTags } from '@/lib/data'
-import type { Design } from '@/lib/types'
+import { getPopularCategories, getAllTags, DESIGN_CARD_FIELDS } from '@/lib/data'
+import type { DesignCard } from '@/lib/types'
 
 // ISR: Static with 1 hour revalidation
 export const revalidate = 3600
@@ -25,42 +25,33 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   }
 }
 
-import { normalizeText } from '@/lib/utils'
+async function searchDesigns(query: string): Promise<DesignCard[]> {
+  // Clean PostgREST reserved characters: , ( ) " ' % _
+  const sanitizedQuery = query
+    .replace(/[,()"'%_]/g, '')
+    .trim()
 
-async function searchDesigns(query: string) {
-  if (!query || query.length < 2) {
+  if (!sanitizedQuery || sanitizedQuery.length < 2) {
     return []
   }
 
   try {
     const supabase = createServerSupabaseClient()
 
-    // 1. Broad fetch from Supabase (Fetch all/many to filter client side as requested)
+    // Filtración 100% server-side con query limpia
     const { data, error } = await supabase
       .from('designs')
-      .select('*')
+      .select(DESIGN_CARD_FIELDS)
+      .or(`title.ilike.%${sanitizedQuery}%,description.ilike.%${sanitizedQuery}%,category.ilike.%${sanitizedQuery}%`)
       .order('downloads', { ascending: false })
-      .limit(500) // Increased limit for broader client-side search
+      .limit(40)
 
     if (error) {
       console.error('Search error:', error)
       return []
     }
 
-    if (!data) return []
-
-    // 2. Client-side fuzzy/accent-insensitive filtering
-    return (data as Design[]).filter(design => {
-      // Normalize both the query and the fields to remove accents
-      const normalizedQuery = normalizeText(query)
-      const normalizedTitle = normalizeText(design.title || '')
-      const normalizedDesc = normalizeText(design.description || '')
-      const normalizedCat = normalizeText(design.category || '')
-
-      return normalizedTitle.includes(normalizedQuery) ||
-        normalizedDesc.includes(normalizedQuery) ||
-        normalizedCat.includes(normalizedQuery)
-    }).slice(0, 40)
+    return (data as DesignCard[]) || []
 
   } catch (err) {
     console.error('Unexpected search error:', err)

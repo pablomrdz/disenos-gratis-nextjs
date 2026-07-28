@@ -6,13 +6,13 @@ import Image from 'next/image'
 import { Download, Type } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import type { Design } from '@/lib/types'
+import type { DesignCard } from '@/lib/types'
 
 import { slugify } from '@/lib/utils'
 import { loadCustomFontFromSupabase } from '@/lib/font-loader'
 
 interface FontCardProps {
-  font: Design
+  font: DesignCard
 }
 
 export function FontCard({ font }: FontCardProps) {
