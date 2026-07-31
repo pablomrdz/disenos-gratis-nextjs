@@ -1,6 +1,17 @@
 import { permanentRedirect, notFound } from 'next/navigation'
 import { getDesignBySlug, getPrimaryCategory } from '@/lib/data'
+import { supabase } from '@/lib/supabase' // ajusta a tu instancia
 
+export async function generateStaticParams() {
+  // Trae solo los slugs para no saturar memoria en el build
+  const { data: designs } = await supabase.from('designs').select('slug')
+  
+  if (!designs) return []
+  
+  return designs.map((design) => ({
+    slug: design.slug,
+  }))
+}
 export const revalidate = 604800 // Cambiar 3600 -> 604800 (7 días)
 
 interface LegacyDesignPageProps {

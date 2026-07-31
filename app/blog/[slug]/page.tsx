@@ -11,9 +11,33 @@ import { JsonLd } from '@/components/json-ld'
 import { getDesignBySlug, getPopularCategories } from '@/lib/data'
 import { RichText } from '@/components/rich-text'
 import { StickySidebar } from '@/components/sticky-sidebar'
+import { createServerSupabaseClient } from '@/lib/supabase'
 
-// ISR: Static with 1 hour revalidation
-export const revalidate = 604800 // Cambiar 3600 -> 604800 (7 días)
+// ISR: Static with 7 days revalidation
+export const revalidate = 604800
+
+/**
+ * Pre-genera todos los artículos de blog en tiempo de build (SSG)
+ * para eliminar el renderizado dinámico en servidor.
+ */
+export async function generateStaticParams() {
+  try {
+    const supabase = createServerSupabaseClient()
+    const { data: posts } = await supabase
+      .from('designs')
+      .select('slug')
+      .eq('category', 'blog')
+
+    if (!posts || posts.length === 0) return []
+
+    return posts.map((post) => ({
+      slug: post.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for blog:', error)
+    return []
+  }
+}
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>

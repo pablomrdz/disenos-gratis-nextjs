@@ -8,9 +8,26 @@ import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
 import { RichText } from '@/components/rich-text'
 
-// Force SSR for SEO
-//export const dynamic = 'force-dynamic'
+// ISR: Cachear en la CDN por 24 horas
 export const revalidate = 86400
+
+/**
+ * Pre-genera dinámicamente las páginas de etiquetas conocidas
+ * durante el build para eliminar ejecuciones serverless en caliente.
+ */
+export async function generateStaticParams() {
+  try {
+    const tags = await getAllTags()
+    if (!tags || !Array.isArray(tags)) return []
+
+    return tags.map((tag: string) => ({
+      slug: slugify(tag),
+    }))
+  } catch (error) {
+    console.error('Error generating static params for tags:', error)
+    return []
+  }
+}
 
 interface TagPageProps {
   params: Promise<{ slug: string }>
@@ -58,9 +75,9 @@ export default async function TagPage({ params }: TagPageProps) {
     getTaxonomyBySlug(cleanSlug, 'tag')
   ])
 
-  // 🦈 SANITIZACIÓN ANTI-SOFT-404:
+  // SANITIZACIÓN ANTI-SOFT-404:
   // Si la etiqueta no devuelve ningún recurso en Supabase, disparamos notFound() 
-  // para forzar un código HTTP 404 real y activar app/not-found.tsx inmediatamente.
+  // para forzar un código HTTP 404 real.
   if (!taggedDesigns || taggedDesigns.length === 0) {
     notFound()
   }
