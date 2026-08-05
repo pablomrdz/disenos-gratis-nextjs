@@ -1,5 +1,7 @@
+import React from 'react'
 import { DesignCard } from '@/components/design-card'
 import { FontCard } from '@/components/font-card'
+import { AdUnit } from '@/components/ad-unit'
 import { normalizeText, cn } from '@/lib/utils'
 import type { DesignCard as DesignCardData } from '@/lib/types'
 
@@ -12,7 +14,7 @@ interface DesignGridProps {
 
 export function DesignGrid({
   designs,
-  showAds = false, // Kept for backwards compatibility but ignored
+  showAds = false,
   adFrequency = 8,
   columns = 4
 }: DesignGridProps) {
@@ -37,18 +39,39 @@ export function DesignGrid({
                 : "lg:grid-cols-4"
           )
     )}>
-      {designs.map((item) => {
+      {designs.map((item, index) => {
         // Detect if it's a typography design
         const normalizedCat = normalizeText(item.category || '');
         const isFont = item.type === 'font' ||
           normalizedCat.includes('tipografia') ||
           normalizedCat.includes('fuente');
 
-        if (isFont) {
-          return <FontCard key={item.id} font={item} />
+        const cardComponent = isFont ? (
+          <FontCard key={item.id} font={item} />
+        ) : (
+          <DesignCard key={item.id} design={item} />
+        );
+
+        // Inyectar anuncio si showAds es true y alcanzamos la frecuencia configurada
+        const shouldShowAd = showAds && (index + 1) % adFrequency === 0;
+
+        if (shouldShowAd) {
+          return (
+            <React.Fragment key={`item-ad-group-${item.id}`}>
+              {cardComponent}
+              <div className="col-span-1 flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border/40 bg-muted/20 p-2">
+                <AdUnit
+                  slot="9549519747"
+                  format="auto"
+                  style={{ display: "block", width: "100%" }}
+                  className="w-full"
+                />
+              </div>
+            </React.Fragment>
+          );
         }
 
-        return <DesignCard key={item.id} design={item} />
+        return cardComponent;
       })}
     </div>
   )
