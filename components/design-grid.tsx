@@ -18,7 +18,6 @@ export function DesignGrid({
   adFrequency = 8,
   columns = 4
 }: DesignGridProps) {
-  // Detect if grid mainly contains fonts
   const fontCount = designs.filter(d => {
     const normalizedCat = normalizeText(d.category || '');
     return d.type === 'font' || normalizedCat.includes('tipografia') || normalizedCat.includes('fuente');
@@ -27,7 +26,7 @@ export function DesignGrid({
 
   return (
     <div className={cn(
-      "grid gap-6 isolate",
+      "grid gap-6 isolate items-start",
       isFontGrid 
         ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
         : cn(
@@ -40,7 +39,6 @@ export function DesignGrid({
           )
     )}>
       {designs.map((item, index) => {
-        // Detect if it's a typography design
         const normalizedCat = normalizeText(item.category || '');
         const isFont = item.type === 'font' ||
           normalizedCat.includes('tipografia') ||
@@ -52,17 +50,16 @@ export function DesignGrid({
           <DesignCard key={item.id} design={item} />
         );
 
-        // Inyectar anuncio si showAds es true y alcanzamos la frecuencia configurada
         const shouldShowAd = showAds && (index + 1) % adFrequency === 0;
 
         if (shouldShowAd) {
           return (
             <React.Fragment key={`item-ad-group-${item.id}`}>
               {cardComponent}
-              <div className="col-span-1 flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border/40 bg-muted/20 p-2">
+              <div className="col-span-full my-4 flex min-h-[120px] max-h-[280px] w-full items-center justify-center overflow-hidden rounded-xl border border-border/40 bg-muted/20 p-4">
                 <AdUnit
                   slot="9549519747"
-                  format="auto"
+                  format="horizontal"
                   style={{ display: "block", width: "100%" }}
                   className="w-full"
                 />
