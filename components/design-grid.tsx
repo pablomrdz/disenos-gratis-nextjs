@@ -1,7 +1,7 @@
 import React from 'react'
 import { DesignCard } from '@/components/design-card'
 import { FontCard } from '@/components/font-card'
-import { AdUnit } from '@/components/ad-unit'
+import { AdUnit } from '@/components/AdUnit'
 import { normalizeText, cn } from '@/lib/utils'
 import type { DesignCard as DesignCardData } from '@/lib/types'
 
