@@ -141,17 +141,18 @@ async function CategoryContent({ slug }: { slug: string }) {
   const spaceVariation = slug.replace(/-/g, ' ')
   const searchTerms = [slug, spaceVariation]
 
-  // Agregar variaciones con acentos para categorías conocidas
-  const accentMap: Record<string, string> = {
-    'recursos-graficos': 'recursos gráficos',
-    'sublimacion': 'sublimación',
-    'tipografias': 'tipografías',
-    'corte-laser': 'corte láser',
-  }
+  // Agregar variaciones con acentos y singular/plural para categorías conocidas
   const normalized = slug.toLowerCase().trim().replace(/\s+/g, '-')
-  if (accentMap[normalized]) searchTerms.push(accentMap[normalized])
 
-  const orQuery = searchTerms.map(term => `category.ilike.%${term}%`).join(',')
+  if (normalized === 'recursos-graficos') searchTerms.push('recursos gráficos', 'recurso grafico', 'recursos graficos')
+  if (normalized === 'sublimacion') searchTerms.push('sublimación')
+  if (normalized === 'tipografias' || normalized === 'tipografia') searchTerms.push('tipografías', 'tipografía', 'tipografias', 'tipografia', 'fuentes', 'fuente')
+  if (normalized === 'corte-laser') searchTerms.push('corte láser', 'corte laser', 'corte', 'laser', 'láser')
+  if (normalized === 'fondos-y-texturas') searchTerms.push('fondos y texturas', 'fondos', 'texturas')
+  if (normalized === 'vinil-textil') searchTerms.push('vinil textil', 'vinil')
+
+  const uniqueTerms = Array.from(new Set(searchTerms))
+  const orQuery = uniqueTerms.map(term => `category.ilike.%${term}%`).join(',')
 
   const { data: designs, error } = await supabase
     .from('designs')
@@ -160,8 +161,19 @@ async function CategoryContent({ slug }: { slug: string }) {
     .order('created_at', { ascending: false })
     .range(0, 47) // Paginación: máximo 48 items por carga
 
-  if (error || !designs || designs.length === 0) {
-    notFound()
+  if (error) {
+    console.error('Error fetching category content:', error)
+  }
+
+  if (!designs || designs.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-border p-12 text-center">
+        <h3 className="text-lg font-medium text-foreground">No hay diseños disponibles en esta categoría por el momento</h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Estamos añadiendo nuevos recursos constantemente. Vuelve a consultar pronto o explora nuestras categorías populares.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -184,12 +196,34 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
   if (segments.length === 1) {
     const rawSlug = segments[0]
     const decodedSlug = decodeURIComponent(rawSlug)
+    const cleanSlug = slugify(decodedSlug)
+
+    // Redirigir aliases conocidos a su slug canónico (ej. /tipografia -> /tipografias)
+    const categoryAliases: Record<string, string> = {
+      'tipografia': 'tipografias',
+      'fuente': 'tipografias',
+      'fuentes': 'tipografias',
+      'corte': 'corte-laser',
+      'corte-y-grabado-laser': 'corte-laser',
+    }
+    if (categoryAliases[cleanSlug]) {
+      permanentRedirect(`/${categoryAliases[cleanSlug]}`)
+    }
 
     // Check if the URL encoded form doesn't match the clean slug we want internally
-    const cleanSlug = slugify(decodedSlug)
     if (rawSlug !== cleanSlug && decodeURIComponent(rawSlug) !== cleanSlug) {
       // Redirect accented category URLs to clean versions (e.g. sublimación → sublimacion)
       permanentRedirect(`/${cleanSlug}`)
+    }
+
+    // Validar si es una categoría permitida o un legacy single-segment design slug
+    if (!ALLOWED_SLUGS.includes(cleanSlug)) {
+      const singleDesign = await getDesignBySlug(cleanSlug)
+      if (singleDesign) {
+        const primaryCat = getPrimaryCategory(singleDesign.category)
+        permanentRedirect(`/${primaryCat}/${singleDesign.slug}`)
+      }
+      notFound()
     }
 
     const [popularCategories, allTags] = await Promise.all([

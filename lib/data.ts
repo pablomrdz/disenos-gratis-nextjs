@@ -48,20 +48,21 @@ export async function getDesigns(options?: {
       const slug = options.category;
       const spaceVariation = slug.replace(/-/g, ' ');
 
-      // Use ilike logic to match either variation
-      // Simplest robust way: 
-      // category.ilike.%slug% OR category.ilike.%spaceVariation%
-
       const searchTerms = [slug, spaceVariation];
 
-      // Add accented variations for known categories
-      if (slug === 'recursos-graficos') searchTerms.push('recursos gráficos');
+      // Add accented and singular/plural variations for known categories
+      if (slug === 'recursos-graficos') searchTerms.push('recursos gráficos', 'recurso grafico', 'recursos graficos');
       if (slug === 'sublimacion') searchTerms.push('sublimación');
-      if (slug === 'tipografias') searchTerms.push('tipografías');
-      if (slug === 'corte-laser') searchTerms.push('corte láser');
+      if (slug === 'tipografias' || slug === 'tipografia') searchTerms.push('tipografías', 'tipografía', 'tipografias', 'tipografia', 'fuentes', 'fuente');
+      if (slug === 'corte-laser' || slug === 'corte-laser') searchTerms.push('corte láser', 'corte laser', 'corte', 'laser', 'láser');
+      if (slug === 'fondos-y-texturas') searchTerms.push('fondos y texturas', 'fondos', 'texturas');
+      if (slug === 'vinil-textil') searchTerms.push('vinil textil', 'vinil');
+
+      // Deduplicate search terms
+      const uniqueTerms = Array.from(new Set(searchTerms));
 
       // Construct the OR query string
-      const orQuery = searchTerms.map(term => `category.ilike.%${term}%`).join(',');
+      const orQuery = uniqueTerms.map(term => `category.ilike.%${term}%`).join(',');
       query = query.or(orQuery);
     }
     if (options?.type) {
@@ -301,8 +302,18 @@ export function getPrimaryCategory(rawCategory: string | undefined | null): stri
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-');
 
+  // Alias mappings (e.g. singular → plural or common variants)
+  const aliasMap: Record<string, string> = {
+    'tipografia': 'tipografias',
+    'fuente': 'tipografias',
+    'fuentes': 'tipografias',
+    'corte': 'corte-laser',
+    'corte-y-grabado-laser': 'corte-laser',
+  };
+
   // 1. Try exact match first (normalized)
   const normalized = toSlug(rawCategory);
+  if (aliasMap[normalized]) return aliasMap[normalized];
   if (ALLOWED_SLUGS.includes(normalized)) return normalized;
 
   // 2. Split by comma and find the first valid one

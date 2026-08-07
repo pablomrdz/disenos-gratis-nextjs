@@ -55,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const categoryRoutes: MetadataRoute.Sitemap = ALLOWED_SLUGS
         .filter((slug) => slug !== 'blog')
         .map((slug) => ({
-            url: `${BASE_URL}/category/${slug}`,
+            url: `${BASE_URL}/${slug}`,
             lastModified: new Date(),
             changeFrequency: 'weekly' as const,
             priority: 0.9,
