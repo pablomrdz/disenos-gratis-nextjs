@@ -158,6 +158,7 @@ async function CategoryContent({ slug }: { slug: string }) {
     .from('designs')
     .select(DESIGN_CARD_FIELDS)
     .or(orQuery)
+    .eq('content_type', 'asset')
     .order('created_at', { ascending: false })
     .range(0, 47) // Paginación: máximo 48 items por carga
 

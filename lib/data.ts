@@ -13,31 +13,41 @@ export const DESIGN_CARD_FIELDS = 'id, title, slug, image_url, category, downloa
 export async function getDesigns(options?: {
   category?: string
   type?: string
+  contentType?: 'asset' | 'blog' | 'tool'
   limit?: number
   isVip?: boolean
   excludeCategory?: string
   tag?: string
 }): Promise<DesignCard[]> {
   if (USE_MOCK) {
-    let designs = [...mockDesigns]
-    if (options?.category) {
-      designs = designs.filter(d => d.category === options.category)
-    }
-    if (options?.type) {
-      designs = designs.filter(d => d.type === options.type)
-    }
-    if (options?.isVip !== undefined) {
-      designs = designs.filter(d => d.is_vip === options.isVip)
-    }
-    if (options?.tag) {
-      designs = designs.filter(d => d.tags && d.tags.includes(options.tag!))
-    }
-    if (options?.limit) {
-      designs = designs.slice(0, options.limit)
-    }
-    return designs
+  let designs = [...mockDesigns]
+
+  if (options?.category) {
+    designs = designs.filter(d => d.category === options.category)
   }
 
+  if (options?.type) {
+    designs = designs.filter(d => d.type === options.type)
+  }
+
+  if (options?.contentType) {
+    designs = designs.filter(d => d.content_type === options.contentType)
+  }
+
+  if (options?.isVip !== undefined) {
+    designs = designs.filter(d => d.is_vip === options.isVip)
+  }
+
+  if (options?.tag) {
+    designs = designs.filter(d => d.tags && d.tags.includes(options.tag!))
+  }
+
+  if (options?.limit) {
+    designs = designs.slice(0, options.limit)
+  }
+
+  return designs
+}
   try {
     const supabase = createServerSupabaseClient()
     let query = supabase.from('designs').select(DESIGN_CARD_FIELDS)
