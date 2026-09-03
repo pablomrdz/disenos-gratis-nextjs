@@ -193,6 +193,52 @@ export async function getDesignBySlug(slug: string): Promise<Design | null> {
   return data
 }
 
+export async function getDesignBySlugAndContentType(
+  slug: string,
+  contentType: 'asset' | 'blog' | 'tool'
+): Promise<Design | null> {
+  if (USE_MOCK) {
+    return (
+      mockDesigns.find(
+        d =>
+          d.slug === slug &&
+          (d as Design & { content_type?: string }).content_type === contentType
+      ) || null
+    )
+  }
+
+  try {
+    const supabase = createServerSupabaseClient()
+
+    const { data, error } = await supabase
+      .from('designs')
+      .select('*')
+      .eq('slug', slug)
+      .eq('content_type', contentType)
+      .single()
+
+    if (error) {
+      if (error.code !== 'PGRST116') {
+        console.error(
+          `Error fetching ${contentType} by slug:`,
+          error.message || error
+        )
+      }
+
+      return null
+    }
+
+    return data
+  } catch (err) {
+    console.error(
+      `Error fetching ${contentType} by slug:`,
+      err
+    )
+
+    return null
+  }
+}
+
 // Tutorials
 export async function getTutorials(options?: {
   category?: string

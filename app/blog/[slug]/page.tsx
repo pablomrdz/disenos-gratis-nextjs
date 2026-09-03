@@ -8,7 +8,7 @@ import { ArrowLeft, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import AdUnit from '@/components/AdUnit'
 import { JsonLd } from '@/components/json-ld'
-import { getDesignBySlug, getPopularCategories } from '@/lib/data'
+import { getDesignBySlugAndContentType, getPopularCategories } from '@/lib/data'
 import { RichText } from '@/components/rich-text'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import { createServerSupabaseClient } from '@/lib/supabase'
@@ -45,7 +45,7 @@ interface BlogPostPageProps {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params
-  const post = await getDesignBySlug(slug)
+  const post = await getDesignBySlugAndContentType( slug,'blog')
 
   if (!post) {
     return { title: 'Artículo no encontrado' }
@@ -80,8 +80,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params
   const [post, popularCategories] = await Promise.all([
-    getDesignBySlug(slug),
-    getPopularCategories(6)
+  getDesignBySlugAndContentType(slug, 'blog'),
+  getPopularCategories(6)
   ])
 
   if (!post) {
