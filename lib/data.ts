@@ -20,92 +20,157 @@ export async function getDesigns(options?: {
   tag?: string
 }): Promise<DesignCard[]> {
   if (USE_MOCK) {
-  let designs = [...mockDesigns]
-
-  if (options?.category) {
-    designs = designs.filter(d => d.category === options.category)
-  }
-
-  if (options?.type) {
-    designs = designs.filter(d => d.type === options.type)
-  }
-
-  if (options?.contentType) {
-    designs = designs.filter(d => d.content_type === options.contentType)
-  }
-
-  if (options?.isVip !== undefined) {
-    designs = designs.filter(d => d.is_vip === options.isVip)
-  }
-
-  if (options?.tag) {
-    designs = designs.filter(d => d.tags && d.tags.includes(options.tag!))
-  }
-
-  if (options?.limit) {
-    designs = designs.slice(0, options.limit)
-  }
-
-  return designs
-}
-  try {
-    const supabase = createServerSupabaseClient()
-    let query = supabase.from('designs').select(DESIGN_CARD_FIELDS)
+    let designs = [...mockDesigns]
 
     if (options?.category) {
-      // Handle both hyphenated and space-separated versions of the category
-      // This fixes issues where 'fondos-y-texturas' in URL doesn't match 'Fondos y Texturas' in DB
-      const slug = options.category;
-      const spaceVariation = slug.replace(/-/g, ' ');
-
-      const searchTerms = [slug, spaceVariation];
-
-      // Add accented and singular/plural variations for known categories
-      if (slug === 'recursos-graficos') searchTerms.push('recursos gráficos', 'recurso grafico', 'recursos graficos');
-      if (slug === 'sublimacion') searchTerms.push('sublimación');
-      if (slug === 'tipografias' || slug === 'tipografia') searchTerms.push('tipografías', 'tipografía', 'tipografias', 'tipografia', 'fuentes', 'fuente');
-      if (slug === 'corte-laser' || slug === 'corte-laser') searchTerms.push('corte láser', 'corte laser', 'corte', 'laser', 'láser');
-      if (slug === 'fondos-y-texturas') searchTerms.push('fondos y texturas', 'fondos', 'texturas');
-      if (slug === 'vinil-textil') searchTerms.push('vinil textil', 'vinil');
-
-      // Deduplicate search terms
-      const uniqueTerms = Array.from(new Set(searchTerms));
-
-      // Construct the OR query string
-      const orQuery = uniqueTerms.map(term => `category.ilike.%${term}%`).join(',');
-      query = query.or(orQuery);
+      designs = designs.filter(d => d.category === options.category)
     }
+
+    if (options?.type) {
+      designs = designs.filter(d => d.type === options.type)
+    }
+
+    if (options?.contentType) {
+      designs = designs.filter(
+        d => (d as Design & { content_type?: string }).content_type === options.contentType
+      )
+    }
+
+    if (options?.isVip !== undefined) {
+      designs = designs.filter(d => d.is_vip === options.isVip)
+    }
+
+    if (options?.tag) {
+      designs = designs.filter(
+        d => d.tags && d.tags.includes(options.tag!)
+      )
+    }
+
+    if (options?.limit) {
+      designs = designs.slice(0, options.limit)
+    }
+
+    return designs
+  }
+
+  try {
+    const supabase = createServerSupabaseClient()
+
+    let query = supabase
+      .from('designs')
+      .select(DESIGN_CARD_FIELDS)
+
+    if (options?.category) {
+      // Handle both hyphenated and space-separated versions
+      // e.g. fondos-y-texturas -> Fondos y Texturas
+      const slug = options.category
+      const spaceVariation = slug.replace(/-/g, ' ')
+
+      const searchTerms = [slug, spaceVariation]
+
+      // Known category variations inherited from migration
+      if (slug === 'recursos-graficos') {
+        searchTerms.push(
+          'recursos gráficos',
+          'recurso grafico',
+          'recursos graficos'
+        )
+      }
+
+      if (slug === 'sublimacion') {
+        searchTerms.push('sublimación')
+      }
+
+      if (slug === 'tipografias' || slug === 'tipografia') {
+        searchTerms.push(
+          'tipografías',
+          'tipografía',
+          'tipografias',
+          'tipografia',
+          'fuentes',
+          'fuente'
+        )
+      }
+
+      if (slug === 'corte-laser') {
+        searchTerms.push(
+          'corte láser',
+          'corte laser',
+          'corte',
+          'laser',
+          'láser'
+        )
+      }
+
+      if (slug === 'fondos-y-texturas') {
+        searchTerms.push(
+          'fondos y texturas',
+          'fondos',
+          'texturas'
+        )
+      }
+
+      if (slug === 'vinil-textil') {
+        searchTerms.push(
+          'vinil textil',
+          'vinil'
+        )
+      }
+
+      const uniqueTerms = Array.from(new Set(searchTerms))
+
+      const orQuery = uniqueTerms
+        .map(term => `category.ilike.%${term}%`)
+        .join(',')
+
+      query = query.or(orQuery)
+    }
+
     if (options?.type) {
       query = query.eq('type', options.type)
     }
+
+    // NEW: explicit content intent filter
+    if (options?.contentType) {
+      query = query.eq('content_type', options.contentType)
+    }
+
     if (options?.isVip !== undefined) {
       query = query.eq('is_vip', options.isVip)
     }
+
     if (options?.limit) {
       query = query.limit(options.limit)
     }
+
     if (options?.excludeCategory) {
       query = query.neq('category', options.excludeCategory)
     }
+
     if (options?.tag) {
-      // For Supabase, to check if an array column contains an element, use .contains
       query = query.contains('tags', [options.tag])
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false })
+    const { data, error } = await query.order(
+      'created_at',
+      { ascending: false }
+    )
 
     if (error) {
       console.error('Error fetching designs:', error)
-      return mockDesigns
+
+      // Production must not silently display mock content.
+      return []
     }
 
     return data || []
   } catch (err) {
     console.error('Error fetching designs:', err)
-    return mockDesigns
+
+    // Production must not silently display mock content.
+    return []
   }
 }
-
 export async function getDesignBySlug(slug: string): Promise<Design | null> {
   if (USE_MOCK) {
     return mockDesigns.find(d => d.slug === slug) || null
