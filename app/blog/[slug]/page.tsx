@@ -26,7 +26,7 @@ export async function generateStaticParams() {
     const { data: posts } = await supabase
       .from('designs')
       .select('slug')
-      .eq('category', 'blog')
+      .eq('content_type', 'blog')
 
     if (!posts || posts.length === 0) return []
 

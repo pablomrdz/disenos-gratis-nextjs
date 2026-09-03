@@ -55,7 +55,7 @@ function InstagramIcon({ className }: { className?: string }) {
 
 export default async function TutorialsPage() {
   const [blogPosts, popularCategories, allTags] = await Promise.all([
-    getDesigns({ category: 'blog' }),
+    getDesigns({ contentType: 'blog' }),
     getPopularCategories(6),
     getAllTags(),
   ])
