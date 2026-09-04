@@ -16,7 +16,6 @@ export async function getDesigns(options?: {
   contentType?: 'asset' | 'blog' | 'tool'
   limit?: number
   isVip?: boolean
-  excludeCategory?: string
   tag?: string
 }): Promise<DesignCard[]> {
   if (USE_MOCK) {
@@ -143,9 +142,6 @@ export async function getDesigns(options?: {
       query = query.limit(options.limit)
     }
 
-    if (options?.excludeCategory) {
-      query = query.neq('category', options.excludeCategory)
-    }
 
     if (options?.tag) {
       query = query.contains('tags', [options.tag])

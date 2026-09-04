@@ -15,7 +15,11 @@ export const revalidate = 86400
 
 // ─── Sección 1: Top del Mes ───────────────────────────────────────────────────
 async function TopDesigns() {
-  const designs = await getDesigns({ limit: 100, tag: 'Top del mes', excludeCategory: 'blog' })
+  const designs = await getDesigns({
+  limit:100,
+  tag: 'Top del mes',
+  contentType: 'asset'
+})
 
   if (!designs || designs.length === 0) return null
 
@@ -49,7 +53,7 @@ async function RecentDesigns() {
   const { data, error } = await supabase
     .from('designs')
     .select(DESIGN_CARD_FIELDS)
-    .neq('category', 'blog')
+    .eq('content_type', 'asset')
     .order('created_at', { ascending: false })
     .limit(8)
 
@@ -65,7 +69,7 @@ async function CatalogFeed() {
   const { data, error } = await supabase
     .from('designs')
     .select(DESIGN_CARD_FIELDS)
-    .neq('category', 'blog')
+    .eq('content_type', 'asset')
     .order('created_at', { ascending: false })
     .range(8, 107)
 
