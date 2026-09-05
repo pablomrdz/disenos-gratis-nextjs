@@ -13,8 +13,9 @@ function formatCategoryName(slug: string): string {
 }
 
 export async function CategorySection() {
-  const topCategories = await getTopCategories(12) // Fetch more for pills
-
+const topCategories = (await getTopCategories(12))
+  .filter(item => item.category !== 'blog')
+  
   return (
     <section className="pt-4 pb-6 sm:py-8 border-t border-border/40">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

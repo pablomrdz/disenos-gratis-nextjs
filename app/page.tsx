@@ -8,7 +8,9 @@ import { DesignGridSkeleton } from '@/components/design-card-skeleton'
 import { getDesigns, DESIGN_CARD_FIELDS } from '@/lib/data'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import AdUnit from '@/components/AdUnit'
-import type { DesignCard } from '@/lib/types'
+import type { DesignCard } from '@/lib/types' 
+import type { Metadata } from 'next'
+import { PrimaryHubsSection } from '@/components/primary-hubs-section'
 
 // ISR: Static with 24 hours revalidation
 export const revalidate = 86400
@@ -16,7 +18,7 @@ export const revalidate = 86400
 // ─── Sección 1: Top del Mes ───────────────────────────────────────────────────
 async function TopDesigns() {
   const designs = await getDesigns({
-  limit:100,
+  limit:8,
   tag: 'Top del mes',
   contentType: 'asset'
 })
@@ -35,7 +37,7 @@ async function TopDesigns() {
           </p>
         </div>
         <Link
-          href="/tags/Top del mes"
+          href="/tags/top-del-mes/"
           className="hidden items-center gap-1 text-sm font-bold text-brand-cyan hover:underline sm:flex"
         >
           Ver todo
@@ -78,11 +80,20 @@ async function CatalogFeed() {
   return <DesignGrid designs={data as DesignCard[]} showAds={true} adFrequency={8} columns={4} />
 }
 
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+}
+
 export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
       <HeroSection />
+
+      {/* Categories section */}
+      <CategorySection />
 
       {/* ⚡ BANNER ATF (Above the Fold) - Transparente e integrado */}
       <div className="bg-brand-black pt-6">
@@ -146,36 +157,11 @@ export default function HomePage() {
             <CatalogFeed />
           </Suspense>
         </div>
-      </section>
+      </section> 
 
-      {/* Categories moved to bottom */}
-      <CategorySection />
+    {/* Hub de Categorias */}
+      <PrimaryHubsSection />
 
-      {/* Newsletter / CTA Section */}
-      <section className="border-t border-brand-gray/20 bg-brand-card py-16 text-brand-white">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-brand-white sm:text-3xl">
-            Mantente al Día<span className="text-brand-cyan">.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-brand-gray">
-            Recibe notificaciones sobre nuevas plantillas, fuentes y contenido exclusivo.
-            Únete a nuestra comunidad de más de 25,000 creadores.
-          </p>
-          <form className="mx-auto mt-8 flex max-w-md gap-3">
-            <input
-              type="email"
-              placeholder="Tu correo electrónico"
-              className="flex-1 rounded-lg border border-brand-gray/30 bg-brand-black px-4 py-3 text-sm text-brand-white placeholder:text-brand-gray focus:outline-none focus:ring-2 focus:ring-brand-cyan"
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-brand-cyan px-6 py-3 text-sm font-bold text-brand-black transition-all hover:bg-brand-cyan/90"
-            >
-              Suscribirse
-            </button>
-          </form>
-        </div>
-      </section>
     </>
   )
 }

@@ -483,6 +483,9 @@ export async function getDesignsByTag(tag: string, limit: number = 20): Promise<
   if (tag === 'baby-shower') variations.push('Baby Shower');
   if (tag === 'navidad') variations.push('Navidad');
   if (tag === 'cumpleanos') variations.push('Cumpleaños');
+  if (tag === 'dia-de-muertos') variations.push('Día de Muertos')
+  if (tag === 'independencia-de-mexico') variations.push('Independencia de México')
+
 
   // Remove duplicates
   const uniqueVariations = Array.from(new Set(variations));
@@ -494,6 +497,7 @@ export async function getDesignsByTag(tag: string, limit: number = 20): Promise<
     .from('designs')
     .select(DESIGN_CARD_FIELDS)
     .or(orQuery)
+    .eq('content_type', 'asset')
     .limit(limit)
     .order('created_at', { ascending: false })
 

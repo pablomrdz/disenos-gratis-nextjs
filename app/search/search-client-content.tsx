@@ -31,7 +31,7 @@ export default function SearchClientContent() {
         return res.json()
       })
       .then((data) => {
-        setSearchResults(Array.isArray(data) ? data : [])
+        setSearchResults(Array.isArray(data?.designs) ? data.designs : [])
       })
       .catch((err) => {
         console.error('Search error:', err)

@@ -13,20 +13,20 @@ const megaMenuCategories = [
   {
     title: 'Técnicas y Proyectos',
     items: [
-      { 
-        name: 'DTF / Impresión Textil', 
-        href: '/dtf', 
-        description: 'Archivos en 300 DPI y semitonos para impresión textil y transfers.' 
+      {
+        name: 'Diseños DTF Gratis',
+        href: '/dtf',
+        description: 'Imágenes PNG y diseños DTF listos para imprimir en playeras y proyectos textiles.'
       },
       { 
         name: 'Sublimación', 
         href: '/sublimacion', 
         description: 'Plantillas editables para tazas de 11oz, playeras, termos y cojines.' 
       },
-      { 
-        name: 'Tipografías Deportivas', 
-        href: '/tipografias', 
-        description: 'Fuentes de números de jersey, Selección Mexicana 2026 y TTF/OTF.' 
+{
+        name: 'Tipografías Gratis',
+        href: '/tipografias',
+        description: 'Fuentes TTF y OTF gratis para diseño, playeras, deportes y proyectos creativos.'
       },
       { 
         name: 'Corte y Grabado Láser', 
@@ -59,16 +59,6 @@ const megaMenuCategories = [
         description: 'Archivos trazados editables en Illustrator, CorelDraw e Inkscape.' 
       },
       { 
-        name: 'Archivos Photoshop (PSD)', 
-        href: '/tags/psd', 
-        description: 'Plantillas en capas organizadas con objetos inteligentes para maquetar.' 
-      },
-      { 
-        name: 'Corte (Studio3 / Silhouette)', 
-        href: '/tags/silhouette', 
-        description: 'Archivos Studio3 y DXF optimizados para Silhouette Cameo y Cricut.' 
-      },
-      { 
         name: 'Fondos y Texturas', 
         href: '/fondos-y-texturas', 
         description: 'Papeles digitales, fondos para Zoom y texturas retro de alta definición.' 
@@ -87,27 +77,7 @@ const megaMenuCategories = [
         name: 'Anime y Manga', 
         href: '/tags/anime', 
         description: 'One Piece (Carteles Wanted), Dragon Ball, Pokémon y cultura geek.' 
-      },
-      { 
-        name: 'Tradiciones y Lotería', 
-        href: '/tags/loteria', 
-        description: 'Plantillas de Lotería Mexicana editables e imprimibles en PDF.' 
-      },
-      { 
-        name: 'Películas y Series', 
-        href: '/tags/peliculas', 
-        description: 'Diseños inspirados en los mejores estrenos de cine y shows de TV.' 
-      },
-      { 
-        name: 'Videojuegos / Gamers', 
-        href: '/tags/videojuegos', 
-        description: 'Personajes retro, gaming y vectores para la comunidad gamer.' 
-      },
-      { 
-        name: 'Marcas y Logos', 
-        href: '/tags/logos', 
-        description: 'Logotipos vectorizados de marcas reconocidas e isotipos limpios.' 
-      },
+      }
     ],
   },
   {
@@ -124,14 +94,9 @@ const megaMenuCategories = [
         description: 'Diseños florales, frases emotivas y regalables para mamá.' 
       },
       { 
-        name: 'Navidad y Halloween', 
+        name: 'Halloween', 
         href: '/tags/halloween', 
-        description: 'Personajes de terror infantiles, brujas, calaveras y pino navideño.' 
-      },
-      { 
-        name: 'Fiestas Patrias y Religiosas', 
-        href: '/tags/revolución-mexicana', 
-        description: 'Virgen de Guadalupe, Independencia, Día de Muertos y folklore.' 
+        description: 'Diseños de brujas, calaveras, personajes y recursos para Halloween.' 
       },
       { 
         name: 'Cumpleaños y Fiestas', 

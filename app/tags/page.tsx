@@ -1,9 +1,21 @@
 import Link from 'next/link'
 import { Tag, Home, ChevronRight, Search } from 'lucide-react'
 import { getAllTags } from '@/lib/data'
+import { CategorySection } from '@/components/category-section'
+import { slugify } from '@/lib/utils'
+import type { Metadata } from 'next'
 
 //export const dynamic = 'force-dynamic'
 export const revalidate = 86400
+
+export const metadata: Metadata = {
+  title: 'Etiquetas y temas de diseños gratis',
+  description:
+    'Explora diseños, plantillas y recursos gráficos gratis organizados por temas, formatos y etiquetas.',
+  alternates: {
+    canonical: '/tags/',
+  },
+}
 
 export default async function TagsPage() {
     const tags = await getAllTags()
@@ -18,11 +30,11 @@ export default async function TagsPage() {
     ]
 
     // Format tags for display (handle hyphenated slugs if they came from WP)
-    const formattedTags = tags.map(tag => ({
+        const formattedTags = tags.map(tag => ({
         original: tag,
         display: tag.replace(/-/g, ' '),
-        slug: tag.replace(/\s+/g, '-').toLowerCase()
-    }))
+        slug: slugify(tag),
+        }))
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -97,23 +109,10 @@ export default async function TagsPage() {
                 )}
             </div>
 
-            {/* Secondary Categories Call to Action */}
-            <div className="bg-slate-900 py-16 text-white text-center">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold mb-8">¿Prefieres buscar por categoría?</h2>
-                    <div className="flex flex-wrap justify-center gap-4">
-                        {POPULAR_CATEGORIES.map((cat) => (
-                            <Link
-                                key={cat.slug}
-                                href={`/${cat.slug}`}
-                                className="rounded-full bg-white/10 px-6 py-2 text-sm font-bold border border-white/20 hover:bg-white hover:text-slate-900 transition-all"
-                            >
-                                {cat.name}
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </div>
+      {/* Categories section */}
+      <CategorySection />
+
+
         </div>
     )
 }

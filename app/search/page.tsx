@@ -9,8 +9,13 @@ import SearchClientContent from './search-client-content'
 export const revalidate = 86400
 
 export const metadata: Metadata = {
-  title: 'Search Designs | Diseños Gratis',
-  description: 'Search our collection of premium design templates, fonts, and resources',
+  title: 'Buscar diseños gratis',
+  description:
+    'Busca diseños, plantillas, tipografías y recursos gráficos gratuitos.',
+  robots: {
+    index: false,
+    follow: true,
+  },
 }
 
 export default async function SearchPage() {
@@ -30,10 +35,10 @@ export default async function SearchPage() {
             </div>
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Search Designs
+                Buscar diseños gratis | Diseños Gratis
               </h1>
               <p className="mt-1 text-lg text-muted-foreground">
-                Find templates, fonts, and resources for your projects.
+                Busca diseños, plantillas, tipografías y recursos gráficos gratuitos.
               </p>
             </div>
           </div>

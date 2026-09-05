@@ -55,7 +55,7 @@ export function Footer() {
               <Users className="h-6 w-6 text-emerald-500" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground">40K+</div>
+              <div className="text-2xl font-bold text-foreground">50K+</div>
               <p className="text-sm text-muted-foreground">Usuarios activos</p>
             </div>
           </div>
