@@ -372,37 +372,33 @@ export async function getCategories(): Promise<Category[]> {
     return mockCategories
   }
 
-  const supabase = createServerSupabaseClient()
-  const { data, error } = await supabase
-    .from('categories')
-    .select('id, name, slug, description, icon')
-    .order('name', { ascending: true })
+  try {
+    const supabase = createServerSupabaseClient()
 
-  if (error) {
-    console.error('Error fetching categories:', error)
-    // Return empty or valid static structure based on ALLOWED_SLUGS instead of mockCategories
-    return ALLOWED_SLUGS
-      .map((slug, index) => ({
-        id: `fallback-${index}`,
-        name: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // capitalized
-        slug: slug,
-        description: 'Category',
-        icon: 'Folder'
-      }))
+    const { data, error } = await supabase
+      .from('taxonomies')
+      .select('id, name, slug, description')
+      .eq('type', 'category')
+      .order('name', { ascending: true })
+
+    if (error) {
+      console.error('Error fetching categories:', error)
+      return []
+    }
+
+    return (data || []).map((category) => ({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      description: category.description || '',
+      icon: 'Folder',
+    }))
+  } catch (err) {
+    console.error('Error in getCategories:', err)
+    return []
   }
-
-  // Filter out any categories not in the allowed list and any that contain commas (dirty data)
-  const cleanCategories = ((data as any[]) || []).filter(cat => {
-    // Basic clean checks
-    if (!cat.slug || cat.slug === 'uncategorized' || cat.slug.includes(',')) return false;
-
-    // Strict Clean: Must be in our allowed list
-    const normalizedSlug = cat.slug.toLowerCase().trim().replace(/\s+/g, '-');
-    return ALLOWED_SLUGS.includes(normalizedSlug);
-  });
-
-  return cleanCategories;
 }
+
 
 // Helper to extract a single valid category from a potentially dirty comma-separated string
 export function getPrimaryCategory(rawCategory: string | undefined | null): string {
@@ -509,25 +505,6 @@ export async function getDesignsByTag(tag: string, limit: number = 20): Promise<
   return data || []
 }
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  if (USE_MOCK) {
-    return mockCategories.find(c => c.slug === slug) || null
-  }
-
-  const supabase = createServerSupabaseClient()
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('slug', slug)
-    .single()
-
-  if (error) {
-    console.error('Error fetching category:', error)
-    return null
-  }
-
-  return data
-}
 
 export async function getTaxonomyBySlug(slug: string, type: 'category' | 'tag'): Promise<Taxonomy | null> {
   const supabase = createServerSupabaseClient()
@@ -724,6 +701,83 @@ export async function getAllTags(): Promise<string[]> {
     return Array.from(tagSet).sort((a, b) => a.localeCompare(b, 'es'));
   } catch (err) {
     console.error('Error in getAllTags:', err)
+    return []
+  }
+} 
+
+function getTagVariations(tag: string): string[] {
+  const variations = [tag]
+
+  if (tag === 'dia-de-las-madres') variations.push('Día de las Madres')
+  if (tag === 'dia-del-padre') variations.push('Día del Padre')
+  if (tag === 'dia-de-muertos') variations.push('Día de Muertos')
+  if (tag === 'independencia-de-mexico') variations.push('Independencia de México')
+  if (tag === 'cumpleanos') variations.push('Cumpleaños')
+  if (tag === 'anime') variations.push('Anime')
+  if (tag === 'disney') variations.push('Disney')
+
+  return Array.from(new Set(variations))
+} 
+
+export async function getRelatedTags(
+  currentTag: string,
+  limit: number = 8
+): Promise<string[]> {
+  try {
+    const supabase = createServerSupabaseClient()
+
+    const variations = getTagVariations(currentTag)
+    const variationSet = new Set(
+      variations.map(tag => tag.toLowerCase())
+    )
+
+    const { data, error } = await supabase
+      .from('designs')
+      .select('tags')
+      .eq('content_type', 'asset')
+
+    if (error) {
+      console.error('Error fetching related tags:', error)
+      return []
+    }
+
+    const counts = new Map<string, number>()
+
+    ;(data as Array<{ tags: string[] | null }> | null)?.forEach(row => {
+      const tags = Array.isArray(row.tags) ? row.tags : []
+
+      // Primero comprobamos que este asset pertenece a la tag actual
+      const belongsToCurrentTag = tags.some(tag =>
+        variationSet.has(tag.toLowerCase())
+      )
+
+      if (!belongsToCurrentTag) return
+
+      // Después contamos las demás tags de esos mismos assets
+      tags.forEach(tag => {
+        if (!tag) return
+
+        // No mostrar la propia tag como "relacionada"
+        if (variationSet.has(tag.toLowerCase())) return
+
+        counts.set(tag, (counts.get(tag) || 0) + 1)
+      })
+    })
+
+    return Array.from(counts.entries())
+      .sort((a, b) => {
+        // Primero por frecuencia
+        if (b[1] !== a[1]) {
+          return b[1] - a[1]
+        }
+
+        // Empate: orden alfabético estable
+        return a[0].localeCompare(b[0], 'es')
+      })
+      .slice(0, limit)
+      .map(([tag]) => tag)
+  } catch (err) {
+    console.error('Error in getRelatedTags:', err)
     return []
   }
 }

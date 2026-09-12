@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default async function DesignsPage() {
   // Fetch paralelo de datos estáticos
   const [designs, categories, popularCategories, allTags] = await Promise.all([
-    getDesigns({ excludeCategory: 'blog' }),
+    getDesigns({ contentType: 'asset' }),
     getCategories(),
     getPopularCategories(6),
     getAllTags(),
@@ -28,7 +28,7 @@ export default async function DesignsPage() {
   // Filtros de categoría para las pills
   const categoryFilters = [
     { name: 'Todos', slug: 'all' },
-    ...categories.filter((c) => c.slug !== 'blog'),
+    ...categories,
   ]
 
   return (

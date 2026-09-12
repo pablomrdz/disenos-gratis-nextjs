@@ -26,6 +26,7 @@ export interface Design {
   font_family?: string | null
   gallery_urls?: string[] | null
   related_keywords?: string[] | null
+  
 }
 
 /** Campos mínimos para tarjetas de diseño en grillas/catálogos.
@@ -81,6 +82,7 @@ export interface Taxonomy {
   seo_description?: string | null
   created_at: string
   updated_at: string
+  content_bottom?: string | null
 }
 
 // Database types for Supabase

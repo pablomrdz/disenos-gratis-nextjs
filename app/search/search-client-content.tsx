@@ -56,7 +56,7 @@ export default function SearchClientContent() {
     return (
       <div>
         <p className="mb-6 text-sm text-muted-foreground">
-          Found {searchResults.length} design{searchResults.length === 1 ? '' : 's'} for "{query}"
+          1 {searchResults.length} resultado{searchResults.length === 1 ? '' : 's'} para "{query}"
         </p>
         <DesignGrid designs={searchResults} />
       </div>
@@ -67,7 +67,7 @@ export default function SearchClientContent() {
     return (
       <div className="rounded-lg border border-dashed border-border p-12 text-center">
         <SearchIcon className="mx-auto h-12 w-12 text-muted-foreground/50" />
-        <h2 className="mt-4 text-lg font-semibold text-foreground">No results found</h2>
+        <h2 className="mt-4 text-lg font-semibold text-foreground">No encontramos resultados</h2>
         <p className="mt-2 text-muted-foreground">
           Try adjusting your search terms or browse our categories.
         </p>
@@ -78,7 +78,7 @@ export default function SearchClientContent() {
   return (
     <div className="rounded-lg border border-dashed border-border p-12 text-center">
       <SearchIcon className="mx-auto h-12 w-12 text-muted-foreground/50" />
-      <h2 className="mt-4 text-lg font-semibold text-foreground">Start searching</h2>
+      <h2 className="mt-4 text-lg font-semibold text-foreground">Busca en nuestro catálogo</h2>
       <p className="mt-2 text-muted-foreground">
         Use the search bar to find templates, fonts, and resources.
       </p>

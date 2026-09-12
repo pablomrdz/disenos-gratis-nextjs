@@ -84,16 +84,6 @@ const megaMenuCategories = [
     title: 'Eventos y Festividades',
     items: [
       { 
-        name: 'Día del Padre', 
-        href: '/tags/dia-del-padre', 
-        description: 'Vectores y plantillas de "Papá e Hijos" para playeras y tazas.' 
-      },
-      { 
-        name: 'Día de las Madres', 
-        href: '/tags/dia-de-las-madres', 
-        description: 'Diseños florales, frases emotivas y regalables para mamá.' 
-      },
-      { 
         name: 'Halloween', 
         href: '/tags/halloween', 
         description: 'Diseños de brujas, calaveras, personajes y recursos para Halloween.' 

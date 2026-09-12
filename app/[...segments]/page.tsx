@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
     const taxonomy = await getTaxonomyBySlug(cleanSlug, 'category')
 
     const categoryName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-    const canonicalUrl = `https://disenosgratis.com/${slug}`
+    const canonicalUrl = `https://disenosgratis.com/${cleanSlug}`
     
     return {
       title: taxonomy?.seo_title || `${categoryName} - Categoría | Diseños Gratis`,
@@ -276,6 +276,13 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               <Suspense fallback={<DesignGridSkeleton />}>
                 <CategoryContent slug={decodedSlug} />
               </Suspense>
+                {taxonomy?.content_bottom && (
+    <section className="mt-12 rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
+      <div className="prose prose-slate max-w-none">
+        <RichText content={taxonomy.content_bottom} />
+      </div>
+    </section>
+  )}
             </div>
 
             <aside className="hidden lg:block">

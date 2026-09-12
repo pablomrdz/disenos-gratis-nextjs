@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
-import { getDesignsByTag, getPopularCategories, getAllTags, getTaxonomyBySlug } from '@/lib/data'
+import { getDesignsByTag, getPopularCategories, getAllTags, getRelatedTags, getTaxonomyBySlug } from '@/lib/data'
 import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
 import { RichText } from '@/components/rich-text'
@@ -68,10 +68,10 @@ export default async function TagPage({ params }: TagPageProps) {
   const displayName = formatDisplayName(decodedTag)
 
   // Fetch resources in parallel
-  const [taggedDesigns, popularCategories, allTags, taxonomy] = await Promise.all([
+  const [taggedDesigns, popularCategories, relatedTags, taxonomy] = await Promise.all([
     getDesignsByTag(decodedTag, 100),
     getPopularCategories(6),
-    getAllTags(),
+    getRelatedTags(decodedTag, 8),
     getTaxonomyBySlug(cleanSlug, 'tag')
   ])
 
@@ -126,13 +126,23 @@ export default async function TagPage({ params }: TagPageProps) {
                 Mostrando {taggedDesigns.length} {taggedDesigns.length === 1 ? 'resultado' : 'resultados'}
               </p>
               <DesignGrid designs={taggedDesigns} />
+
+{taxonomy?.content_bottom && (
+  <section className="mt-12 rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
+    <div className="prose prose-slate max-w-none">
+      <RichText content={taxonomy.content_bottom} />
+    </div>
+  </section>
+)}
             </main>
+
+            
 
             {/* Sidebar */}
             <aside className="hidden lg:block">
               <StickySidebar
                 popularCategories={popularCategories}
-                tags={allTags.slice(0, 20)}
+                tags={relatedTags}
               />
             </aside>
           </div>
