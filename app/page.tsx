@@ -59,8 +59,12 @@ async function RecentDesigns() {
     .order('created_at', { ascending: false })
     .limit(8)
 
-  if (error || !data) return null
+  if (error) {
+    console.error('Error fetching catalog feed:', error)
+    throw error
+  }
 
+if (!data || data.length === 0) return null
   return <DesignGrid designs={data as DesignCard[]} showAds={false} columns={4} />
 }
 
