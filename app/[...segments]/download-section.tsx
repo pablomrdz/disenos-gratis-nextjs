@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { createClient } from '@supabase/supabase-js'
 import type { Design } from '@/lib/types'
+import { trackEvent } from '@/lib/analytics'
 
 // ── Supabase client (client-side) ───────────────────────────────
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -51,56 +52,64 @@ export function DownloadSection({ design }: DownloadSectionProps) {
     }
   }, [])
 
-  // ── Analytics: insert into downloads_stats ────────────────────
-  const logDownloadStat = useCallback(async () => {
-    if (analyticsLoggedRef.current) return
-    analyticsLoggedRef.current = true
+// ── Analytics: Supabase + GA4 ────────────────────────────────
+const logDownloadStat = useCallback(async () => {
+  if (analyticsLoggedRef.current) return
+  analyticsLoggedRef.current = true
 
-    try {
-      await supabaseClient.from('downloads_stats').insert({
-        design_id: design.id,
-        category: design.category || 'general',
-      })
-    } catch (err) {
-      console.error('[Download] Analytics error:', err)
+  trackEvent('download_click', {
+    item_id: design.id,
+    item_name: design.title || 'Untitled Design',
+    category: design.category || 'general',
+    download_source: 'design_page',
+  })
+
+  try {
+    await supabaseClient.from('downloads_stats').insert({
+      design_id: design.id,
+      category: design.category || 'general',
+    })
+  } catch (err) {
+    console.error('[Download] Analytics error:', err)
+  }
+}, [design.id, design.title, design.category])
+
+// ── Start the 5-second loading sequence ───────────────────────
+const startDownloadSequence = useCallback(() => {
+  if (phase !== 'idle') return
+
+  setPhase('loading')
+  setProgress(0)
+  analyticsLoggedRef.current = false
+
+  const startTime = Date.now()
+
+  timerRef.current = setInterval(() => {
+    const elapsed = Date.now() - startTime
+    const pct = Math.min(
+      Math.round((elapsed / WAIT_DURATION_MS) * 100),
+      100
+    )
+
+    setProgress(pct)
+
+    if (elapsed >= WAIT_DURATION_MS) {
+      if (timerRef.current) clearInterval(timerRef.current)
+      setProgress(100)
+      setPhase('ready')
     }
-  }, [design.id, design.category])
+  }, TICK_INTERVAL_MS)
+}, [phase])
 
-  // ── Start the 5-second loading sequence ───────────────────────
-  const startDownloadSequence = useCallback(() => {
-    if (phase !== 'idle') return
+// ── Execute final download ────────────────────────────────────
+const executeDownload = useCallback(() => {
+  const url = downloadUrlRef.current
 
-    setPhase('loading')
-    setProgress(0)
-    analyticsLoggedRef.current = false
+  if (!url) return
 
-    const startTime = Date.now()
-
-    // Log analytics early in the sequence
-    logDownloadStat()
-
-    timerRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTime
-      const pct = Math.min(Math.round((elapsed / WAIT_DURATION_MS) * 100), 100)
-      setProgress(pct)
-
-      if (elapsed >= WAIT_DURATION_MS) {
-        if (timerRef.current) clearInterval(timerRef.current)
-        setProgress(100)
-        setPhase('ready')
-      }
-    }, TICK_INTERVAL_MS)
-  }, [phase, logDownloadStat])
-
-  // ── Execute final download ────────────────────────────────────
-  const executeDownload = useCallback(() => {
-    const url = downloadUrlRef.current
-
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer')
-    }
-  }, [])
-
+  logDownloadStat()
+  window.open(url, '_blank', 'noopener,noreferrer')
+}, [logDownloadStat])
   // ── Render helpers ────────────────────────────────────────────
   const getProgressText = () => {
     if (progress < 20) return 'Iniciando descarga...'
@@ -221,7 +230,18 @@ export function DownloadSection({ design }: DownloadSectionProps) {
 
             {/* Personalizar y Descargar CTA */}
             {(design.category === 'Plantillas' || (design.slug && design.slug.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes('loteria'))) && (
-              <Link href={`/edit/${design.slug || design.id}`}>
+              <Link
+                      href={`/edit/${design.slug || design.id}`}
+                      onClick={() =>
+                        trackEvent('editor_open', {
+                          item_id: design.id,
+                          item_name: design.title || 'Untitled Design',
+                          category: design.category || 'general',
+                          editor_type: 'fabric',
+                          source_page: 'design_page',
+                        })
+                      }
+                    >
                 <Button
                   size="lg"
                   className="gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] transition-all text-base font-bold px-6"
