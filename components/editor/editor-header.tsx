@@ -16,6 +16,8 @@ interface EditorHeaderProps {
     itemId: string
     category: string
     editorType: string
+    filledSlots?: number
+    totalSlots?: number
     hasSavedState?: boolean
     onClearState?: () => void
 }
@@ -30,6 +32,8 @@ export function EditorHeader({
     itemId,
     category,
     editorType,
+    filledSlots = 0,
+    totalSlots,
     hasSavedState,
     onClearState,
 }: EditorHeaderProps) {
@@ -44,14 +48,36 @@ export function EditorHeader({
         await new Promise((r) => setTimeout(r, 250))
 
         try {
+            if (editorType === 'loteria' && totalSlots && filledSlots < totalSlots) {
+                toast.warning(`Tu tabla tiene ${filledSlots} de ${totalSlots} cartas.`, {
+                    description: 'Los espacios que faltan se conservarán visibles en el PDF.',
+                })
+            }
+
             // Deselect any active object to avoid selection handles in export
             canvas.discardActiveObject()
 
-            // Hide any remaining placeholders before export
-            const placeholders: fabric.FabricObject[] = []
-            canvas.getObjects().forEach(obj => {
-                if ((obj as any).isPlaceholder) {
-                    placeholders.push(obj)
+            // Keep a subtle printable 4×4 guide for empty Lotería slots.
+            const placeholderStates = canvas
+                .getObjects()
+                .filter((obj: any) => obj.isPlaceholder)
+                .map((obj) => ({
+                    obj,
+                    visible: obj.visible,
+                    stroke: obj.stroke,
+                    strokeWidth: obj.strokeWidth,
+                    strokeDashArray: obj.strokeDashArray,
+                }))
+
+            placeholderStates.forEach(({ obj }) => {
+                if (editorType === 'loteria') {
+                    obj.set({
+                        visible: true,
+                        stroke: '#d1d5db',
+                        strokeWidth: 1,
+                        strokeDashArray: [],
+                    })
+                } else {
                     obj.set({ visible: false })
                 }
             })
@@ -74,9 +100,14 @@ export function EditorHeader({
                 source_page: 'editor',
             })
 
-            // Restore placeholders visibility
-            placeholders.forEach(obj => {
-                obj.set({ visible: true })
+            // Restore editor-only placeholder appearance
+            placeholderStates.forEach((state) => {
+                state.obj.set({
+                    visible: state.visible,
+                    stroke: state.stroke,
+                    strokeWidth: state.strokeWidth,
+                    strokeDashArray: state.strokeDashArray,
+                })
             })
             canvas.renderAll()
 
@@ -137,7 +168,7 @@ export function EditorHeader({
         const canvasAspect = canvasW / canvasH
 
         // Define print margins (10mm on each side)
-        const margin = 10
+        const margin = 5
         const printableW = paper.w - (margin * 2)
         const printableH = paper.h - (margin * 2)
         const printableAspect = printableW / printableH
@@ -163,7 +194,7 @@ export function EditorHeader({
     }
 
     return (
-        <header className="flex items-center justify-between border-b border-border/50 bg-background px-4 py-3">
+        <header className="flex shrink-0 items-center justify-between border-b border-border/50 bg-background px-3 py-2.5 sm:px-4 sm:py-3">
             {/* Left: Back + Title */}
             <div className="flex items-center gap-3">
                 <Link
@@ -174,7 +205,14 @@ export function EditorHeader({
                     <span className="hidden sm:inline">Volver</span>
                 </Link>
                 <div className="hidden h-6 w-px bg-border/50 sm:block" />
-                <h1 className="line-clamp-1 max-w-[200px] text-sm font-semibold text-foreground sm:max-w-md" dangerouslySetInnerHTML={{ __html: title }} />
+                <div className="min-w-0">
+                    <h1 className="line-clamp-1 max-w-[180px] text-sm font-semibold text-foreground sm:max-w-md" dangerouslySetInnerHTML={{ __html: title }} />
+                    {totalSlots ? (
+                        <p className="mt-0.5 text-[10px] font-medium text-muted-foreground">
+                            Tabla: {filledSlots}/{totalSlots} cartas
+                        </p>
+                    ) : null}
+                </div>
             </div>
 
             {/* Right: Format + Reset + Export */}

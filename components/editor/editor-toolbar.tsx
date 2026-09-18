@@ -125,6 +125,16 @@ export function EditorToolbar({ canvas, selectedObject, onSelectionChange, defau
 
     const deleteSelected = () => {
         if (!canvas || !selectedObject) return
+
+        const selectedAny = selectedObject as any
+        if (selectedAny.isLoteriaCard && typeof selectedAny.placeholderIndex === 'number') {
+            const placeholder = canvas
+                .getObjects()
+                .find((obj: any) => obj.isPlaceholder && obj.placeholderIndex === selectedAny.placeholderIndex) as any
+
+            if (placeholder) placeholder.hasCard = false
+        }
+
         canvas.remove(selectedObject)
         canvas.discardActiveObject()
         canvas.renderAll()

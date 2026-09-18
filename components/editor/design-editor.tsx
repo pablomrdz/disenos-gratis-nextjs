@@ -6,7 +6,6 @@ import { EditorCanvas } from './editor-canvas'
 import { EditorToolbar } from './editor-toolbar'
 import { EditorHeader } from './editor-header'
 import { loadCustomFontFromSupabase } from '@/lib/font-loader'
-import AdUnit from '@/components/AdUnit'
 import type { Design } from '@/lib/types'
 
 // ── LocalStorage persistence helpers ────────────────────────────
@@ -18,7 +17,7 @@ function getStorageKey(slug: string): string {
 
 function saveCanvasState(slug: string, canvas: fabric.Canvas) {
     try {
-        const json = canvas.toJSON(['isPlaceholder', 'placeholderIndex', 'hasCard'])
+        const json = canvas.toJSON(['isPlaceholder', 'placeholderIndex', 'hasCard', 'isLoteriaCard'])
         localStorage.setItem(getStorageKey(slug), JSON.stringify(json))
     } catch (err) {
         console.warn('[DesignEditor] Failed to save state:', err)
@@ -54,9 +53,37 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
     const [customFontFamily, setCustomFontFamily] = useState<string>('Arial')
     const [isFontReady, setIsFontReady] = useState<boolean>(!design.font_family) // Ready if no custom font
     const [hasSavedState, setHasSavedState] = useState(false)
+    const [filledSlots, setFilledSlots] = useState(0)
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
     const slug = design.slug || design.id
+    const isLoteria = design.editor_type === 'loteria' || isLoteriaSlug(design.slug)
+    const totalSlots = isLoteria ? 16 : undefined
+
+    const syncFilledSlots = useCallback((currentCanvas: fabric.Canvas | null) => {
+        if (!currentCanvas || !isLoteria) {
+            setFilledSlots(0)
+            return
+        }
+
+        const count = currentCanvas
+            .getObjects()
+            .filter((obj: any) => obj.isPlaceholder === true && obj.hasCard === true)
+            .length
+
+        setFilledSlots(count)
+    }, [isLoteria])
+
+    // Treat the editor as an app-sized workspace and prevent the site shell
+    // from creating a second page scroll underneath it.
+    useEffect(() => {
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+
+        return () => {
+            document.body.style.overflow = previousOverflow
+        }
+    }, [])
 
     // Load custom font
     useEffect(() => {
@@ -86,17 +113,22 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
         }
 
         // Listen to all meaningful canvas mutations
-        canvas.on('object:modified', scheduleSave)
-        canvas.on('object:added', scheduleSave)
-        canvas.on('object:removed', scheduleSave)
+        const handleMutation = () => {
+            scheduleSave()
+            syncFilledSlots(canvas)
+        }
+
+        canvas.on('object:modified', handleMutation)
+        canvas.on('object:added', handleMutation)
+        canvas.on('object:removed', handleMutation)
 
         return () => {
             if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-            canvas.off('object:modified', scheduleSave)
-            canvas.off('object:added', scheduleSave)
-            canvas.off('object:removed', scheduleSave)
+            canvas.off('object:modified', handleMutation)
+            canvas.off('object:added', handleMutation)
+            canvas.off('object:removed', handleMutation)
         }
-    }, [canvas, slug])
+    }, [canvas, slug, syncFilledSlots])
 
     // ── Restore canvas state once canvas is ready ────────────────
     const handleCanvasReady = useCallback((c: fabric.Canvas | null) => {
@@ -108,14 +140,16 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                 // loadFromJSON returns a promise in Fabric.js v6+
                 c.loadFromJSON(saved).then(() => {
                     c.renderAll()
-                    // Recalculate offset after restore
+                    syncFilledSlots(c)
                     requestAnimationFrame(() => c.calcOffset())
                 }).catch((err: unknown) => {
                     console.warn('[DesignEditor] Failed to restore state:', err)
                 })
+            } else {
+                syncFilledSlots(c)
             }
         }
-    }, [slug])
+    }, [slug, syncFilledSlots])
 
     const handleSelectionChange = useCallback((obj: fabric.FabricObject | null) => {
         setSelectedObject(obj)
@@ -131,7 +165,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
     const imageUrl = design.image_url || design.thumbnail_url || '/placeholder.svg'
 
     return (
-        <div className="flex h-[100dvh] flex-col bg-muted/30">
+        <div className="fixed inset-x-0 bottom-0 top-16 z-40 flex min-h-0 flex-col overflow-hidden bg-muted/30">
             {/* Top Bar */}
             <EditorHeader
                 title={design.title}
@@ -141,23 +175,16 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                 itemId={design.id}
                 category={design.category}
                 editorType={design.editor_type || 'fabric'}
+                filledSlots={filledSlots}
+                totalSlots={totalSlots}
                 hasSavedState={hasSavedState}
                 onClearState={handleClearState}
             />
 
-            {/* Desktop Ad Banner — 728x90 leaderboard, above the editor workspace */}
-            <div className="hidden md:flex items-center justify-center border-b border-border/30 bg-muted/20 py-1" style={{ minHeight: 94 }}>
-                <AdUnit
-                    slot="9549519747"
-                    format="auto"
-                    style={{ display: "inline-block", width: "728px", height: "90px" }}
-                />
-            </div>
-
             {/* Main Editor Area */}
             <div className="flex flex-1 overflow-hidden min-h-0">
                 {/* Sidebar (Toolbar) */}
-                <div className="hidden w-[260px] shrink-0 md:block">
+                <div className="hidden w-[280px] shrink-0 overflow-hidden border-r border-border/50 md:block">
                     <EditorToolbar
                         canvas={canvas}
                         selectedObject={selectedObject}
@@ -165,7 +192,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                         defaultFontFamily={customFontFamily}
                         designSlug={design.slug}
                         designCategory={design.category}
-                        isLoteria={design.editor_type === 'loteria' || isLoteriaSlug(design.slug)}
+                        isLoteria={isLoteria}
                     />
                 </div>
 
@@ -191,7 +218,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
 
                     {/* Mobile Toolbar (Bottom Sheet style) */}
                     <div className="block border-t border-border/50 md:hidden">
-                        <div className="max-h-[40vh] overflow-y-auto">
+                        <div className="max-h-[36vh] overflow-y-auto">
                             <EditorToolbar
                                 canvas={canvas}
                                 selectedObject={selectedObject}
@@ -199,18 +226,9 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                                 defaultFontFamily={customFontFamily}
                                 designSlug={design.slug}
                                 designCategory={design.category}
-                                isLoteria={design.editor_type === 'loteria' || isLoteriaSlug(design.slug)}
+                                isLoteria={isLoteria}
                             />
                         </div>
-                    </div>
-
-                    {/* Mobile Ad Banner — 320x50 fixed at bottom */}
-                    <div className="flex md:hidden items-center justify-center border-t border-border/30 bg-muted/20 py-1 shrink-0" style={{ minHeight: 54 }}>
-                        <AdUnit
-                            slot="6765960189"
-                            format="auto"
-                            style={{ display: "inline-block", width: "320px", height: "50px" }}
-                        />
                     </div>
                 </div>
             </div>

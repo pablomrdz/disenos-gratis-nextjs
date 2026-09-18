@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import * as fabric from 'fabric'
 import { Loader2, ImageOff } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface AssetFile {
     name: string
@@ -124,6 +125,12 @@ export function EditorAssetsPanel({ canvas, designSlug, designCategory, selected
                 lockUniScaling: true,
             })
 
+            const placeholders = canvas
+                .getObjects()
+                .filter((obj: any) => obj.isPlaceholder === true)
+
+            const hasLoteriaGrid = placeholders.length > 0
+
             // 1. Try to see if an active Placeholder is selected
             let targetPlaceholder = null;
             const activeObj = canvas.getActiveObject();
@@ -150,6 +157,10 @@ export function EditorAssetsPanel({ canvas, designSlug, designCategory, selected
                     scaleY: (targetPlaceholder.height!) / img.height!
                 })
                 
+                const placeholderIndex = (targetPlaceholder as any).placeholderIndex
+                ;(img as any).isLoteriaCard = true
+                ;(img as any).placeholderIndex = placeholderIndex
+
                 // Mark as populated so the next card ignores it
                 ;(targetPlaceholder as any).hasCard = true
                 
@@ -161,6 +172,11 @@ export function EditorAssetsPanel({ canvas, designSlug, designCategory, selected
                 canvas.setActiveObject(img)
                 canvas.renderAll()
             } else {
+                if (hasLoteriaGrid) {
+                    toast.info('La tabla ya tiene sus 16 espacios ocupados.')
+                    return
+                }
+
                 // Default behavior if no target placeholder or not in loteria mode
                 const MAX_WIDTH = 150
                 if (img.width && img.width > MAX_WIDTH) {

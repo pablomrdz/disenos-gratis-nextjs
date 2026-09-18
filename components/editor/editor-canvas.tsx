@@ -10,6 +10,7 @@ declare module 'fabric' {
         isPlaceholder?: boolean
         placeholderIndex?: number
         hasCard?: boolean
+        isLoteriaCard?: boolean
     }
 }
 
@@ -78,6 +79,7 @@ function addLoteriaGrid(canvas: fabric.Canvas) {
             
             // Propiedades custom para nuestra lógica
             rect.set('isPlaceholder', true);
+            rect.set('placeholderIndex', row * LOTERIA_COLS + col);
             rect.set('hasCard', false);
             canvas.add(rect);
         }
@@ -96,7 +98,7 @@ export function EditorCanvas({ imageUrl, fontFamily, designSlug, editorType, set
 
     /** Calculate zoom to fit artboard in container with padding */
     const calcFitZoom = useCallback((cw: number, ch: number) => {
-        const PAD = 40
+        const PAD = 24
         const zx = (cw - PAD * 2) / LOTERIA_W
         const zy = (ch - PAD * 2) / LOTERIA_H
         return Math.min(zx, zy, 1)
@@ -200,6 +202,15 @@ export function EditorCanvas({ imageUrl, fontFamily, designSlug, editorType, set
             if ((e.key === 'Delete' || e.key === 'Backspace') && canvas.getActiveObject()) {
                 const active = canvas.getActiveObject()
                 if (active && active.selectable && !(active as any).isPlaceholder) {
+                    const activeAny = active as any
+                    if (activeAny.isLoteriaCard && typeof activeAny.placeholderIndex === 'number') {
+                        const placeholder = canvas
+                            .getObjects()
+                            .find((obj: any) => obj.isPlaceholder && obj.placeholderIndex === activeAny.placeholderIndex) as any
+
+                        if (placeholder) placeholder.hasCard = false
+                    }
+
                     canvas.remove(active)
                     canvas.discardActiveObject()
                     canvas.renderAll()
@@ -284,7 +295,7 @@ export function EditorCanvas({ imageUrl, fontFamily, designSlug, editorType, set
     return (
         <div
             ref={containerRef}
-            className="relative w-full h-full flex items-center justify-center"
+            className="relative flex h-full w-full items-center justify-center overflow-hidden"
             style={{ backgroundColor: isLoteria ? '#e5e7eb' : undefined }}
         >
             {/* Canvas wrapper — the Fabric canvas is sized to the scaled artboard */}
