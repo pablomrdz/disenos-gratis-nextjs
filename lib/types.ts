@@ -82,6 +82,8 @@ export type DesignCard = Pick<
   | 'excerpt'
   | 'font_family'
   | 'is_vip'
+  | 'is_editable'
+  | 'editor_type'
 > & {
   type?: DesignType
   thumbnail_url?: string | null

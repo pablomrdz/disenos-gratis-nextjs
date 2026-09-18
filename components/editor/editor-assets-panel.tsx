@@ -260,18 +260,60 @@ export function EditorAssetsPanel({
                 placeholder.hasCard = false
             })
 
-            const selection = [...assets]
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 16)
+            const shuffle = <T,>(items: T[]) => {
+                const copy = [...items]
+                for (let index = copy.length - 1; index > 0; index -= 1) {
+                    const randomIndex = Math.floor(Math.random() * (index + 1))
+                    ;[copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]]
+                }
+                return copy
+            }
 
-            for (let index = 0; index < selection.length; index += 1) {
-                const img = await loadAssetImage(selection[index])
+            const centerIndices = [5, 6, 9, 10]
+            const outerIndices = Array.from({ length: 16 }, (_, index) => index)
+                .filter((index) => !centerIndices.includes(index))
+
+            // Mexican-style board: 15 distinct cards total, with one of them
+            // appearing twice inside the four center positions.
+            const uniqueCards = shuffle(assets).slice(0, 15)
+            const duplicatedCard = uniqueCards[
+                Math.floor(Math.random() * uniqueCards.length)
+            ]
+
+            const remaining = uniqueCards.filter(
+                (asset) => asset.url !== duplicatedCard.url
+            )
+
+            const centerUniqueCards = remaining.slice(0, 2)
+            const outerCards = remaining.slice(2, 14)
+            const centerCards = shuffle([
+                duplicatedCard,
+                duplicatedCard,
+                centerUniqueCards[0],
+                centerUniqueCards[1],
+            ])
+
+            const placement: Array<AssetFile | null> = Array(16).fill(null)
+
+            outerIndices.forEach((position, index) => {
+                placement[position] = outerCards[index]
+            })
+
+            centerIndices.forEach((position, index) => {
+                placement[position] = centerCards[index]
+            })
+
+            for (let index = 0; index < placement.length; index += 1) {
+                const asset = placement[index]
+                if (!asset) continue
+
+                const img = await loadAssetImage(asset)
                 placeOnPlaceholder(img, placeholders[index], false)
             }
 
             canvas.discardActiveObject()
             canvas.renderAll()
-            toast.success('Tabla aleatoria lista: 16 cartas sin repetir.')
+            toast.success('Tabla clásica lista: una carta repetida al centro.')
         } catch (err) {
             console.error('[EditorAssetsPanel] Random board failed:', err)
             toast.error('No se pudo generar la tabla. Intenta de nuevo.')

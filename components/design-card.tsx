@@ -31,7 +31,8 @@ export function DesignCard({ design, variant = 'asset' }: DesignCardProps) {
   const assetUrl = `/${slugify(mainCategory || 'general')}/${design.slug || design.id}`
   const cardUrl = isBlog ? `/blog/${design.slug || design.id}` : assetUrl
 
-  const isPlantilla = !isBlog && slugify(design.category || '').includes('plantillas')
+  const isTemplateCategory = !isBlog && slugify(design.category || '').includes('plantillas')
+  const canEdit = !isBlog && Boolean(design.is_editable && design.editor_type)
 
   return (
     <div
@@ -45,7 +46,7 @@ export function DesignCard({ design, variant = 'asset' }: DesignCardProps) {
       >
         <Link href={cardUrl} className="block w-full">
           <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted rounded-t-xl">
-            {isPlantilla && (
+            {canEdit && (
               <div className="absolute top-3 left-3 bg-[#50b5cb]/10 text-[#3ba4bc] border border-[#50b5cb]/20 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm backdrop-blur-md z-30 flex items-center gap-1">
                 <span>✨</span> Editable Online
               </div>
@@ -55,7 +56,7 @@ export function DesignCard({ design, variant = 'asset' }: DesignCardProps) {
               src={imgSrc}
               alt={design.alt_text || design.title || (isBlog ? 'Artículo de Diseños Gratis' : 'Diseño gratis')}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className={`${isTemplateCategory ? 'object-contain bg-white' : 'object-cover'} transition-transform duration-500 group-hover:scale-105`}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
               onError={() => setImgError(true)}
               unoptimized={imgSrc.includes('supabase.co')}
@@ -72,7 +73,7 @@ export function DesignCard({ design, variant = 'asset' }: DesignCardProps) {
                     <ArrowRight className="h-4 w-4" />
                     <span className="text-xs font-bold uppercase tracking-wider">Leer artículo</span>
                   </>
-                ) : isPlantilla ? (
+                ) : canEdit ? (
                   <>
                     <Sparkles className="h-4 w-4 text-amber-500" />
                     <span className="text-xs font-bold uppercase tracking-wider">Personalizar</span>
@@ -144,7 +145,7 @@ export function DesignCard({ design, variant = 'asset' }: DesignCardProps) {
 
               <div className="relative z-10">
                 <Link href={cardUrl}>
-                  {isPlantilla ? (
+                  {canEdit ? (
                     <button className="bg-gradient-to-r from-[#50b5cb] to-blue-600 text-white font-medium text-sm px-4 py-2 rounded-lg shadow-sm hover:from-[#40a4b9] hover:to-blue-700 transition-all duration-300 transform hover:scale-[1.01] cursor-pointer flex items-center justify-center">
                       Personalizar Ahora ⚡
                     </button>

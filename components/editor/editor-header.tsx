@@ -16,6 +16,8 @@ interface EditorHeaderProps {
     itemId: string
     category: string
     editorType: string
+    exportWidth?: number
+    exportHeight?: number
     filledSlots?: number
     totalSlots?: number
     hasSavedState?: boolean
@@ -37,6 +39,8 @@ export function EditorHeader({
     itemId,
     category,
     editorType,
+    exportWidth,
+    exportHeight,
     filledSlots = 0,
     totalSlots,
     hasSavedState,
@@ -102,12 +106,14 @@ export function EditorHeader({
                 ? await exportAsPDFBlob(
                     canvas,
                     slug,
-                    format === 'pdf-letter' ? 'letter' : 'a4'
+                    format === 'pdf-letter' ? 'letter' : 'a4',
+                    exportWidth
                 )
                 : await exportAsImageBlob(
                     canvas,
                     slug,
-                    format as 'png' | 'jpeg'
+                    format as 'png' | 'jpeg',
+                    exportWidth
                 )
 
             restorePlaceholders()
@@ -289,12 +295,15 @@ function ExportButton({
 async function exportAsImageBlob(
     canvas: fabric.Canvas,
     slug: string,
-    format: 'png' | 'jpeg'
+    format: 'png' | 'jpeg',
+    targetWidth?: number
 ): Promise<ExportedFile> {
     const dataUrl = canvas.toDataURL({
         format,
         quality: format === 'jpeg' ? 0.92 : 1,
-        multiplier: 2,
+        multiplier: targetWidth
+            ? Math.max(1, targetWidth / Math.max(canvas.getWidth(), 1))
+            : 2,
     })
 
     const response = await fetch(dataUrl)
@@ -309,10 +318,13 @@ async function exportAsImageBlob(
 async function exportAsPDFBlob(
     canvas: fabric.Canvas,
     slug: string,
-    paperSize: 'letter' | 'a4'
+    paperSize: 'letter' | 'a4',
+    targetWidth?: number
 ): Promise<ExportedFile> {
     const { jsPDF } = await import('jspdf')
-    const multiplier = 4
+    const multiplier = targetWidth
+        ? Math.max(1, targetWidth / Math.max(canvas.getWidth(), 1))
+        : 4
 
     const dataUrl = canvas.toDataURL({
         format: 'png',

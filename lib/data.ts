@@ -7,7 +7,7 @@ const USE_MOCK = false
 
 /** Columnas mínimas para tarjetas – PROHIBIDO traer description, content, gallery_urls, related_keywords, etc.
  *  No incluye tags ni created_at: Postgres los usa para filtrar/ordenar sin proyectarlos. */
-export const DESIGN_CARD_FIELDS = 'id, title, slug, image_url, category, downloads, alt_text, excerpt, font_family, is_vip'
+export const DESIGN_CARD_FIELDS = 'id, title, slug, image_url, category, downloads, alt_text, excerpt, font_family, is_vip, is_editable, editor_type'
 
 // Designs
 export async function getDesigns(options?: {
@@ -607,7 +607,26 @@ export async function getRelatedAssetsFromRpc(designId: string, categoryName: st
       console.error('Error fetching RPC get_related_designs:', error.message)
       return []
     }
-    return data || []
+
+    const raw = (data || []) as Array<{ id?: string }>
+    const ids = raw.map((item) => item.id).filter(Boolean) as string[]
+
+    if (ids.length === 0) return []
+
+    const { data: enriched, error: enrichedError } = await supabase
+      .from('designs')
+      .select(DESIGN_CARD_FIELDS)
+      .in('id', ids)
+
+    if (enrichedError || !enriched) {
+      return data || []
+    }
+
+    const byId = new Map(enriched.map((item) => [item.id, item]))
+
+    return ids
+      .map((id) => byId.get(id))
+      .filter(Boolean) as DesignCard[]
   } catch (err) {
     console.error('Error executing get_related_designs RPC:', err)
     return []

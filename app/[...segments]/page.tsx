@@ -460,7 +460,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
                   <div className={cn(
                     "relative",
-                    isBlog ? "aspect-[16/9]" : "aspect-[16/9] sm:aspect-[4/3]"
+                    isBlog ? "aspect-[16/9]" : "h-[260px] sm:h-[280px] lg:h-[300px]"
                   )}>
                     <Image
                       src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
@@ -470,49 +470,26 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                       priority
                       sizes="(max-width: 1024px) 100vw, 66vw"
                     />
-                    {/* Badges removed — Phase 1: all content is free */}
                   </div>
                 </div>
-
-                <ImageGallery images={design.gallery_urls} />
-
-                {isFont && (
-                  <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-6 sm:p-8">
-                    {design.font_family ? (
-                      <>
-                        <h3 className="mb-4 text-sm font-medium text-primary flex items-center gap-2">
-                          <Type className="h-4 w-4" />
-                          Probador de texto en vivo
-                        </h3>
-                        <FontPreviewInteractive
-                          isLarge={false}
-                          className="w-full"
-                          fontFamilyName={design.font_family}
-                          initialText={title.includes('Halloween') ? 'Trick or Treat - Noche de Brujas' : undefined}
-                        />
-                        <p className="mt-4 text-[10px] text-muted-foreground italic">
-                          Nota: Esta es una vista previa interactiva. Descarga la tipografía para usarla en tus proyectos.
-                        </p>
-                      </>
-                    ) : (
-                      <div className="text-center py-4">
-                        <h3 className="mb-2 text-sm font-semibold text-primary flex items-center justify-center gap-2">
-                          <Type className="h-4 w-4" />
-                          Vista previa no disponible
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Este recurso es un <strong>pack de múltiples fuentes</strong>.
-                        </p>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Descarga el archivo completo para ver e instalar todas las tipografías incluidas.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
 
-              {/* Primary action: keep the download/customize path easy to find. */}
+              {!isBlog && (
+                <div className="my-6 w-full overflow-hidden">
+                  <p className="mb-2 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
+                    Anuncio
+                  </p>
+                  <div className="flex min-h-[250px] w-full justify-center">
+                    <AdUnit
+                      slot="9549519747"
+                      format="auto"
+                      style={{ display: "block", width: "100%" }}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              )}
+
               {!isBlog && (
                 <div className="my-6">
                   <DownloadSection design={design} isVip={false} />
@@ -525,24 +502,46 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 </div>
               )}
 
-              {/* Ads stay visibly separated from download controls to reduce accidental clicks. */}
-              <div className="my-8 w-full overflow-hidden">
-                <p className="mb-2 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
-                  Anuncio
-                </p>
-                <div className="flex min-h-[250px] w-full justify-center">
-                  <AdUnit
-                    slot="9549519747"
-                    format="auto"
-                    style={{ display: "block", width: "100%" }}
-                    className="w-full"
-                  />
+              <ImageGallery images={design.gallery_urls} />
+
+              {isFont && (
+                <div className="my-6 rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-6 sm:p-8">
+                  {design.font_family ? (
+                    <>
+                      <h3 className="mb-4 flex items-center gap-2 text-sm font-medium text-primary">
+                        <Type className="h-4 w-4" />
+                        Probador de texto en vivo
+                      </h3>
+                      <FontPreviewInteractive
+                        isLarge={false}
+                        className="w-full"
+                        fontFamilyName={design.font_family}
+                        initialText={title.includes('Halloween') ? 'Trick or Treat - Noche de Brujas' : undefined}
+                      />
+                      <p className="mt-4 text-[10px] italic text-muted-foreground">
+                        Nota: Esta es una vista previa interactiva. Descarga la tipografía para usarla en tus proyectos.
+                      </p>
+                    </>
+                  ) : (
+                    <div className="py-4 text-center">
+                      <h3 className="mb-2 flex items-center justify-center gap-2 text-sm font-semibold text-primary">
+                        <Type className="h-4 w-4" />
+                        Vista previa no disponible
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Este recurso es un <strong>pack de múltiples fuentes</strong>.
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Descarga el archivo completo para ver e instalar todas las tipografías incluidas.
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               <div className={cn(
                 "my-6",
-                isBlog ? "text-lg leading-relaxed text-foreground/90" : "text-muted-foreground leading-relaxed"
+                isBlog ? "text-lg leading-relaxed text-foreground/90" : "leading-relaxed text-muted-foreground"
               )}>
                 <h2 className="sr-only">Descripción</h2>
 
@@ -553,7 +552,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 )}
 
                 {(!design.content || design.content.trim().length === 0) && (
-                  <div className="prose prose-slate lg:prose-lg dark:prose-invert max-w-none prose-a:text-primary prose-a:font-semibold hover:prose-a:underline">
+                  <div className="prose prose-slate max-w-none prose-a:font-semibold prose-a:text-primary hover:prose-a:underline lg:prose-lg dark:prose-invert">
                     <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                       {design.description || ''}
                     </ReactMarkdown>

@@ -5,6 +5,8 @@ import * as fabric from 'fabric'
 import { EditorCanvas } from './editor-canvas'
 import { EditorToolbar } from './editor-toolbar'
 import { EditorHeader } from './editor-header'
+import { InvitationCanvas } from './invitation-canvas'
+import { InvitationEditorPanel } from './invitation-editor-panel'
 import { loadCustomFontFromSupabase } from '@/lib/font-loader'
 import type { Design } from '@/lib/types'
 
@@ -17,7 +19,7 @@ function getStorageKey(slug: string): string {
 
 function saveCanvasState(slug: string, canvas: fabric.Canvas) {
     try {
-        const json = canvas.toJSON(['isPlaceholder', 'placeholderIndex', 'hasCard', 'isLoteriaCard'])
+        const json = canvas.toJSON(['isPlaceholder', 'placeholderIndex', 'hasCard', 'isLoteriaCard', 'editorFieldId', 'isEditorBackground'])
         localStorage.setItem(getStorageKey(slug), JSON.stringify(json))
     } catch (err) {
         console.warn('[DesignEditor] Failed to save state:', err)
@@ -54,10 +56,12 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
     const [isFontReady, setIsFontReady] = useState<boolean>(!design.font_family) // Ready if no custom font
     const [hasSavedState, setHasSavedState] = useState(false)
     const [filledSlots, setFilledSlots] = useState(0)
+    const [canvasRevision, setCanvasRevision] = useState(0)
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
     const slug = design.slug || design.id
     const isLoteria = design.editor_type === 'loteria' || isLoteriaSlug(design.slug)
+    const isInvitation = design.editor_type === 'invitation' && Boolean(design.editor_config)
     const totalSlots = isLoteria ? 16 : undefined
 
     const syncFilledSlots = useCallback((currentCanvas: fabric.Canvas | null) => {
@@ -141,12 +145,14 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                 c.loadFromJSON(saved).then(() => {
                     c.renderAll()
                     syncFilledSlots(c)
+                    setCanvasRevision((revision) => revision + 1)
                     requestAnimationFrame(() => c.calcOffset())
                 }).catch((err: unknown) => {
                     console.warn('[DesignEditor] Failed to restore state:', err)
                 })
             } else {
                 syncFilledSlots(c)
+                setCanvasRevision((revision) => revision + 1)
             }
         }
     }, [slug, syncFilledSlots])
@@ -175,6 +181,8 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                 itemId={design.id}
                 category={design.category}
                 editorType={design.editor_type || 'fabric'}
+                exportWidth={design.editor_config?.canvas.exportWidth}
+                exportHeight={design.editor_config?.canvas.exportHeight}
                 filledSlots={filledSlots}
                 totalSlots={totalSlots}
                 hasSavedState={hasSavedState}
@@ -185,29 +193,45 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
             <div className="flex flex-1 overflow-hidden min-h-0">
                 {/* Sidebar (Toolbar) */}
                 <div className="hidden w-[280px] shrink-0 overflow-hidden border-r border-border/50 md:block">
-                    <EditorToolbar
-                        canvas={canvas}
-                        selectedObject={selectedObject}
-                        onSelectionChange={handleSelectionChange}
-                        defaultFontFamily={customFontFamily}
-                        designSlug={design.slug}
-                        designCategory={design.category}
-                        isLoteria={isLoteria}
-                    />
+                    {isInvitation && design.editor_config ? (
+                        <InvitationEditorPanel
+                            canvas={canvas}
+                            config={design.editor_config}
+                            revision={canvasRevision}
+                        />
+                    ) : (
+                        <EditorToolbar
+                            canvas={canvas}
+                            selectedObject={selectedObject}
+                            onSelectionChange={handleSelectionChange}
+                            defaultFontFamily={customFontFamily}
+                            designSlug={design.slug}
+                            designCategory={design.category}
+                            isLoteria={isLoteria}
+                        />
+                    )}
                 </div>
 
                 {/* Canvas Area */}
                 <div className="flex flex-1 flex-col min-h-0">
                     <div className="flex-1 min-h-0">
                         {isFontReady && (
-                            <EditorCanvas
-                                imageUrl={imageUrl}
-                                fontFamily={customFontFamily}
-                                designSlug={design.slug}
-                                editorType={design.editor_type}
-                                setCanvas={handleCanvasReady}
-                                onSelectionChange={handleSelectionChange}
-                            />
+                            isInvitation && design.editor_config ? (
+                                <InvitationCanvas
+                                    config={design.editor_config}
+                                    setCanvas={handleCanvasReady}
+                                    onSelectionChange={handleSelectionChange}
+                                />
+                            ) : (
+                                <EditorCanvas
+                                    imageUrl={imageUrl}
+                                    fontFamily={customFontFamily}
+                                    designSlug={design.slug}
+                                    editorType={design.editor_type}
+                                    setCanvas={handleCanvasReady}
+                                    onSelectionChange={handleSelectionChange}
+                                />
+                            )
                         )}
                         {!isFontReady && (
                             <div className="flex items-center justify-center h-full text-muted-foreground w-full bg-muted/20 animate-pulse rounded-xl border border-border/50">
@@ -219,15 +243,23 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                     {/* Mobile Toolbar (Bottom Sheet style) */}
                     <div className="block border-t border-border/50 md:hidden">
                         <div className="max-h-[36vh] overflow-y-auto">
-                            <EditorToolbar
-                                canvas={canvas}
-                                selectedObject={selectedObject}
-                                onSelectionChange={handleSelectionChange}
-                                defaultFontFamily={customFontFamily}
-                                designSlug={design.slug}
-                                designCategory={design.category}
-                                isLoteria={isLoteria}
-                            />
+                            {isInvitation && design.editor_config ? (
+                                <InvitationEditorPanel
+                                    canvas={canvas}
+                                    config={design.editor_config}
+                                    revision={canvasRevision}
+                                />
+                            ) : (
+                                <EditorToolbar
+                                    canvas={canvas}
+                                    selectedObject={selectedObject}
+                                    onSelectionChange={handleSelectionChange}
+                                    defaultFontFamily={customFontFamily}
+                                    designSlug={design.slug}
+                                    designCategory={design.category}
+                                    isLoteria={isLoteria}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
