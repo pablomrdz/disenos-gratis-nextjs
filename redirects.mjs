@@ -403,11 +403,6 @@ const redirects = [
     destination: '/plantillas/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar/',
     permanent: true,
   },
-  {
-    source: '/edit/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar/',
-    destination: '/plantillas/plantilla-de-loteria-mexicana-para-imprimir-editar-y-sublimar/',
-    permanent: true,
-  }
 ]
 
 export default redirects
