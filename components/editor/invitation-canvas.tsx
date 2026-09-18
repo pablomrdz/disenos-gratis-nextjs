@@ -29,6 +29,7 @@ export function InvitationCanvas({
     const containerSizeRef = useRef({ w: 0, h: 0 })
     const [zoomLevel, setZoomLevel] = useState(1)
 
+    // Keep a stable logical 5×7 artboard and only scale its viewport.
     const artboardW = config.canvas.width
     const artboardH = config.canvas.height
 
