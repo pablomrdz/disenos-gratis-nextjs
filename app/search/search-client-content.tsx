@@ -15,7 +15,6 @@ export default function SearchClientContent() {
   const trackedSearchRef = useRef<string | null>(null)
 
   useEffect(() => {
-    // Sanitización de query en el cliente
     const sanitizedQuery = query.replace(/[,()"'%_]/g, '').trim()
 
     if (!sanitizedQuery || sanitizedQuery.length < 2) {
@@ -24,10 +23,12 @@ export default function SearchClientContent() {
       return
     }
 
+    const controller = new AbortController()
     setLoading(true)
 
-    // Llama al endpoint de búsqueda que ya optimizamos previamente con DESIGN_CARD_FIELDS
-    fetch(`/api/search?q=${encodeURIComponent(sanitizedQuery)}`)
+    fetch(`/api/search?q=${encodeURIComponent(sanitizedQuery)}`, {
+      signal: controller.signal,
+    })
       .then((res) => {
         if (!res.ok) throw new Error('Search failed')
         return res.json()
@@ -39,7 +40,6 @@ export default function SearchClientContent() {
 
         setSearchResults(designs)
 
-        // Evita duplicados en desarrollo / re-renders
         if (trackedSearchRef.current !== sanitizedQuery) {
           trackEvent('search', {
             search_term: sanitizedQuery,
@@ -51,12 +51,15 @@ export default function SearchClientContent() {
         }
       })
       .catch((err) => {
+        if (err instanceof DOMException && err.name === 'AbortError') return
         console.error('Search error:', err)
         setSearchResults([])
       })
       .finally(() => {
-        setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       })
+
+    return () => controller.abort()
   }, [query])
 
   if (loading) {
@@ -73,7 +76,7 @@ export default function SearchClientContent() {
     return (
       <div>
         <p className="mb-6 text-sm text-muted-foreground">
-          1 {searchResults.length} resultado{searchResults.length === 1 ? '' : 's'} para "{query}"
+          {searchResults.length} resultado{searchResults.length === 1 ? '' : 's'} para "{query}"
         </p>
         <DesignGrid designs={searchResults} />
       </div>

@@ -45,9 +45,10 @@ function clearCanvasState(slug: string) {
 
 interface DesignEditorProps {
     design: Design
+    returnHref: string
 }
 
-export function DesignEditor({ design }: DesignEditorProps) {
+export function DesignEditor({ design, returnHref }: DesignEditorProps) {
     const [canvas, setCanvas] = useState<fabric.Canvas | null>(null)
     const [selectedObject, setSelectedObject] = useState<fabric.FabricObject | null>(null)
     const [customFontFamily, setCustomFontFamily] = useState<string>('Arial')
@@ -136,6 +137,10 @@ export function DesignEditor({ design }: DesignEditorProps) {
                 title={design.title}
                 slug={slug}
                 canvas={canvas}
+                returnHref={returnHref}
+                itemId={design.id}
+                category={design.category}
+                editorType={design.editor_type || 'fabric'}
                 hasSavedState={hasSavedState}
                 onClearState={handleClearState}
             />
@@ -160,7 +165,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
                         defaultFontFamily={customFontFamily}
                         designSlug={design.slug}
                         designCategory={design.category}
-                        isLoteria={isLoteriaSlug(design.slug)}
+                        isLoteria={design.editor_type === 'loteria' || isLoteriaSlug(design.slug)}
                     />
                 </div>
 
@@ -172,6 +177,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
                                 imageUrl={imageUrl}
                                 fontFamily={customFontFamily}
                                 designSlug={design.slug}
+                                editorType={design.editor_type}
                                 setCanvas={handleCanvasReady}
                                 onSelectionChange={handleSelectionChange}
                             />
@@ -193,7 +199,7 @@ export function DesignEditor({ design }: DesignEditorProps) {
                                 defaultFontFamily={customFontFamily}
                                 designSlug={design.slug}
                                 designCategory={design.category}
-                                isLoteria={isLoteriaSlug(design.slug)}
+                                isLoteria={design.editor_type === 'loteria' || isLoteriaSlug(design.slug)}
                             />
                         </div>
                     </div>

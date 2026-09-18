@@ -6,18 +6,33 @@ import * as fabric from 'fabric'
 import { ArrowLeft, ImageDown, Loader2, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { trackEvent } from '@/lib/analytics'
 
 interface EditorHeaderProps {
     title: string
     slug: string
     canvas: fabric.Canvas | null
+    returnHref: string
+    itemId: string
+    category: string
+    editorType: string
     hasSavedState?: boolean
     onClearState?: () => void
 }
 
 type ExportFormat = 'png' | 'jpeg' | 'pdf-letter' | 'pdf-a4'
 
-export function EditorHeader({ title, slug, canvas, hasSavedState, onClearState }: EditorHeaderProps) {
+export function EditorHeader({
+    title,
+    slug,
+    canvas,
+    returnHref,
+    itemId,
+    category,
+    editorType,
+    hasSavedState,
+    onClearState,
+}: EditorHeaderProps) {
     const [exporting, setExporting] = useState(false)
     const [format, setFormat] = useState<ExportFormat>('pdf-letter')
 
@@ -49,6 +64,15 @@ export function EditorHeader({ title, slug, canvas, hasSavedState, onClearState 
             } else {
                 exportAsImage(canvas, slug, format as 'png' | 'jpeg')
             }
+
+            trackEvent('editor_export', {
+                item_id: itemId,
+                item_name: title,
+                category,
+                editor_type: editorType,
+                export_format: format,
+                source_page: 'editor',
+            })
 
             // Restore placeholders visibility
             placeholders.forEach(obj => {
@@ -143,7 +167,7 @@ export function EditorHeader({ title, slug, canvas, hasSavedState, onClearState 
             {/* Left: Back + Title */}
             <div className="flex items-center gap-3">
                 <Link
-                    href={`/designs/${slug}`}
+                    href={returnHref}
                     className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                     <ArrowLeft className="h-4 w-4" />

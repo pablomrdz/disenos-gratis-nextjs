@@ -1,40 +1,62 @@
 export type DesignType = 'internal' | 'canva' | 'capcut' | 'font'
+export type ContentType = 'asset' | 'blog' | 'tool'
 
 export interface Design {
   id: string
   title: string
+  slug: string
   description: string
   excerpt?: string | null
   content?: string | null
-  slug: string
-  thumbnail_url: string
-  image_url?: string
+  image_url?: string | null
   category: string
-  type: DesignType
+  tags: string[]
   download_url?: string | null
-  external_url?: string | null
-  premium_url?: string | null
   is_vip: boolean
   downloads: number
   created_at: string
   updated_at: string
-  tags: string[]
-  // New Supabase columns
+
+  // Current designs schema
+  cost_in_credits?: number | null
   technical_type?: string | null
   software_recommended?: string | null
   alt_text?: string | null
   font_family?: string | null
   gallery_urls?: string[] | null
   related_keywords?: string[] | null
-  
+  content_type?: ContentType
+  is_featured_month?: boolean
+  is_editable?: boolean
+  editor_type?: string | null
+  json_ld_data?: Record<string, unknown> | null
+
+  // Legacy compatibility while the migrated code is cleaned up.
+  // These are not source-of-truth fields for new features.
+  thumbnail_url?: string | null
+  type?: DesignType
+  external_url?: string | null
+  premium_url?: string | null
 }
 
 /** Campos mínimos para tarjetas de diseño en grillas/catálogos.
- *  NUNCA incluir: description, content, gallery_urls, related_keywords, download_url, etc. */
-export type DesignCard = Pick<Design,
-  'id' | 'title' | 'slug' | 'image_url' | 'category' |
-  'downloads' | 'alt_text' | 'excerpt' | 'font_family' | 'is_vip'
-> & { type?: DesignType; thumbnail_url?: string }
+ * NUNCA incluir: description, content, gallery_urls, related_keywords, download_url, etc. */
+export type DesignCard = Pick<
+  Design,
+  | 'id'
+  | 'title'
+  | 'slug'
+  | 'image_url'
+  | 'category'
+  | 'downloads'
+  | 'alt_text'
+  | 'excerpt'
+  | 'font_family'
+  | 'is_vip'
+> & {
+  type?: DesignType
+  thumbnail_url?: string | null
+}
 
 export interface Tutorial {
   id: string
@@ -103,11 +125,6 @@ export interface Database {
         Row: BlogPost
         Insert: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<BlogPost, 'id'>>
-      }
-      categories: {
-        Row: Category
-        Insert: Omit<Category, 'id'>
-        Update: Partial<Omit<Category, 'id'>>
       }
       taxonomies: {
         Row: Taxonomy

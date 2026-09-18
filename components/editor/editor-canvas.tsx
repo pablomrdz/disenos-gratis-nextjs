@@ -17,6 +17,7 @@ interface EditorCanvasProps {
     imageUrl: string
     fontFamily?: string
     designSlug?: string
+    editorType?: string | null
     setCanvas: (canvas: fabric.Canvas | null) => void
     onSelectionChange: (obj: fabric.FabricObject | null) => void
 }
@@ -84,14 +85,14 @@ function addLoteriaGrid(canvas: fabric.Canvas) {
     canvas.renderAll();
 }
 
-export function EditorCanvas({ imageUrl, fontFamily, designSlug, setCanvas, onSelectionChange }: EditorCanvasProps) {
+export function EditorCanvas({ imageUrl, fontFamily, designSlug, editorType, setCanvas, onSelectionChange }: EditorCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const htmlCanvasRef = useRef<HTMLCanvasElement>(null)
     const canvasInstanceRef = useRef<fabric.Canvas | null>(null)
     const [zoomLevel, setZoomLevel] = useState(1)
     const containerSizeRef = useRef({ w: 0, h: 0 })
 
-    const isLoteria = isLoteriaTemplate(designSlug)
+    const isLoteria = editorType === 'loteria' || isLoteriaTemplate(designSlug)
 
     /** Calculate zoom to fit artboard in container with padding */
     const calcFitZoom = useCallback((cw: number, ch: number) => {

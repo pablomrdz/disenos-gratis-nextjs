@@ -229,7 +229,7 @@ const executeDownload = useCallback(() => {
             </div>
 
             {/* Personalizar y Descargar CTA */}
-            {(design.category === 'Plantillas' || (design.slug && design.slug.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes('loteria'))) && (
+            {design.is_editable && design.editor_type && (
               <Link
                       href={`/edit/${design.slug || design.id}`}
                       onClick={() =>
@@ -237,7 +237,7 @@ const executeDownload = useCallback(() => {
                           item_id: design.id,
                           item_name: design.title || 'Untitled Design',
                           category: design.category || 'general',
-                          editor_type: 'fabric',
+                          editor_type: design.editor_type,
                           source_page: 'design_page',
                         })
                       }

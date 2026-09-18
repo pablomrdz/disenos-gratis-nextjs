@@ -1,4 +1,5 @@
 import type { Design, BlogPost, Tutorial } from '@/lib/types'
+import { getPrimaryCategory } from '@/lib/data'
 
 const BASE_URL = 'https://disenosgratis.com'
 const SITE_NAME = 'Diseños Gratis'
@@ -17,70 +18,37 @@ export function JsonLd({ type, data }: JsonLdProps) {
     const description = design.description?.replace(/<[^>]*>/g, '').slice(0, 300) || 'Recurso gráfico gratuito'
     const slug = design.slug || design.id
     const tags = Array.isArray(design.tags) ? design.tags : []
-    const isTemplate = design.type === 'canva' || design.type === 'capcut'
-    const isVip = Boolean(design.premium_url) || design.is_vip
     const imageUrl = design.image_url || design.thumbnail_url || undefined
+    const canonicalUrl = `${BASE_URL}/${getPrimaryCategory(design.category)}/${slug}`
     const absoluteImageUrl = imageUrl && !imageUrl.startsWith('http') ? `${BASE_URL}${imageUrl}` : imageUrl
 
-    // Use SoftwareApplication for templates, Product for other designs
-    if (isTemplate) {
-      structuredData = {
-        '@context': 'https://schema.org',
-        '@type': 'SoftwareApplication',
+    structuredData = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: title,
+      description,
+      image: absoluteImageUrl ? {
+        '@type': 'ImageObject',
+        url: absoluteImageUrl,
         name: title,
-        description: description,
-        image: absoluteImageUrl ? {
-          '@type': 'ImageObject',
-          url: absoluteImageUrl,
-          name: title,
-          contentUrl: absoluteImageUrl,
-        } : undefined,
-        url: `${BASE_URL}/designs/${slug}`,
-        applicationCategory: 'DesignApplication',
-        operatingSystem: 'Web',
-        datePublished: design.created_at || undefined,
-        dateModified: design.updated_at || design.created_at || undefined,
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'USD',
-          availability: 'https://schema.org/InStock',
-        },
-        author: {
-          '@type': 'Organization',
-          name: SITE_NAME,
-        },
-        keywords: tags.length > 0 ? tags.join(', ') : undefined,
-      }
-    } else {
-      structuredData = {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: title,
-        description: description,
-        image: absoluteImageUrl ? {
-          '@type': 'ImageObject',
-          url: absoluteImageUrl,
-          name: title,
-          contentUrl: absoluteImageUrl,
-        } : undefined,
-        url: `${BASE_URL}/designs/${slug}`,
-        category: design.category || 'Recursos Gráficos',
-        datePublished: design.created_at || undefined,
-        dateModified: design.updated_at || design.created_at || undefined,
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'USD',
-          availability: 'https://schema.org/InStock',
-          url: `${BASE_URL}/designs/${slug}`,
-        },
-        brand: {
-          '@type': 'Brand',
-          name: SITE_NAME,
-        },
-        keywords: tags.length > 0 ? tags.join(', ') : undefined,
-      }
+        contentUrl: absoluteImageUrl,
+      } : undefined,
+      url: canonicalUrl,
+      category: design.category || 'Recursos Gráficos',
+      datePublished: design.created_at || undefined,
+      dateModified: design.updated_at || design.created_at || undefined,
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: canonicalUrl,
+      },
+      brand: {
+        '@type': 'Brand',
+        name: SITE_NAME,
+      },
+      keywords: tags.length > 0 ? tags.join(', ') : undefined,
     }
   } else if ('content' in data) {
     const post = data as BlogPost
@@ -172,7 +140,7 @@ export function OrganizationJsonLd() {
     name: SITE_NAME,
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
-    description: 'Recursos gráficos gratuitos y premium para diseñadores y creadores.',
+    description: 'Recursos gráficos gratuitos para diseñadores, emprendedores y creadores.',
     sameAs: [
       'https://pinterest.com/disenosgratis',
       'https://tiktok.com/@disenosgratis',

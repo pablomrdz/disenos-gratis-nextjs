@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getDesignBySlug } from '@/lib/data'
+import { getDesignBySlug, getPrimaryCategory } from '@/lib/data'
 import { DesignEditor } from '@/components/editor/design-editor'
 import { createServerSupabaseClient } from '@/lib/supabase'
 
@@ -8,15 +8,22 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 export const revalidate = 604800
 
 /**
- * Pre-genera las páginas del editor para todos los diseños
- * en tiempo de build para evitar SSR dinámico en caliente.
+ * Solo pre-genera editores que realmente están habilitados.
+ * Evita publicar /edit/[slug] para cada asset del catálogo.
  */
 export async function generateStaticParams() {
   try {
     const supabase = createServerSupabaseClient()
-    const { data: designs } = await supabase
+    const { data: designs, error } = await supabase
       .from('designs')
       .select('slug')
+      .eq('is_editable', true)
+      .not('editor_type', 'is', null)
+
+    if (error) {
+      console.error('Error generating static params for edit page:', error)
+      return []
+    }
 
     if (!designs || designs.length === 0) return []
 
@@ -37,14 +44,17 @@ export async function generateMetadata({ params }: EditPageProps): Promise<Metad
   const { slug } = await params
   const design = await getDesignBySlug(slug)
 
-  if (!design) {
-    return { title: 'Editor - Diseño no encontrado' }
+  if (!design || !design.is_editable || !design.editor_type) {
+    return {
+      title: 'Editor - Diseño no encontrado',
+      robots: { index: false, follow: false },
+    }
   }
 
   return {
     title: `Editar: ${design.title}`,
     description: `Personaliza "${design.title}" con nuestro editor en línea y descarga tu versión única.`,
-    robots: { index: false, follow: false }, // No indexar páginas del editor en Google
+    robots: { index: false, follow: false },
   }
 }
 
@@ -52,9 +62,12 @@ export default async function EditPage({ params }: EditPageProps) {
   const { slug } = await params
   const design = await getDesignBySlug(slug)
 
-  if (!design) {
+  if (!design || !design.is_editable || !design.editor_type) {
     notFound()
   }
 
-  return <DesignEditor design={design} />
+  const categorySlug = getPrimaryCategory(design.category)
+  const returnHref = `/${categorySlug}/${design.slug}`
+
+  return <DesignEditor design={design} returnHref={returnHref} />
 }
