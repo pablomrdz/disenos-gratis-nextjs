@@ -1,16 +1,18 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Search as SearchIcon } from 'lucide-react'
 import { DesignGrid } from '@/components/design-grid'
 import type { DesignCard } from '@/lib/types'
+import { trackEvent } from '@/lib/analytics'
 
 export default function SearchClientContent() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q')?.trim() || ''
   const [searchResults, setSearchResults] = useState<DesignCard[]>([])
   const [loading, setLoading] = useState(false)
+  const trackedSearchRef = useRef<string | null>(null)
 
   useEffect(() => {
     // Sanitización de query en el cliente
@@ -31,7 +33,22 @@ export default function SearchClientContent() {
         return res.json()
       })
       .then((data) => {
-        setSearchResults(Array.isArray(data?.designs) ? data.designs : [])
+        const designs: DesignCard[] = Array.isArray(data?.designs)
+          ? data.designs
+          : []
+
+        setSearchResults(designs)
+
+        // Evita duplicados en desarrollo / re-renders
+        if (trackedSearchRef.current !== sanitizedQuery) {
+          trackEvent('search', {
+            search_term: sanitizedQuery,
+            search_location: 'search_page',
+            results_count: designs.length,
+          })
+
+          trackedSearchRef.current = sanitizedQuery
+        }
       })
       .catch((err) => {
         console.error('Search error:', err)
