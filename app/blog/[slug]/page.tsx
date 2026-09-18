@@ -196,7 +196,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             {/* Sidebar */}
-            <aside className="col-span-12 lg:col-span-4 xl:col-span-3">
+            <aside className="hidden lg:col-span-4 lg:block xl:col-span-3">
               <StickySidebar
                 popularCategories={popularCategories}
                 tags={tags}

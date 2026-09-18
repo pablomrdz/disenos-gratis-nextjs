@@ -238,7 +238,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
     return (
       <>
         <section className="border-b border-border/40 bg-muted/30">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
             {taxonomy ? (
               <div>
                 {!taxonomy.description && (
@@ -247,21 +247,22 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                   </h1>
                 )}
                 {taxonomy.description && (
-                  <div className="prose prose-slate max-w-none">
-                    <RichText content={taxonomy.description} />
-                  </div>
+                  <RichText
+                    content={taxonomy.description}
+                    className="prose-h1:mb-2 prose-h1:text-2xl prose-h1:leading-tight prose-p:mt-2 prose-p:text-sm prose-p:leading-6 sm:prose-h1:text-4xl sm:prose-p:text-lg sm:prose-p:leading-7"
+                  />
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-4">
-                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${getCategoryColor(decodedSlug)}`}>
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl sm:h-16 sm:w-16 sm:rounded-2xl ${getCategoryColor(decodedSlug)}`}>
                   {getCategoryIcon(decodedSlug)}
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-4xl">
                     {categoryName}
                   </h1>
-                  <p className="mt-1 text-lg text-muted-foreground">
+                  <p className="mt-1 text-sm text-muted-foreground sm:text-lg">
                     Explora nuestra colección de diseños para {categoryName}
                   </p>
                 </div>
@@ -270,9 +271,19 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
           </div>
         </section>
 
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="lg:col-span-3 min-w-0">
+              <div className="mb-8 min-h-[250px] w-full flex justify-center overflow-hidden">
+                <AdUnit
+                  slot="1352493197"
+                  format="fluid"
+                  layoutKey="-fb+5w+4e-db+86"
+                  style={{ display: "block" }}
+                  className="w-full"
+                />
+              </div>
+
               <Suspense fallback={<DesignGridSkeleton />}>
                 <CategoryContent slug={decodedSlug} />
               </Suspense>
@@ -580,7 +591,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               )}
             </div>
 
-            <aside className="col-span-12 lg:col-span-4 xl:col-span-3">
+            <aside className="hidden lg:col-span-4 lg:block xl:col-span-3">
               <div className="sticky top-6 w-full max-w-[300px] mx-auto space-y-6">
                 {/* SLOT 3 (Sticky Sidebar - Solo Desktop) */}
                 <div className="hidden lg:flex justify-center min-h-[250px] w-full">

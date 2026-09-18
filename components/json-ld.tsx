@@ -46,13 +46,6 @@ export function JsonLd({ type, data }: JsonLdProps) {
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
         },
-        aggregateRating: (design.downloads ?? 0) > 0 ? {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          reviewCount: Math.max(design.downloads ?? 1, 1),
-          bestRating: '5',
-          worstRating: '1',
-        } : undefined,
         author: {
           '@type': 'Organization',
           name: SITE_NAME,
@@ -82,13 +75,6 @@ export function JsonLd({ type, data }: JsonLdProps) {
           availability: 'https://schema.org/InStock',
           url: `${BASE_URL}/designs/${slug}`,
         },
-        aggregateRating: (design.downloads ?? 0) > 0 ? {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          reviewCount: Math.max(design.downloads ?? 1, 1),
-          bestRating: '5',
-          worstRating: '1',
-        } : undefined,
         brand: {
           '@type': 'Brand',
           name: SITE_NAME,
