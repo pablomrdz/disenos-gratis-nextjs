@@ -120,7 +120,7 @@ const executeDownload = useCallback(() => {
   }
 
   return (
-    <Card className="overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-background to-muted/50">
+    <Card className="w-full overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-background to-muted/50">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           {/* ── Left info ──────────────────────────────────── */}

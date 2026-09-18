@@ -24,6 +24,11 @@ interface EditorHeaderProps {
 
 type ExportFormat = 'png' | 'jpeg' | 'pdf-letter' | 'pdf-a4'
 
+interface ExportedFile {
+    blob: Blob
+    filename: string
+}
+
 export function EditorHeader({
     title,
     slug,
@@ -42,10 +47,32 @@ export function EditorHeader({
 
     const handleExport = async () => {
         if (!canvas) return
-        setExporting(true)
 
-        // Small delay for UI feedback
-        await new Promise((r) => setTimeout(r, 250))
+        setExporting(true)
+        await new Promise((resolve) => setTimeout(resolve, 150))
+
+        const placeholderStates = canvas
+            .getObjects()
+            .filter((obj: any) => obj.isPlaceholder)
+            .map((obj) => ({
+                obj,
+                visible: obj.visible,
+                stroke: obj.stroke,
+                strokeWidth: obj.strokeWidth,
+                strokeDashArray: obj.strokeDashArray,
+            }))
+
+        const restorePlaceholders = () => {
+            placeholderStates.forEach((state) => {
+                state.obj.set({
+                    visible: state.visible,
+                    stroke: state.stroke,
+                    strokeWidth: state.strokeWidth,
+                    strokeDashArray: state.strokeDashArray,
+                })
+            })
+            canvas.renderAll()
+        }
 
         try {
             if (editorType === 'loteria' && totalSlots && filledSlots < totalSlots) {
@@ -54,20 +81,7 @@ export function EditorHeader({
                 })
             }
 
-            // Deselect any active object to avoid selection handles in export
             canvas.discardActiveObject()
-
-            // Keep a subtle printable 4×4 guide for empty Lotería slots.
-            const placeholderStates = canvas
-                .getObjects()
-                .filter((obj: any) => obj.isPlaceholder)
-                .map((obj) => ({
-                    obj,
-                    visible: obj.visible,
-                    stroke: obj.stroke,
-                    strokeWidth: obj.strokeWidth,
-                    strokeDashArray: obj.strokeDashArray,
-                }))
 
             placeholderStates.forEach(({ obj }) => {
                 if (editorType === 'loteria') {
@@ -84,12 +98,21 @@ export function EditorHeader({
 
             canvas.renderAll()
 
-            if (format.startsWith('pdf')) {
-                const paperSize = format === 'pdf-letter' ? 'letter' : 'a4'
-                await exportAsPDF(canvas, slug, paperSize)
-            } else {
-                exportAsImage(canvas, slug, format as 'png' | 'jpeg')
-            }
+            const exported = format.startsWith('pdf')
+                ? await exportAsPDFBlob(
+                    canvas,
+                    slug,
+                    format === 'pdf-letter' ? 'letter' : 'a4'
+                )
+                : await exportAsImageBlob(
+                    canvas,
+                    slug,
+                    format as 'png' | 'jpeg'
+                )
+
+            restorePlaceholders()
+
+            await deliverFile(exported)
 
             trackEvent('editor_export', {
                 item_id: itemId,
@@ -100,18 +123,15 @@ export function EditorHeader({
                 source_page: 'editor',
             })
 
-            // Restore editor-only placeholder appearance
-            placeholderStates.forEach((state) => {
-                state.obj.set({
-                    visible: state.visible,
-                    stroke: state.stroke,
-                    strokeWidth: state.strokeWidth,
-                    strokeDashArray: state.strokeDashArray,
-                })
-            })
-            canvas.renderAll()
-
+            toast.success('Archivo listo.')
         } catch (err) {
+            restorePlaceholders()
+
+            if (err instanceof DOMException && err.name === 'AbortError') {
+                toast.info('Guardado cancelado.')
+                return
+            }
+
             console.error('[EditorHeader] Export failed:', err)
             toast.error('No se pudo exportar. Intenta recargar la página.')
         } finally {
@@ -119,145 +139,270 @@ export function EditorHeader({
         }
     }
 
-    const exportAsImage = (canvas: fabric.Canvas, slug: string, fmt: 'png' | 'jpeg') => {
-        const dataUrl = canvas.toDataURL({
-            format: fmt,
-            quality: fmt === 'jpeg' ? 0.92 : 1,
-            multiplier: 2,
-        })
+    const desktopControls = (
+        <>
+            {hasSavedState && onClearState && (
+                <button
+                    onClick={onClearState}
+                    className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    title="Reiniciar diseño"
+                >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Reiniciar
+                </button>
+            )}
 
-        const link = document.createElement('a')
-        link.download = `${slug}-editado.${fmt}`
-        link.href = dataUrl
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-    }
+            <ExportSelect format={format} setFormat={setFormat} />
 
-    const exportAsPDF = async (canvas: fabric.Canvas, slug: string, paperSize: 'letter' | 'a4') => {
-        // Dynamic import to avoid SSR issues
-        const { jsPDF } = await import('jspdf')
-
-        // Export at high resolution for 300 DPI print quality
-        const multiplier = 4
-
-        const dataUrl = canvas.toDataURL({
-            format: 'png',
-            quality: 1,
-            multiplier,
-        })
-
-        // Paper dimensions in mm
-        const paperDimensions = {
-            letter: { w: 215.9, h: 279.4 },  // 8.5 x 11 inches
-            a4: { w: 210, h: 297 },
-        }
-
-        const paper = paperDimensions[paperSize]
-
-        // Create PDF with standard paper size (portrait)
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: paperSize === 'letter' ? 'letter' : 'a4',
-        })
-
-        // Calculate canvas aspect ratio
-        const canvasW = canvas.width! * multiplier
-        const canvasH = canvas.height! * multiplier
-        const canvasAspect = canvasW / canvasH
-
-        // Define compact print margins to maximize the Lotería board on the page
-        const margin = 5
-        const printableW = paper.w - (margin * 2)
-        const printableH = paper.h - (margin * 2)
-        const printableAspect = printableW / printableH
-
-        // Fit canvas within printable area maintaining aspect ratio
-        let imgW: number, imgH: number
-        if (canvasAspect > printableAspect) {
-            // Canvas is wider relative to paper - fit by width
-            imgW = printableW
-            imgH = printableW / canvasAspect
-        } else {
-            // Canvas is taller relative to paper - fit by height
-            imgH = printableH
-            imgW = printableH * canvasAspect
-        }
-
-        // Center on page
-        const offsetX = (paper.w - imgW) / 2
-        const offsetY = (paper.h - imgH) / 2
-
-        pdf.addImage(dataUrl, 'PNG', offsetX, offsetY, imgW, imgH, undefined, 'FAST')
-        pdf.save(`${slug}-listo-para-imprimir.pdf`)
-    }
+            <ExportButton
+                onClick={handleExport}
+                exporting={exporting}
+                disabled={!canvas}
+                compact={false}
+            />
+        </>
+    )
 
     return (
-        <header className="flex shrink-0 items-center justify-between border-b border-border/50 bg-background px-3 py-2.5 sm:px-4 sm:py-3">
-            {/* Left: Back + Title */}
-            <div className="flex items-center gap-3">
-                <Link
-                    href={returnHref}
-                    className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    <span className="hidden sm:inline">Volver</span>
-                </Link>
-                <div className="hidden h-6 w-px bg-border/50 sm:block" />
-                <div className="min-w-0">
-                    <h1 className="line-clamp-1 max-w-[180px] text-sm font-semibold text-foreground sm:max-w-md" dangerouslySetInnerHTML={{ __html: title }} />
-                    {totalSlots ? (
-                        <p className="mt-0.5 text-[10px] font-medium text-muted-foreground">
-                            Tabla: {filledSlots}/{totalSlots} cartas
-                        </p>
-                    ) : null}
+        <header className="shrink-0 border-b border-border/50 bg-background">
+            <div className="flex items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3">
+                <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                    <Link
+                        href={returnHref}
+                        className="flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:px-3"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span className="hidden sm:inline">Volver</span>
+                    </Link>
+
+                    <div className="hidden h-6 w-px bg-border/50 sm:block" />
+
+                    <div className="min-w-0">
+                        <h1
+                            className="line-clamp-1 max-w-[210px] text-sm font-semibold text-foreground sm:max-w-md"
+                            dangerouslySetInnerHTML={{ __html: title }}
+                        />
+                        {totalSlots ? (
+                            <p className="mt-0.5 text-[10px] font-medium text-muted-foreground">
+                                Tabla: {filledSlots}/{totalSlots} cartas
+                            </p>
+                        ) : null}
+                    </div>
+                </div>
+
+                <div className="hidden items-center gap-2 sm:flex">
+                    {desktopControls}
                 </div>
             </div>
 
-            {/* Right: Format + Reset + Export */}
-            <div className="flex items-center gap-2">
-                {/* Reset saved state button */}
-                {hasSavedState && onClearState && (
-                    <button
-                        onClick={onClearState}
-                        className="hidden sm:flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                        title="Reiniciar diseño (borrar progreso guardado)"
-                    >
-                        <RotateCcw className="h-3.5 w-3.5" />
-                        Reiniciar
-                    </button>
-                )}
-                <select
-                    value={format}
-                    onChange={(e) => setFormat(e.target.value as ExportFormat)}
-                    className="hidden rounded-lg border border-border bg-background px-2 py-1.5 text-xs sm:block"
+            <div className="flex items-center gap-2 border-t border-border/40 px-3 py-2 sm:hidden">
+                <button
+                    onClick={onClearState}
+                    disabled={!hasSavedState || !onClearState}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Reiniciar diseño"
+                    title="Reiniciar diseño"
                 >
-                    <option value="pdf-letter">PDF Carta (8.5×11&quot;)</option>
-                    <option value="pdf-a4">PDF A4</option>
-                    <option value="png">PNG</option>
-                    <option value="jpeg">JPG</option>
-                </select>
-                <Button
+                    <RotateCcw className="h-4 w-4" />
+                </button>
+
+                <div className="min-w-0 flex-1">
+                    <ExportSelect
+                        format={format}
+                        setFormat={setFormat}
+                        mobile
+                    />
+                </div>
+
+                <ExportButton
                     onClick={handleExport}
-                    disabled={exporting || !canvas}
-                    className="gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20 hover:shadow-xl transition-all"
-                    size="sm"
-                >
-                    {exporting ? (
-                        <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="hidden sm:inline">Exportando...</span>
-                        </>
-                    ) : (
-                        <>
-                            <ImageDown className="h-4 w-4" />
-                            <span className="hidden sm:inline">Finalizar y Descargar</span>
-                            <span className="sm:hidden">Descargar</span>
-                        </>
-                    )}
-                </Button>
+                    exporting={exporting}
+                    disabled={!canvas}
+                    compact
+                />
             </div>
         </header>
     )
+}
+
+function ExportSelect({
+    format,
+    setFormat,
+    mobile = false,
+}: {
+    format: ExportFormat
+    setFormat: (format: ExportFormat) => void
+    mobile?: boolean
+}) {
+    return (
+        <select
+            value={format}
+            onChange={(event) => setFormat(event.target.value as ExportFormat)}
+            className={
+                mobile
+                    ? 'h-9 w-full rounded-lg border border-border bg-background px-2 text-[11px]'
+                    : 'rounded-lg border border-border bg-background px-2 py-1.5 text-xs'
+            }
+            aria-label="Formato de salida"
+        >
+            <option value="pdf-letter">PDF Carta</option>
+            <option value="pdf-a4">PDF A4</option>
+            <option value="png">PNG</option>
+            <option value="jpeg">JPG</option>
+        </select>
+    )
+}
+
+function ExportButton({
+    onClick,
+    exporting,
+    disabled,
+    compact,
+}: {
+    onClick: () => void
+    exporting: boolean
+    disabled: boolean
+    compact: boolean
+}) {
+    return (
+        <Button
+            onClick={onClick}
+            disabled={exporting || disabled}
+            className="shrink-0 gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-xl"
+            size="sm"
+        >
+            {exporting ? (
+                <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {!compact && <span>Exportando...</span>}
+                </>
+            ) : (
+                <>
+                    <ImageDown className="h-4 w-4" />
+                    <span>{compact ? 'Guardar' : 'Finalizar y Descargar'}</span>
+                </>
+            )}
+        </Button>
+    )
+}
+
+async function exportAsImageBlob(
+    canvas: fabric.Canvas,
+    slug: string,
+    format: 'png' | 'jpeg'
+): Promise<ExportedFile> {
+    const dataUrl = canvas.toDataURL({
+        format,
+        quality: format === 'jpeg' ? 0.92 : 1,
+        multiplier: 2,
+    })
+
+    const response = await fetch(dataUrl)
+    const blob = await response.blob()
+
+    return {
+        blob,
+        filename: `${slug}-editado.${format}`,
+    }
+}
+
+async function exportAsPDFBlob(
+    canvas: fabric.Canvas,
+    slug: string,
+    paperSize: 'letter' | 'a4'
+): Promise<ExportedFile> {
+    const { jsPDF } = await import('jspdf')
+    const multiplier = 4
+
+    const dataUrl = canvas.toDataURL({
+        format: 'png',
+        quality: 1,
+        multiplier,
+    })
+
+    const paperDimensions = {
+        letter: { w: 215.9, h: 279.4 },
+        a4: { w: 210, h: 297 },
+    }
+
+    const paper = paperDimensions[paperSize]
+
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: paperSize === 'letter' ? 'letter' : 'a4',
+    })
+
+    const canvasW = canvas.width! * multiplier
+    const canvasH = canvas.height! * multiplier
+    const canvasAspect = canvasW / canvasH
+
+    const margin = 5
+    const printableW = paper.w - margin * 2
+    const printableH = paper.h - margin * 2
+    const printableAspect = printableW / printableH
+
+    let imgW: number
+    let imgH: number
+
+    if (canvasAspect > printableAspect) {
+        imgW = printableW
+        imgH = printableW / canvasAspect
+    } else {
+        imgH = printableH
+        imgW = printableH * canvasAspect
+    }
+
+    const offsetX = (paper.w - imgW) / 2
+    const offsetY = (paper.h - imgH) / 2
+
+    pdf.addImage(
+        dataUrl,
+        'PNG',
+        offsetX,
+        offsetY,
+        imgW,
+        imgH,
+        undefined,
+        'FAST'
+    )
+
+    return {
+        blob: pdf.output('blob'),
+        filename: `${slug}-listo-para-imprimir.pdf`,
+    }
+}
+
+async function deliverFile({ blob, filename }: ExportedFile) {
+    const file = new File([blob], filename, {
+        type: blob.type || 'application/octet-stream',
+    })
+
+    const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+    if (
+        isIOS &&
+        typeof navigator.share === 'function' &&
+        typeof navigator.canShare === 'function' &&
+        navigator.canShare({ files: [file] })
+    ) {
+        await navigator.share({
+            files: [file],
+            title: filename,
+        })
+        return
+    }
+
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    link.rel = 'noopener'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    window.setTimeout(() => URL.revokeObjectURL(url), 30_000)
 }
