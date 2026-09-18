@@ -167,7 +167,7 @@ export function EditorHeader({
         const canvasH = canvas.height! * multiplier
         const canvasAspect = canvasW / canvasH
 
-        // Define print margins (10mm on each side)
+        // Define compact print margins to maximize the Lotería board on the page
         const margin = 5
         const printableW = paper.w - (margin * 2)
         const printableH = paper.h - (margin * 2)
