@@ -1,6 +1,34 @@
 export type DesignType = 'internal' | 'canva' | 'capcut' | 'font'
 export type ContentType = 'asset' | 'blog' | 'tool'
 
+export interface EditorTextFieldConfig {
+  id: string
+  label: string
+  defaultText: string
+  x: number
+  y: number
+  width?: number
+  fontFamily: string
+  fontFile?: string | null
+  fontSize: number
+  fill: string
+  textAlign?: 'left' | 'center' | 'right'
+  fontWeight?: string | number
+  fontStyle?: 'normal' | 'italic'
+}
+
+export interface EditorConfig {
+  version: 1
+  canvas: {
+    width: number
+    height: number
+    exportWidth?: number
+    exportHeight?: number
+  }
+  backgroundUrl?: string | null
+  textFields?: EditorTextFieldConfig[]
+}
+
 export interface Design {
   id: string
   title: string
@@ -29,6 +57,7 @@ export interface Design {
   is_featured_month?: boolean
   is_editable?: boolean
   editor_type?: string | null
+  editor_config?: EditorConfig | null
   json_ld_data?: Record<string, unknown> | null
 
   // Legacy compatibility while the migrated code is cleaned up.
