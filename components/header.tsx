@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { Menu, X, Search, Sparkles, ChevronDown, ChevronRight, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 
 // Mega Menu Data Structure - Optimizada con Inteligencia de Search Console y Supabase
 const megaMenuCategories = [
@@ -330,6 +329,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
+              </Link>
+              <Link
+                href="/tags"
+                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Etiquetas y temas
               </Link>
               <Link
                 href="/plantillas/"

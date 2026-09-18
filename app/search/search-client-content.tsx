@@ -86,7 +86,7 @@ export default function SearchClientContent() {
         <SearchIcon className="mx-auto h-12 w-12 text-muted-foreground/50" />
         <h2 className="mt-4 text-lg font-semibold text-foreground">No encontramos resultados</h2>
         <p className="mt-2 text-muted-foreground">
-          Try adjusting your search terms or browse our categories.
+          Prueba con otros términos o explora nuestras categorías.
         </p>
       </div>
     )
@@ -97,7 +97,7 @@ export default function SearchClientContent() {
       <SearchIcon className="mx-auto h-12 w-12 text-muted-foreground/50" />
       <h2 className="mt-4 text-lg font-semibold text-foreground">Busca en nuestro catálogo</h2>
       <p className="mt-2 text-muted-foreground">
-        Use the search bar to find templates, fonts, and resources.
+        Usa el buscador para encontrar diseños, plantillas, tipografías y recursos.
       </p>
     </div>
   )

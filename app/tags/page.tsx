@@ -56,34 +56,34 @@ export default async function TagsPage() {
             </div>
 
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 py-12">
+            <div className="bg-white border-b border-slate-200 py-8 sm:py-12">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-4">
-                        <Tag className="h-8 w-8 text-primary" />
+                    <div className="inline-flex items-center justify-center p-2.5 sm:p-3 bg-primary/10 rounded-xl sm:rounded-2xl mb-3 sm:mb-4">
+                        <Tag className="h-6 w-6 text-primary sm:h-8 sm:w-8" />
                     </div>
-                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
                         Explorar todas las etiquetas
                     </h1>
-                    <p className="mt-4 text-xl text-slate-600 max-w-2xl mx-auto">
+                    <p className="mt-3 text-base text-slate-600 max-w-2xl mx-auto sm:mt-4 sm:text-xl">
                         Descubre recursos gráficos gratis organizados por etiquetas y temas específicos. Encuentra exactamente lo que buscas para tus proyectos.
                     </p>
                 </div>
             </div>
 
             {/* Tags Grid */}
-            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
                 {tags.length > 0 ? (
-                    <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 xl:columns-4">
+                    <div className="columns-2 gap-3 sm:gap-6 lg:columns-3 xl:columns-4">
                         {formattedTags.map(({ original, display, slug }) => (
-                            <div key={original} className="break-inside-avoid mb-4">
+                            <div key={original} className="break-inside-avoid mb-3 sm:mb-4">
                                 <Link
                                     href={`/tags/${slug}`}
-                                    className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 transition-all hover:border-primary hover:shadow-md"
+                                    className="group flex min-h-14 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white p-3 transition-all hover:border-primary hover:shadow-md sm:p-4"
                                 >
                                     <span className="text-sm font-semibold text-slate-700 capitalize group-hover:text-primary">
                                         {display}
                                     </span>
-                                    <div className="rounded-full bg-slate-50 p-2 group-hover:bg-primary/10 transition-colors">
+                                    <div className="hidden rounded-full bg-slate-50 p-2 group-hover:bg-primary/10 transition-colors sm:block">
                                         <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-primary" />
                                     </div>
                                 </Link>
