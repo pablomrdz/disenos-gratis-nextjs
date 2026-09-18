@@ -457,21 +457,34 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               </div>
 
               <div className="space-y-6">
-                <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
-                  <div className={cn(
-                    "relative",
-                    isBlog ? "aspect-[16/9]" : "h-[260px] sm:h-[280px] lg:h-[300px]"
-                  )}>
-                    <Image
-                      src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
-                      alt={design.alt_text || design.title || "Diseño editable gratis"}
-                      fill
-                      className={isBlog ? "object-cover" : "object-contain bg-white"}
-                      priority
-                      sizes="(max-width: 1024px) 100vw, 66vw"
-                    />
+                {isBlog ? (
+                  <div className="overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm">
+                    <div className="relative aspect-[16/9]">
+                      <Image
+                        src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
+                        alt={design.alt_text || design.title || "Artículo de Diseños Gratis"}
+                        fill
+                        className="object-cover"
+                        priority
+                        sizes="(max-width: 1024px) 100vw, 66vw"
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex w-full justify-start">
+                    <div className="w-fit max-w-full overflow-hidden rounded-2xl border border-border/50 bg-white shadow-sm">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={design.image_url || design.thumbnail_url || "/placeholder.svg"}
+                        alt={design.alt_text || design.title || "Diseño editable gratis"}
+                        className="block h-auto max-h-[260px] w-auto max-w-full object-contain sm:max-h-[280px] lg:max-h-[300px]"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {!isBlog && (
