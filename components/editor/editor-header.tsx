@@ -17,7 +17,6 @@ interface EditorHeaderProps {
     category: string
     editorType: string
     exportWidth?: number
-    exportHeight?: number
     filledSlots?: number
     totalSlots?: number
     hasSavedState?: boolean
@@ -40,7 +39,6 @@ export function EditorHeader({
     category,
     editorType,
     exportWidth,
-    exportHeight,
     filledSlots = 0,
     totalSlots,
     hasSavedState,

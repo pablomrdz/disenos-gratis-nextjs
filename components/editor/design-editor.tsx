@@ -182,7 +182,6 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                 category={design.category}
                 editorType={design.editor_type || 'fabric'}
                 exportWidth={design.editor_config?.canvas.exportWidth}
-                exportHeight={design.editor_config?.canvas.exportHeight}
                 filledSlots={filledSlots}
                 totalSlots={totalSlots}
                 hasSavedState={hasSavedState}
