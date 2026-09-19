@@ -64,6 +64,14 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
     const isInvitation = design.editor_type === 'invitation' && Boolean(design.editor_config)
     const totalSlots = isLoteria ? 16 : undefined
 
+    // Invitation editors used to share the same localStorage key as the old
+    // generic Fabric editor. That allowed stale legacy canvases to overwrite
+    // the correct background a moment after load. Namespace invitation state
+    // by editor type/config version so incompatible saved canvases are ignored.
+    const storageId = isInvitation
+        ? `${slug}-invitation-v${design.editor_config?.version ?? 1}`
+        : slug
+
     const syncFilledSlots = useCallback((currentCanvas: fabric.Canvas | null) => {
         if (!currentCanvas || !isLoteria) {
             setFilledSlots(0)
@@ -101,8 +109,13 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
 
     // Check if a saved state exists on mount
     useEffect(() => {
-        setHasSavedState(!!loadCanvasState(slug))
-    }, [slug])
+        // Remove the incompatible pre-invitation editor state for this slug.
+        if (isInvitation) {
+            clearCanvasState(slug)
+        }
+
+        setHasSavedState(!!loadCanvasState(storageId))
+    }, [isInvitation, slug, storageId])
 
     // ── Debounced auto-save (2 seconds) ─────────────────────────
     useEffect(() => {
@@ -111,7 +124,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
         const scheduleSave = () => {
             if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
             debounceTimerRef.current = setTimeout(() => {
-                saveCanvasState(slug, canvas)
+                saveCanvasState(storageId, canvas)
                 setHasSavedState(true)
             }, 2000)
         }
@@ -132,14 +145,14 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
             canvas.off('object:added', handleMutation)
             canvas.off('object:removed', handleMutation)
         }
-    }, [canvas, slug, syncFilledSlots])
+    }, [canvas, storageId, syncFilledSlots])
 
     // ── Restore canvas state once canvas is ready ────────────────
     const handleCanvasReady = useCallback((c: fabric.Canvas | null) => {
         setCanvas(c)
 
         if (c) {
-            const saved = loadCanvasState(slug)
+            const saved = loadCanvasState(storageId)
             if (saved) {
                 // loadFromJSON returns a promise in Fabric.js v6+
                 c.loadFromJSON(saved).then(() => {
@@ -155,18 +168,18 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                 setCanvasRevision((revision) => revision + 1)
             }
         }
-    }, [slug, syncFilledSlots])
+    }, [storageId, syncFilledSlots])
 
     const handleSelectionChange = useCallback((obj: fabric.FabricObject | null) => {
         setSelectedObject(obj)
     }, [])
 
     const handleClearState = useCallback(() => {
-        clearCanvasState(slug)
+        clearCanvasState(storageId)
         setHasSavedState(false)
         // Reload page to get fresh canvas
         window.location.reload()
-    }, [slug])
+    }, [storageId])
 
     const imageUrl = design.image_url || design.thumbnail_url || '/placeholder.svg'
 

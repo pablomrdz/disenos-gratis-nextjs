@@ -410,7 +410,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
         </div>
       </section>
 
-      <section className="py-6 sm:py-8">
+      <section className={cn(isBlog ? "py-6 sm:py-8" : "py-4 sm:py-5")}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-12 gap-6 lg:gap-8">
             <div className={cn(
@@ -419,21 +419,29 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
             )}>
               <Link
                 href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`}
-                className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className={cn(
+                  "inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground",
+                  isBlog ? "mb-6" : "mb-3"
+                )}
               >
                 <ArrowLeft className="h-4 w-4" />
                 Volver a {(categoryPath[0] || primaryCategoryClean).replace(/-/g, ' ')}
               </Link>
 
-              <div className="mb-6">
+              <div className={cn(isBlog ? "mb-6" : "mb-4")}>
                 <h1
                   className={cn(
-                    "text-balance font-bold text-foreground",
-                    isBlog ? "text-3xl sm:text-4xl lg:text-5xl" : "text-2xl sm:text-3xl lg:text-4xl"
+                    "font-bold text-foreground",
+                    isBlog
+                      ? "text-balance text-3xl sm:text-4xl lg:text-5xl"
+                      : "text-[22px] leading-tight sm:text-2xl lg:overflow-hidden lg:text-ellipsis lg:whitespace-nowrap lg:text-[28px] xl:text-[30px]"
                   )}
                   dangerouslySetInnerHTML={{ __html: title }}
                 />
-                <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className={cn(
+                  "flex flex-wrap items-center gap-3",
+                  isBlog ? "mt-4" : "mt-2.5"
+                )}>
                   <Link href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`} className="transition-opacity hover:opacity-80">
                     <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
                       {(categoryPath[0] || primaryCategoryClean).replace('-', ' ')}
