@@ -65,6 +65,15 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
       description: taxonomy?.seo_description || `Explora nuestra mejor colección de diseños para ${categoryName}. Descargas gratuitas.`,
       alternates: {
         canonical: canonicalUrl,
+        ...(cleanSlug === 'dtf'
+          ? {
+              languages: {
+                es: '/dtf/',
+                en: '/en/dtf/',
+                'x-default': '/dtf/',
+              },
+            }
+          : {}),
       },
     }
   }

@@ -7,6 +7,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/json-ld'
+import { EnglishShellBoundary } from '@/components/english-shell-boundary'
 import './globals.css'
 
 const inter = Inter({
@@ -113,11 +114,9 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="font-sans antialiased">
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <EnglishShellBoundary spanishHeader={<Header />} spanishFooter={<Footer />}>
+          {children}
+        </EnglishShellBoundary>
         <Analytics />
         <GoogleAnalytics gaId="G-QPKCT2ZXX0" />
       </body>
