@@ -1,15 +1,74 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
-import { getDesignsByTag, getPopularCategories, getAllTags, getRelatedTags, getTaxonomyBySlug } from '@/lib/data'
+import {
+  DESIGN_CARD_FIELDS,
+  getDesignsByTag,
+  getPopularCategories,
+  getAllTags,
+  getRelatedTags,
+  getTaxonomyBySlug,
+} from '@/lib/data'
+import { createServerSupabaseClient } from '@/lib/supabase'
 import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
 import { RichText } from '@/components/rich-text'
+import type { DesignCard } from '@/lib/types'
 
 // ISR: Cachear en la CDN por 24 horas
 export const revalidate = 86400
+
+/**
+ * Los formatos se quitaron correctamente de `tags` durante la limpieza de datos.
+ * Sin embargo, algunas URLs históricas (especialmente /tags/png/) siguen teniendo
+ * enlaces internos, señales SEO y taxonomías. Para no romperlas, cuando una de
+ * estas rutas ya no existe como tag semántico la resolvemos desde technical_type.
+ */
+const LEGACY_FORMAT_TAGS: Record<string, string[]> = {
+  png: ['png'],
+  jpg: ['jpg', 'jpeg'],
+  jpeg: ['jpg', 'jpeg'],
+  pdf: ['pdf'],
+  ai: ['ai'],
+  eps: ['eps'],
+  svg: ['svg'],
+  psd: ['psd'],
+  cdr: ['cdr'],
+  dxf: ['dxf'],
+  dwg: ['dwg'],
+  ttf: ['ttf', 'otf'],
+  otf: ['otf', 'ttf'],
+  studio3: ['studio3', 'studio 3'],
+}
+
+async function getDesignsByLegacyFormat(
+  slug: string,
+  limit: number = 100
+): Promise<DesignCard[]> {
+  const formats = LEGACY_FORMAT_TAGS[slug]
+  if (!formats?.length) return []
+
+  const supabase = createServerSupabaseClient()
+  const orQuery = formats
+    .map((format) => `technical_type.ilike.%${format}%`)
+    .join(',')
+
+  const { data, error } = await supabase
+    .from('designs')
+    .select(DESIGN_CARD_FIELDS)
+    .or(orQuery)
+    .eq('content_type', 'asset')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error(`Error fetching legacy format route ${slug}:`, error)
+    return []
+  }
+
+  return (data || []) as DesignCard[]
+}
 
 /**
  * Pre-genera dinámicamente las páginas de etiquetas conocidas
@@ -40,6 +99,7 @@ function formatDisplayName(slug: string): string {
   if (decoded === 'dia-de-las-madres') return 'Día de las Madres'
   if (decoded === 'dia-del-padre') return 'Día del Padre'
   if (decoded === 'cumpleanos') return 'Cumpleaños'
+  if (decoded === 'png') return 'Imágenes PNG sin fondo'
   return decoded.replace(/-/g, ' ')
 }
 
@@ -54,7 +114,9 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 
   return {
     title: taxonomy?.seo_title || `${displayName} - Plantillas y Vectores Gratis`,
-    description: taxonomy?.seo_description || `Explora y descarga gratis diseños, vectores y plantillas etiquetados bajo "${displayName}". Alta resolución lista para estampar.`,
+    description:
+      taxonomy?.seo_description ||
+      `Explora y descarga gratis diseños, vectores y plantillas etiquetados bajo "${displayName}". Alta resolución lista para estampar.`,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -67,17 +129,24 @@ export default async function TagPage({ params }: TagPageProps) {
   const cleanSlug = slugify(decodedTag)
   const displayName = formatDisplayName(decodedTag)
 
-  // Fetch resources in parallel
-  const [taggedDesigns, popularCategories, relatedTags, taxonomy] = await Promise.all([
+  // Primero respetamos el modelo semántico actual de tags.
+  // Si la ruta corresponde a un formato legacy y ya no hay tags con ese nombre,
+  // hacemos fallback a technical_type para conservar la URL histórica.
+  const [semanticDesigns, popularCategories, relatedTags, taxonomy] = await Promise.all([
     getDesignsByTag(decodedTag, 100),
     getPopularCategories(6),
     getRelatedTags(decodedTag, 8),
-    getTaxonomyBySlug(cleanSlug, 'tag')
+    getTaxonomyBySlug(cleanSlug, 'tag'),
   ])
 
+  const taggedDesigns =
+    semanticDesigns.length > 0
+      ? semanticDesigns
+      : await getDesignsByLegacyFormat(cleanSlug, 100)
+
   // SANITIZACIÓN ANTI-SOFT-404:
-  // Si la etiqueta no devuelve ningún recurso en Supabase, disparamos notFound() 
-  // para forzar un código HTTP 404 real.
+  // Solo devolvemos 404 cuando la URL no tiene recursos ni como tag semántico
+  // ni como formato legacy respaldado por technical_type.
   if (!taggedDesigns || taggedDesigns.length === 0) {
     notFound()
   }
@@ -123,20 +192,19 @@ export default async function TagPage({ params }: TagPageProps) {
             {/* Main Content */}
             <main className="lg:col-span-3 min-w-0">
               <p className="mb-6 text-sm text-muted-foreground">
-                Mostrando {taggedDesigns.length} {taggedDesigns.length === 1 ? 'resultado' : 'resultados'}
+                Mostrando {taggedDesigns.length}{' '}
+                {taggedDesigns.length === 1 ? 'resultado' : 'resultados'}
               </p>
               <DesignGrid designs={taggedDesigns} />
 
-{taxonomy?.content_bottom && (
-  <section className="mt-12 rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
-    <div className="prose prose-slate max-w-none">
-      <RichText content={taxonomy.content_bottom} />
-    </div>
-  </section>
-)}
+              {taxonomy?.content_bottom && (
+                <section className="mt-12 rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
+                  <div className="prose prose-slate max-w-none">
+                    <RichText content={taxonomy.content_bottom} />
+                  </div>
+                </section>
+              )}
             </main>
-
-            
 
             {/* Sidebar */}
             <aside className="hidden lg:block">
