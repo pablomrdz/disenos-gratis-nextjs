@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import {
   Download,
-  ExternalLink,
   Loader2,
   Pencil,
 } from 'lucide-react'
@@ -39,11 +38,14 @@ export function DownloadSection({ design }: DownloadSectionProps) {
   const analyticsLoggedRef = useRef(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
+  const externalLink = extractDriveLink(design.description || '')
+  const hasDownload = Boolean(externalLink || design.download_url || design.external_url)
+  const hasEditor = Boolean(design.is_editable && design.editor_type)
+
   // Resolve the download URL once on mount (kept out of DOM)
   useEffect(() => {
-    const externalLink = extractDriveLink(design.description || '')
     downloadUrlRef.current = externalLink || design.download_url || design.external_url || null
-  }, [design])
+  }, [design.download_url, design.external_url, externalLink])
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -52,64 +54,65 @@ export function DownloadSection({ design }: DownloadSectionProps) {
     }
   }, [])
 
-// ── Analytics: Supabase + GA4 ────────────────────────────────
-const logDownloadStat = useCallback(async () => {
-  if (analyticsLoggedRef.current) return
-  analyticsLoggedRef.current = true
+  // ── Analytics: Supabase + GA4 ────────────────────────────────
+  const logDownloadStat = useCallback(async () => {
+    if (analyticsLoggedRef.current) return
+    analyticsLoggedRef.current = true
 
-  trackEvent('download_click', {
-    item_id: design.id,
-    item_name: design.title || 'Untitled Design',
-    category: design.category || 'general',
-    download_source: 'design_page',
-  })
-
-  try {
-    await supabaseClient.from('downloads_stats').insert({
-      design_id: design.id,
+    trackEvent('download_click', {
+      item_id: design.id,
+      item_name: design.title || 'Untitled Design',
       category: design.category || 'general',
+      download_source: 'design_page',
     })
-  } catch (err) {
-    console.error('[Download] Analytics error:', err)
-  }
-}, [design.id, design.title, design.category])
 
-// ── Start the 5-second loading sequence ───────────────────────
-const startDownloadSequence = useCallback(() => {
-  if (phase !== 'idle') return
-
-  setPhase('loading')
-  setProgress(0)
-  analyticsLoggedRef.current = false
-
-  const startTime = Date.now()
-
-  timerRef.current = setInterval(() => {
-    const elapsed = Date.now() - startTime
-    const pct = Math.min(
-      Math.round((elapsed / WAIT_DURATION_MS) * 100),
-      100
-    )
-
-    setProgress(pct)
-
-    if (elapsed >= WAIT_DURATION_MS) {
-      if (timerRef.current) clearInterval(timerRef.current)
-      setProgress(100)
-      setPhase('ready')
+    try {
+      await supabaseClient.from('downloads_stats').insert({
+        design_id: design.id,
+        category: design.category || 'general',
+      })
+    } catch (err) {
+      console.error('[Download] Analytics error:', err)
     }
-  }, TICK_INTERVAL_MS)
-}, [phase])
+  }, [design.id, design.title, design.category])
 
-// ── Execute final download ────────────────────────────────────
-const executeDownload = useCallback(() => {
-  const url = downloadUrlRef.current
+  // ── Start the 5-second loading sequence ───────────────────────
+  const startDownloadSequence = useCallback(() => {
+    if (phase !== 'idle' || !hasDownload) return
 
-  if (!url) return
+    setPhase('loading')
+    setProgress(0)
+    analyticsLoggedRef.current = false
 
-  logDownloadStat()
-  window.open(url, '_blank', 'noopener,noreferrer')
-}, [logDownloadStat])
+    const startTime = Date.now()
+
+    timerRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      const pct = Math.min(
+        Math.round((elapsed / WAIT_DURATION_MS) * 100),
+        100
+      )
+
+      setProgress(pct)
+
+      if (elapsed >= WAIT_DURATION_MS) {
+        if (timerRef.current) clearInterval(timerRef.current)
+        setProgress(100)
+        setPhase('ready')
+      }
+    }, TICK_INTERVAL_MS)
+  }, [phase, hasDownload])
+
+  // ── Execute final download ────────────────────────────────────
+  const executeDownload = useCallback(() => {
+    const url = downloadUrlRef.current
+
+    if (!url) return
+
+    logDownloadStat()
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }, [logDownloadStat])
+
   // ── Render helpers ────────────────────────────────────────────
   const getProgressText = () => {
     if (progress < 20) return 'Iniciando descarga...'
@@ -119,6 +122,22 @@ const executeDownload = useCallback(() => {
     return '¡Listo!'
   }
 
+  const sectionTitle = hasDownload
+    ? 'Descarga Gratis'
+    : hasEditor
+      ? 'Personaliza Gratis'
+      : 'Recurso disponible'
+
+  const sectionDescription = hasDownload
+    ? phase === 'ready'
+      ? '¡Tu descarga está lista!'
+      : phase === 'loading'
+        ? getProgressText()
+        : 'Haz clic para descargar este diseño'
+    : hasEditor
+      ? 'Edita esta plantilla online y descarga tu resultado'
+      : 'Consulta la información de este recurso'
+
   return (
     <Card className="w-full overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-background to-muted/50">
       <CardContent className="p-6">
@@ -127,121 +146,115 @@ const executeDownload = useCallback(() => {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-semibold text-foreground">
-                Descarga Gratis
+                {sectionTitle}
               </h3>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              {phase === 'ready'
-                ? '¡Tu descarga está lista!'
-                : phase === 'loading'
-                  ? getProgressText()
-                  : 'Haz clic para descargar este diseño'
-              }
+              {sectionDescription}
             </p>
           </div>
 
           {/* ── Right CTA ──────────────────────────────────── */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="w-full min-w-[240px] sm:w-auto">
-              {/* ── Phase: IDLE ──────────────────────────── */}
-              {phase === 'idle' && (
-                <button
-                  onClick={startDownloadSequence}
-                  className="
-                    group relative w-full overflow-hidden rounded-xl
-                    bg-gradient-to-r from-emerald-500 to-teal-500
-                    px-8 py-3.5 font-semibold text-white
-                    shadow-lg shadow-emerald-500/25
-                    transition-all duration-300
-                    hover:shadow-xl hover:shadow-emerald-500/30
-                    hover:scale-[1.02]
-                    active:scale-[0.98]
-                  "
-                >
-                  {/* Shimmer effect */}
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                  <span className="relative flex items-center justify-center gap-2">
-                    <Download className="h-5 w-5" />
-                    Descargar
-                  </span>
-                </button>
-              )}
-
-              {/* ── Phase: LOADING (progress bar) ────────── */}
-              {phase === 'loading' && (
-                <div className="space-y-4 flex flex-col items-center">
+            {hasDownload && (
+              <div className="w-full min-w-[240px] sm:w-auto">
+                {/* ── Phase: IDLE ──────────────────────────── */}
+                {phase === 'idle' && (
                   <button
-                    disabled
+                    onClick={startDownloadSequence}
                     className="
-                      relative w-full cursor-not-allowed overflow-hidden rounded-xl
-                      bg-gray-700 px-8 py-3.5 font-semibold text-white/80
+                      group relative w-full overflow-hidden rounded-xl
+                      bg-gradient-to-r from-emerald-500 to-teal-500
+                      px-8 py-3.5 font-semibold text-white
+                      shadow-lg shadow-emerald-500/25
+                      transition-all duration-300
+                      hover:shadow-xl hover:shadow-emerald-500/30
+                      hover:scale-[1.02]
+                      active:scale-[0.98]
                     "
                   >
-                    {/* Animated progress fill */}
-                    <span
-                      className="
-                        absolute inset-y-0 left-0
-                        bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500
-                        transition-all duration-200 ease-out
-                      "
-                      style={{ width: `${progress}%` }}
-                    />
-                    {/* Pulse glow on the leading edge */}
-                    <span
-                      className="
-                        absolute inset-y-0 w-8
-                        bg-gradient-to-r from-transparent to-white/20
-                        animate-pulse
-                      "
-                      style={{ left: `calc(${Math.min(progress, 95)}% - 16px)` }}
-                    />
+                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                     <span className="relative flex items-center justify-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      {getProgressText()}
+                      <Download className="h-5 w-5" />
+                      Descargar
                     </span>
                   </button>
-                </div>
-              )}
+                )}
 
-              {/* ── Phase: READY ─────────────────────────── */}
-              {phase === 'ready' && (
-                <button
-                  onClick={executeDownload}
-                  className="
-                    group relative w-full overflow-hidden rounded-xl
-                    px-8 py-3.5 font-semibold text-white
-                    shadow-lg transition-all duration-300
-                    hover:shadow-xl hover:scale-[1.02]
-                    active:scale-[0.98]
-                    animate-in fade-in-0 zoom-in-95 duration-500
-                  "
-                  style={{
-                    backgroundColor: '#4dd06a',
-                    boxShadow: '0 10px 25px -5px rgba(77, 208, 106, 0.3)',
-                  }}
-                >
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                  <span className="relative flex items-center justify-center gap-2">
-                    ✅ Descargar Ahora
-                  </span>
-                </button>
-              )}
-            </div>
+                {/* ── Phase: LOADING (progress bar) ────────── */}
+                {phase === 'loading' && (
+                  <div className="space-y-4 flex flex-col items-center">
+                    <button
+                      disabled
+                      className="
+                        relative w-full cursor-not-allowed overflow-hidden rounded-xl
+                        bg-gray-700 px-8 py-3.5 font-semibold text-white/80
+                      "
+                    >
+                      <span
+                        className="
+                          absolute inset-y-0 left-0
+                          bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500
+                          transition-all duration-200 ease-out
+                        "
+                        style={{ width: `${progress}%` }}
+                      />
+                      <span
+                        className="
+                          absolute inset-y-0 w-8
+                          bg-gradient-to-r from-transparent to-white/20
+                          animate-pulse
+                        "
+                        style={{ left: `calc(${Math.min(progress, 95)}% - 16px)` }}
+                      />
+                      <span className="relative flex items-center justify-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        {getProgressText()}
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                {/* ── Phase: READY ─────────────────────────── */}
+                {phase === 'ready' && (
+                  <button
+                    onClick={executeDownload}
+                    className="
+                      group relative w-full overflow-hidden rounded-xl
+                      px-8 py-3.5 font-semibold text-white
+                      shadow-lg transition-all duration-300
+                      hover:shadow-xl hover:scale-[1.02]
+                      active:scale-[0.98]
+                      animate-in fade-in-0 zoom-in-95 duration-500
+                    "
+                    style={{
+                      backgroundColor: '#4dd06a',
+                      boxShadow: '0 10px 25px -5px rgba(77, 208, 106, 0.3)',
+                    }}
+                  >
+                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                    <span className="relative flex items-center justify-center gap-2">
+                      ✅ Descargar Ahora
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Personalizar y Descargar CTA */}
-            {design.is_editable && design.editor_type && (
+            {hasEditor && (
               <Link
-                      href={`/edit/${design.slug || design.id}`}
-                      onClick={() =>
-                        trackEvent('editor_open', {
-                          item_id: design.id,
-                          item_name: design.title || 'Untitled Design',
-                          category: design.category || 'general',
-                          editor_type: design.editor_type,
-                          source_page: 'design_page',
-                        })
-                      }
-                    >
+                href={`/edit/${design.slug || design.id}`}
+                onClick={() =>
+                  trackEvent('editor_open', {
+                    item_id: design.id,
+                    item_name: design.title || 'Untitled Design',
+                    category: design.category || 'general',
+                    editor_type: design.editor_type,
+                    source_page: 'design_page',
+                  })
+                }
+              >
                 <Button
                   size="lg"
                   className="gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] transition-all text-base font-bold px-6"
@@ -260,15 +273,15 @@ const executeDownload = useCallback(() => {
 
 // ── Helper: extract drive/mega links from content ───────────────
 function extractDriveLink(content: string): string | null {
-  const driveRegex = /https?:\/\/(?:drive\.google\.com|docs\.google\.com)\/[^\s<>"]+/i
+  const driveRegex = /https?:\/\/(?:drive\.google\.com|docs\.google\.com)\/[^\s<>\"]+/i
   const driveMatch = content.match(driveRegex)
   if (driveMatch) return driveMatch[0]
 
-  const megaRegex = /https?:\/\/mega\.nz\/[^\s<>"]+/i
+  const megaRegex = /https?:\/\/mega\.nz\/[^\s<>\"]+/i
   const megaMatch = content.match(megaRegex)
   if (megaMatch) return megaMatch[0]
 
-  const dropboxRegex = /https?:\/\/(?:www\.)?dropbox\.com\/[^\s<>"]+/i
+  const dropboxRegex = /https?:\/\/(?:www\.)?dropbox\.com\/[^\s<>\"]+/i
   const dropboxMatch = content.match(dropboxRegex)
   if (dropboxMatch) return dropboxMatch[0]
 
