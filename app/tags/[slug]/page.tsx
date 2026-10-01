@@ -4,26 +4,27 @@ import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import {
   DESIGN_CARD_FIELDS,
-  getDesignsByTag,
   getPopularCategories,
-  getAllTags,
   getRelatedTags,
   getTaxonomyBySlug,
 } from '@/lib/data'
+import {
+  getAllAssetTags,
+  getAssetTagNameBySlug,
+  getDesignsByNormalizedTag,
+} from '@/lib/tag-resolver'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { Tag } from 'lucide-react'
 import { slugify } from '@/lib/utils'
 import { RichText } from '@/components/rich-text'
 import type { DesignCard } from '@/lib/types'
 
-// ISR: Cachear en la CDN por 24 horas
 export const revalidate = 86400
 
 /**
- * Los formatos se quitaron correctamente de `tags` durante la limpieza de datos.
- * Sin embargo, algunas URLs históricas (especialmente /tags/png/) siguen teniendo
- * enlaces internos, señales SEO y taxonomías. Para no romperlas, cuando una de
- * estas rutas ya no existe como tag semántico la resolvemos desde technical_type.
+ * Formats were intentionally removed from tags during data cleanup. Historical
+ * routes such as /tags/png/ still have internal links and SEO signals, so when
+ * a semantic tag does not exist we resolve those routes from technical_type.
  */
 const LEGACY_FORMAT_TAGS: Record<string, string[]> = {
   png: ['png'],
@@ -70,13 +71,9 @@ async function getDesignsByLegacyFormat(
   return (data || []) as DesignCard[]
 }
 
-/**
- * Pre-genera dinámicamente las páginas de etiquetas conocidas
- * durante el build para eliminar ejecuciones serverless en caliente.
- */
 export async function generateStaticParams() {
   try {
-    const tags = await getAllTags()
+    const tags = await getAllAssetTags()
     if (!tags || !Array.isArray(tags)) return []
 
     return tags.map((tag: string) => ({
@@ -92,7 +89,6 @@ interface TagPageProps {
   params: Promise<{ slug: string }>
 }
 
-// Helper para formatear nombres de etiquetas en fallbacks
 function formatDisplayName(slug: string): string {
   const decoded = decodeURIComponent(slug)
   if (decoded === 'dia-del-amor-y-la-amistad') return 'Amor y Amistad'
@@ -107,9 +103,11 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
   const { slug } = await params
   const decodedTag = decodeURIComponent(slug)
   const cleanSlug = slugify(decodedTag)
-  const displayName = formatDisplayName(decodedTag)
-  const taxonomy = await getTaxonomyBySlug(cleanSlug, 'tag')
-
+  const [taxonomy, storedTagName] = await Promise.all([
+    getTaxonomyBySlug(cleanSlug, 'tag'),
+    getAssetTagNameBySlug(cleanSlug),
+  ])
+  const displayName = storedTagName || formatDisplayName(decodedTag)
   const canonicalUrl = `https://disenosgratis.com/tags/${cleanSlug}`
 
   return {
@@ -127,26 +125,24 @@ export default async function TagPage({ params }: TagPageProps) {
   const { slug } = await params
   const decodedTag = decodeURIComponent(slug)
   const cleanSlug = slugify(decodedTag)
-  const displayName = formatDisplayName(decodedTag)
 
-  // Primero respetamos el modelo semántico actual de tags.
-  // Si la ruta corresponde a un formato legacy y ya no hay tags con ese nombre,
-  // hacemos fallback a technical_type para conservar la URL histórica.
-  const [semanticDesigns, popularCategories, relatedTags, taxonomy] = await Promise.all([
-    getDesignsByTag(decodedTag, 100),
+  // Resolve semantic tags by their normalized URL slug instead of guessing the
+  // exact stored capitalization/accents. This makes new tags such as "Niñas",
+  // "K-Pop" and "Guerreras K-Pop" work automatically.
+  const semantic = await getDesignsByNormalizedTag(cleanSlug, 100)
+  const displayName = semantic.tagName || formatDisplayName(decodedTag)
+
+  const [popularCategories, relatedTags, taxonomy] = await Promise.all([
     getPopularCategories(6),
-    getRelatedTags(decodedTag, 8),
+    getRelatedTags(semantic.tagName || decodedTag, 8),
     getTaxonomyBySlug(cleanSlug, 'tag'),
   ])
 
   const taggedDesigns =
-    semanticDesigns.length > 0
-      ? semanticDesigns
+    semantic.designs.length > 0
+      ? semantic.designs
       : await getDesignsByLegacyFormat(cleanSlug, 100)
 
-  // SANITIZACIÓN ANTI-SOFT-404:
-  // Solo devolvemos 404 cuando la URL no tiene recursos ni como tag semántico
-  // ni como formato legacy respaldado por technical_type.
   if (!taggedDesigns || taggedDesigns.length === 0) {
     notFound()
   }
@@ -189,7 +185,6 @@ export default async function TagPage({ params }: TagPageProps) {
       <div className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Main Content */}
             <main className="lg:col-span-3 min-w-0">
               <p className="mb-6 text-sm text-muted-foreground">
                 Mostrando {taggedDesigns.length}{' '}
@@ -206,7 +201,6 @@ export default async function TagPage({ params }: TagPageProps) {
               )}
             </main>
 
-            {/* Sidebar */}
             <aside className="hidden lg:block">
               <StickySidebar
                 popularCategories={popularCategories}
