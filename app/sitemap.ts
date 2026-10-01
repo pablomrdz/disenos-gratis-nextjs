@@ -1,12 +1,12 @@
 import { MetadataRoute } from 'next'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import { ALLOWED_SLUGS, getAllTags, getPrimaryCategory } from '@/lib/data'
+import { ALLOWED_SLUGS, getPrimaryCategory } from '@/lib/data'
+import { getAllAssetTags } from '@/lib/tag-resolver'
 import { slugify } from '@/lib/utils'
 
 const BASE_URL = 'https://disenosgratis.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    // ── Static routes ──────────────────────────────────────────────
     const staticRoutes: MetadataRoute.Sitemap = [
         {
             url: BASE_URL,
@@ -76,7 +76,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ]
 
-    // ── Category routes (from ALLOWED_SLUGS, excluding "blog") ────
     const categoryRoutes: MetadataRoute.Sitemap = ALLOWED_SLUGS
         .filter((slug) => slug !== 'blog')
         .map((slug) => ({
@@ -86,14 +85,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.9,
         }))
 
-    // ── Current semantic tag routes ────────────────────────────────
-    // getAllTags() reads the cleaned tags[] column, so these URLs are
-    // backed by at least one asset. /tags/png is intentionally kept as
-    // a legacy format landing resolved from technical_type.
     let tagRoutes: MetadataRoute.Sitemap = []
 
     try {
-        const tags = await getAllTags()
+        // Keep sitemap and navigation aligned: only asset-backed tags are
+        // published as semantic tag URLs. /tags/png remains a legacy format
+        // landing resolved from technical_type.
+        const tags = await getAllAssetTags()
         const tagSlugs = new Set(tags.map((tag) => slugify(tag)))
         tagSlugs.add('png')
 
@@ -107,7 +105,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error('[Sitemap] Unexpected error fetching tags:', err)
     }
 
-    // ── Dynamic asset + blog routes from Supabase ─────────────────
     let designRoutes: MetadataRoute.Sitemap = []
     let blogRoutes: MetadataRoute.Sitemap = []
 
