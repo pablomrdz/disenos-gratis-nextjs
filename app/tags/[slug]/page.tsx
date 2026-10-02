@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import {
@@ -126,9 +126,15 @@ export default async function TagPage({ params }: TagPageProps) {
   const decodedTag = decodeURIComponent(slug)
   const cleanSlug = slugify(decodedTag)
 
+  // Keep a single canonical URL for every tag. Historical links may contain
+  // uppercase letters, spaces, accents, or encoded characters; normalize them
+  // before resolving the tag so they cannot create parallel or malformed paths.
+  if (decodedTag !== cleanSlug) {
+    permanentRedirect(`/tags/${cleanSlug}/`)
+  }
+
   // Resolve semantic tags by their normalized URL slug instead of guessing the
-  // exact stored capitalization/accents. This makes new tags such as "Niñas",
-  // "K-Pop" and "Guerreras K-Pop" work automatically.
+  // exact stored capitalization/accents.
   const semantic = await getDesignsByNormalizedTag(cleanSlug, 100)
   const displayName = semantic.tagName || formatDisplayName(decodedTag)
 
