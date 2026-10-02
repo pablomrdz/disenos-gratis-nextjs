@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { slugify } from '@/lib/utils'
 
 export function LegacyQueryHandler() {
   const searchParams = useSearchParams()
@@ -12,9 +13,9 @@ export function LegacyQueryHandler() {
     const category = searchParams.get('category')
 
     if (tag) {
-      router.replace(`/tags/${encodeURIComponent(tag)}`)
+      router.replace(`/tags/${slugify(tag)}/`)
     } else if (category && category !== 'all') {
-      router.replace(`/${category}`)
+      router.replace(`/${slugify(category)}/`)
     }
   }, [searchParams, router])
 
