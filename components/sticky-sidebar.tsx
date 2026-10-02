@@ -55,7 +55,7 @@ export function StickySidebar({ popularCategories, tags, className }: StickySide
                         {tags.map((tag) => (
                             <Link
                                 key={tag}
-                                href={`/tags/${encodeURIComponent(tag)}`}
+                                href={`/tags/${slugify(tag)}/`}
                                 className="group"
                             >
                                 <Badge
