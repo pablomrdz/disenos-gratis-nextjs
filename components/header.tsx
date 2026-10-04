@@ -19,7 +19,7 @@ const megaMenuCategories = [
       },
       { 
         name: 'Sublimación', 
-        href: '/sublimacion', 
+        href: '/sublimacion/', 
         description: 'Plantillas editables para tazas de 11oz, playeras, termos y cojines.' 
       },
 {
@@ -49,7 +49,7 @@ const megaMenuCategories = [
       },
       { 
         name: 'Imágenes PNG sin Fondo', 
-        href: '/tags/png', 
+        href: '/tags/png/', 
         description: 'Recursos transparentes en alta resolución listos para ensamblar tu arte.' 
       },
       { 
@@ -84,7 +84,7 @@ const megaMenuCategories = [
     items: [
       { 
         name: 'Halloween', 
-        href: '/tags/halloween', 
+        href: '/tags/halloween/', 
         description: 'Diseños de brujas, calaveras, personajes y recursos para Halloween.' 
       },
       { 
