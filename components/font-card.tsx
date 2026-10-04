@@ -102,7 +102,7 @@ export function FontCard({ font }: FontCardProps) {
           </Link>
           <div className="mt-1">
             <Link
-              href={`/${slugify(mainCategory)}`}
+              href={`/${slugify(mainCategory)}/`}
               className="relative z-20 truncate text-[9px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
               onClick={(e) => e.stopPropagation()}
             >
