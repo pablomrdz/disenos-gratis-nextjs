@@ -6,70 +6,75 @@ import { slugify } from '@/lib/utils'
 
 const BASE_URL = 'https://disenosgratis.com'
 
+function canonicalUrl(path: string): string {
+    const normalizedPath = path.replace(/^\/+|\/+$/g, '')
+    return normalizedPath ? `${BASE_URL}/${normalizedPath}/` : `${BASE_URL}/`
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes: MetadataRoute.Sitemap = [
         {
-            url: BASE_URL,
+            url: canonicalUrl(''),
             lastModified: new Date(),
             changeFrequency: 'daily',
             priority: 1,
         },
         {
-            url: `${BASE_URL}/designs`,
+            url: canonicalUrl('designs'),
             lastModified: new Date(),
             changeFrequency: 'daily',
             priority: 0.9,
         },
         {
-            url: `${BASE_URL}/blog`,
+            url: canonicalUrl('blog'),
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
-            url: `${BASE_URL}/tags`,
+            url: canonicalUrl('tags'),
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.8,
         },
         {
-            url: `${BASE_URL}/about`,
+            url: canonicalUrl('about'),
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.5,
         },
         {
-            url: `${BASE_URL}/contact`,
+            url: canonicalUrl('contact'),
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.5,
         },
         {
-            url: `${BASE_URL}/privacy`,
+            url: canonicalUrl('privacy'),
             lastModified: new Date(),
             changeFrequency: 'yearly',
             priority: 0.3,
         },
         {
-            url: `${BASE_URL}/terms`,
+            url: canonicalUrl('terms'),
             lastModified: new Date(),
             changeFrequency: 'yearly',
             priority: 0.3,
         },
         {
-            url: `${BASE_URL}/en/dtf/`,
+            url: canonicalUrl('en/dtf'),
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
-            url: `${BASE_URL}/en/tools/dtf-press-settings/`,
+            url: canonicalUrl('en/tools/dtf-press-settings'),
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.9,
         },
         {
-            url: `${BASE_URL}/en/tools/dtf-size-guide/`,
+            url: canonicalUrl('en/tools/dtf-size-guide'),
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.9,
@@ -79,7 +84,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const categoryRoutes: MetadataRoute.Sitemap = ALLOWED_SLUGS
         .filter((slug) => slug !== 'blog')
         .map((slug) => ({
-            url: `${BASE_URL}/${slug}`,
+            url: canonicalUrl(slug),
             lastModified: new Date(),
             changeFrequency: 'weekly' as const,
             priority: 0.9,
@@ -96,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         tagSlugs.add('png')
 
         tagRoutes = Array.from(tagSlugs).map((slug) => ({
-            url: `${BASE_URL}/tags/${slug}`,
+            url: canonicalUrl(`tags/${slug}`),
             lastModified: new Date(),
             changeFrequency: 'weekly' as const,
             priority: slug === 'png' ? 0.8 : 0.7,
@@ -127,7 +132,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             designRoutes = designs.map((design) => {
                 const primaryCategory = getPrimaryCategory(design.category)
                 return {
-                    url: `${BASE_URL}/${primaryCategory}/${design.slug}`,
+                    url: canonicalUrl(`${primaryCategory}/${design.slug}`),
                     lastModified: new Date(design.updated_at || new Date()),
                     changeFrequency: 'weekly' as const,
                     priority: 0.8,
@@ -149,7 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         if (posts && posts.length > 0) {
             const blogPosts = posts as Array<{ slug: string; updated_at: string | null }>
             blogRoutes = blogPosts.map((post) => ({
-                url: `${BASE_URL}/blog/${post.slug}`,
+                url: canonicalUrl(`blog/${post.slug}`),
                 lastModified: new Date(post.updated_at || new Date()),
                 changeFrequency: 'monthly' as const,
                 priority: 0.7,

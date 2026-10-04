@@ -107,7 +107,7 @@ export function DesignCard({ design, variant = 'asset' }: DesignCardProps) {
                 </span>
               ) : (
                 <Link
-                  href={`/${slugify(mainCategory || 'general')}`}
+                  href={`/${slugify(mainCategory || 'general')}/`}
                   className="relative z-20 truncate text-[8px] font-uppercase tracking-wider text-muted-foreground uppercase bg-muted/50 px-1.5 py-0.5 rounded transition-colors hover:bg-primary/10 hover:text-primary min-w-0 inline-block"
                   onClick={(e) => e.stopPropagation()}
                 >

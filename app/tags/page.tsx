@@ -74,7 +74,7 @@ export default async function TagsPage() {
             {formattedTags.map(({ original, display, slug }) => (
               <div key={original} className="break-inside-avoid mb-3 sm:mb-4">
                 <Link
-                  href={`/tags/${slug}`}
+                  href={`/tags/${slug}/`}
                   className="group flex min-h-14 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white p-3 transition-all hover:border-primary hover:shadow-md sm:p-4"
                 >
                   <span className="text-sm font-semibold text-slate-700 capitalize group-hover:text-primary">

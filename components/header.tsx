@@ -19,7 +19,7 @@ const megaMenuCategories = [
       },
       { 
         name: 'Sublimación', 
-        href: '/sublimacion', 
+        href: '/sublimacion/', 
         description: 'Plantillas editables para tazas de 11oz, playeras, termos y cojines.' 
       },
 {
@@ -49,7 +49,7 @@ const megaMenuCategories = [
       },
       { 
         name: 'Imágenes PNG sin Fondo', 
-        href: '/tags/png', 
+        href: '/tags/png/', 
         description: 'Recursos transparentes en alta resolución listos para ensamblar tu arte.' 
       },
       { 
@@ -84,7 +84,7 @@ const megaMenuCategories = [
     items: [
       { 
         name: 'Halloween', 
-        href: '/tags/halloween', 
+        href: '/tags/halloween/', 
         description: 'Diseños de brujas, calaveras, personajes y recursos para Halloween.' 
       },
       { 
@@ -190,7 +190,7 @@ export function Header() {
                 {/* Footer link for Mega Menu */}
                 <div className="mt-6 border-t border-slate-100 pt-4 text-center">
                   <Link
-                    href="/tags"
+                    href="/tags/"
                     className="text-xs font-bold text-primary hover:underline"
                   >
                     Explorar todas las etiquetas y temas →
@@ -201,7 +201,7 @@ export function Header() {
 
             <li>
               <Link
-                href="/blog"
+                href="/blog/"
                 className="text-sm font-medium text-foreground transition-colors hover:text-black"
               >
                 Blog
@@ -324,14 +324,14 @@ export function Header() {
 
             <div className="space-y-1 pt-6 border-t border-gray-100 mt-4">
               <Link
-                href="/blog"
+                href="/blog/"
                 className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
               </Link>
               <Link
-                href="/tags"
+                href="/tags/"
                 className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
                 onClick={() => setMobileMenuOpen(false)}
               >

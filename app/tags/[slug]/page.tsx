@@ -108,7 +108,7 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
     getAssetTagNameBySlug(cleanSlug),
   ])
   const displayName = storedTagName || formatDisplayName(decodedTag)
-  const canonicalUrl = `https://disenosgratis.com/tags/${cleanSlug}`
+  const canonicalUrl = `https://disenosgratis.com/tags/${cleanSlug}/`
 
   return {
     title: taxonomy?.seo_title || `${displayName} - Plantillas y Vectores Gratis`,

@@ -9,7 +9,7 @@ const footerLinks = {
   ],
   categories: [
     { name: 'DTF', href: '/dtf' },
-    { name: 'Sublimación', href: '/sublimacion' },
+    { name: 'Sublimación', href: '/sublimacion/' },
     { name: 'Vectores', href: '/vectores' },
     { name: 'Corte Láser', href: '/corte-laser' },
     { name: 'Vinil Textil', href: '/vinil-textil' },

@@ -24,7 +24,7 @@ const topCategories = (await getTopCategories(12))
             Explorar Categorías
           </h2>
           <Link
-            href="/designs"
+            href="/designs/"
             className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
           >
             Ver todo
@@ -36,7 +36,7 @@ const topCategories = (await getTopCategories(12))
           {topCategories.map((item) => (
             <Link
               key={item.category}
-              href={`/${slugify(item.category)}`}
+              href={`/${slugify(item.category)}/`}
               className="group flex flex-none items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-border/50 bg-card hover:bg-accent transition-all shadow-sm hover:shadow-md"
             >
               <div className="text-muted-foreground group-hover:text-primary transition-colors">
