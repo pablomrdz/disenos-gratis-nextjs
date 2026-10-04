@@ -403,7 +403,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               <Fragment key={index}>
                 <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
                 <Link
-                  href={index === 0 ? `/${slugify(pathSegment)}` : `/${categoryPath.slice(0, index + 1).map(s => slugify(s)).join('/')}`}
+                  href={index === 0 ? `/${slugify(pathSegment)}/` : `/${categoryPath.slice(0, index + 1).map(s => slugify(s)).join('/')}/`}
                   className="capitalize text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {pathSegment.replace(/-/g, ' ')}
@@ -427,7 +427,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
               isBlog && "max-w-3xl mx-auto lg:mx-0"
             )}>
               <Link
-                href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`}
+                href={`/${slugify(categoryPath[0] || primaryCategoryClean)}/`}
                 className={cn(
                   "inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground",
                   isBlog ? "mb-6" : "mb-3"
@@ -451,7 +451,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                   "flex flex-wrap items-center gap-3",
                   isBlog ? "mt-4" : "mt-2.5"
                 )}>
-                  <Link href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`} className="transition-opacity hover:opacity-80">
+                  <Link href={`/${slugify(categoryPath[0] || primaryCategoryClean)}/`} className="transition-opacity hover:opacity-80">
                     <Badge variant="outline" className="bg-transparent capitalize cursor-pointer">
                       {(categoryPath[0] || primaryCategoryClean).replace('-', ' ')}
                     </Badge>
@@ -613,7 +613,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-foreground">También te puede gustar</h2>
                     <Link
-                      href={`/${slugify(categoryPath[0] || primaryCategoryClean)}`}
+                      href={`/${slugify(categoryPath[0] || primaryCategoryClean)}/`}
                       className="text-sm font-medium text-primary hover:underline"
                     >
                       Ver todos
