@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
     const taxonomy = await getTaxonomyBySlug(cleanSlug, 'category')
 
     const categoryName = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-    const canonicalUrl = `https://disenosgratis.com/${cleanSlug}`
+    const canonicalUrl = `https://disenosgratis.com/${cleanSlug}/`
     
     return {
       title: taxonomy?.seo_title || `${categoryName} - Categoría | Diseños Gratis`,
@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
 
   // Ensure canonical URL uses clean slugified segments (no accents)
   const cleanSegments = segments.map(s => slugify(decodeURIComponent(s)))
-  const canonicalUrl = `https://disenosgratis.com/${cleanSegments.join('/')}`
+  const canonicalUrl = `https://disenosgratis.com/${cleanSegments.join('/')}/`
   
   const title = design.title || 'Untitled Design'
   const rawDescription = design.description || 'Descarga gratis este recurso gráfico de alta calidad'
