@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     title: `${title} | Blog - Diseños Gratis`,
     description: rawDescription,
     alternates: {
-      canonical: `https://disenosgratis.com/blog/${slug}`,
+      canonical: `https://disenosgratis.com/blog/${slug}/`,
     },
     openGraph: {
       title,
@@ -104,7 +104,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               Inicio
             </Link>
             <span className="text-muted-foreground/50">/</span>
-            <Link href="/blog" className="text-muted-foreground hover:text-foreground">
+            <Link href="/blog/" className="text-muted-foreground hover:text-foreground">
               Blog
             </Link>
             <span className="text-muted-foreground/50">/</span>
@@ -120,7 +120,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Main Column */}
             <div className="col-span-12 lg:col-span-8 xl:col-span-9 max-w-3xl mx-auto lg:mx-0">
               <Link
-                href="/blog"
+                href="/blog/"
                 className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4" />
