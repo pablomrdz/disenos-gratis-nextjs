@@ -1,6 +1,49 @@
 export type DesignType = 'internal' | 'canva' | 'capcut' | 'font'
 export type ContentType = 'asset' | 'blog' | 'tool'
 
+
+export interface MockupPrintArea {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+export interface MockupFaq {
+  question: string
+  answer: string
+}
+
+export interface MockupSeoContent {
+  summary: string
+  steps: string[]
+  faqs: MockupFaq[]
+}
+
+export interface MockupTemplate {
+  id: string
+  slug: string
+  h1: string
+  title: string
+  meta_title: string
+  meta_description: string
+  intro: string
+  background_url: string
+  background_alt: string
+  width: number
+  height: number
+  print_area: MockupPrintArea
+  aspect_ratio: string
+  format_label: string
+  primary_keyword: string
+  secondary_keywords: string[]
+  seo_content: MockupSeoContent
+  is_active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
 export interface EditorTextFieldConfig {
   id: string
   label: string
@@ -146,6 +189,11 @@ export interface Database {
         Row: Design
         Insert: Omit<Design, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Design, 'id'>>
+      }
+      mockup_templates: {
+        Row: MockupTemplate
+        Insert: Omit<MockupTemplate, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<MockupTemplate, 'id'>>
       }
       tutorials: {
         Row: Tutorial
