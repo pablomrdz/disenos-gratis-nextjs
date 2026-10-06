@@ -82,6 +82,8 @@ export function MockupEditor({ preset }: MockupEditorProps) {
       top: preset.printArea.top,
       width: preset.printArea.width,
       height: preset.printArea.height,
+      originX: 'left',
+      originY: 'top',
       fill: 'rgba(37, 99, 235, 0.08)',
       stroke: '#2563eb',
       strokeWidth: 4,
