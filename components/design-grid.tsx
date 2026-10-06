@@ -15,7 +15,7 @@ interface DesignGridProps {
 export function DesignGrid({
   designs,
   showAds = false,
-  adFrequency = 8,
+  adFrequency = 9,
   columns = 4
 }: DesignGridProps) {
   const fontCount = designs.filter(d => {

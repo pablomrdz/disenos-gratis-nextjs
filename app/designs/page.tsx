@@ -90,10 +90,7 @@ export default async function DesignsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Design Grid */}
             <div className="lg:col-span-3 min-w-0">
-              <div className="mb-4 text-sm text-muted-foreground flex items-center justify-between">
-                <span>Mostrando {designs.length} diseños</span>
-              </div>
-              <DesignGrid designs={designs} showAds={true} adFrequency={8} columns={3} />
+              <DesignGrid designs={designs} showAds={true} adFrequency={9} columns={3} />
             </div>
 
             {/* Sidebar */}
