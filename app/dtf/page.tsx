@@ -57,21 +57,19 @@ export default async function DtfPage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="min-h-[250px] w-full overflow-hidden py-5">
-          <p className="mb-2 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
-            Anuncio
-          </p>
-          <AdUnit
-            slot="9549519747"
-            format="auto"
-            style={{ display: 'block', width: '100%' }}
-            className="w-full"
-          />
-        </div>
-
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           <div className="min-w-0 lg:col-span-3">
+            <div className="mb-8 flex min-h-[250px] w-full justify-center overflow-hidden">
+              <AdUnit
+                slot="1352493197"
+                format="fluid"
+                layoutKey="-fb+5w+4e-db+86"
+                style={{ display: 'block' }}
+                className="w-full"
+              />
+            </div>
+
             <section className="py-6 sm:py-8">
               {designs.length > 0 ? (
                 <DesignGrid designs={designs} columns={4} />

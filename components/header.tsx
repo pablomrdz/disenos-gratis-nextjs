@@ -225,7 +225,7 @@ export function Header() {
             <li>
               <Link
                 href="/plantillas/"
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-blue-800 px-4 py-1.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.03] active:scale-[0.97]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Edita y Descarga Online
@@ -360,7 +360,7 @@ export function Header() {
               </Link>
               <Link
                 href="/plantillas/"
-                className="flex items-center gap-2 rounded-xl mx-3 mt-2 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-primary to-blue-800 shadow-md"
+                className="flex items-center gap-2 rounded-xl mx-3 mt-2 px-4 py-3 text-sm font-bold text-primary-foreground bg-primary shadow-md shadow-primary/20 transition-all duration-200 hover:bg-primary/90"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Sparkles className="h-4 w-4" />
