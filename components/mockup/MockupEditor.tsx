@@ -23,7 +23,6 @@ export function MockupEditor({ preset }: MockupEditorProps) {
   const [isReady, setIsReady] = useState(false)
   const [hasDesign, setHasDesign] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
-  const [canExport, setCanExport] = useState(true)
 
   const centerDesign = useCallback(() => {
     const design = designRef.current
@@ -96,17 +95,13 @@ export function MockupEditor({ preset }: MockupEditorProps) {
 
     const loadBackground = async () => {
       try {
-        // Hetzner must permit CORS for this path to keep canvas exportable.
         let background: fabric.FabricImage
         try {
           background = await fabric.FabricImage.fromURL(preset.background_url, {
             crossOrigin: 'anonymous',
           })
-          if (!cancelled) setCanExport(true)
         } catch {
-          // Preserve an interactive preview even if bucket CORS is pending.
           background = await fabric.FabricImage.fromURL(preset.background_url)
-          if (!cancelled) setCanExport(false)
         }
 
         if (cancelled) return
@@ -238,7 +233,7 @@ export function MockupEditor({ preset }: MockupEditorProps) {
       link.click()
     } catch {
       setError(
-        'El fondo no permite la exportación desde el navegador. Configura CORS en Hetzner para este origen y vuelve a intentarlo.',
+        'No pudimos preparar la descarga. Actualiza la página e inténtalo de nuevo.',
       )
     } finally {
       if (guide) guide.visible = true
@@ -276,11 +271,6 @@ export function MockupEditor({ preset }: MockupEditorProps) {
             </Button>
           </div>
 
-          {!canExport && (
-            <p className="mt-4 text-xs leading-5 text-amber-700">
-              La vista previa está lista; el bucket debe permitir CORS para descargar el fondo incluido.
-            </p>
-          )}
           {error && <p className="mt-4 text-sm text-destructive" role="alert">{error}</p>}
         </section>
 
