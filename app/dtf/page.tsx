@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { DesignGrid } from '@/components/design-grid'
 import AdUnit from '@/components/AdUnit'
 import { RichText } from '@/components/rich-text'
-import { getDesigns, getTaxonomyBySlug } from '@/lib/data'
+import { StickySidebar } from '@/components/sticky-sidebar'
+import { getAllTags, getDesigns, getPopularCategories, getTaxonomyBySlug } from '@/lib/data'
 
 export const revalidate = 86400
 
@@ -30,9 +31,11 @@ export const metadata: Metadata = {
 }
 
 export default async function DtfPage() {
-  const [designs, taxonomy] = await Promise.all([
+  const [designs, taxonomy, popularCategories, allTags] = await Promise.all([
     getDesigns({ category: 'dtf', contentType: 'asset', limit: 48 }),
     getTaxonomyBySlug('dtf', 'category'),
+    getPopularCategories(6),
+    getAllTags(),
   ])
 
   return (
@@ -67,41 +70,49 @@ export default async function DtfPage() {
           />
         </div>
 
-        <section className="py-6 sm:py-8">
-          {designs.length > 0 ? (
-            <DesignGrid designs={designs} columns={4} />
-          ) : (
-            <div className="rounded-2xl border border-dashed border-border p-12 text-center">
-              <h2 className="text-lg font-medium">No hay diseños DTF disponibles por el momento</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Explora las herramientas DTF mientras añadimos nuevos recursos.
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+          <div className="min-w-0 lg:col-span-3">
+            <section className="py-6 sm:py-8">
+              {designs.length > 0 ? (
+                <DesignGrid designs={designs} columns={4} />
+              ) : (
+                <div className="rounded-2xl border border-dashed border-border p-12 text-center">
+                  <h2 className="text-lg font-medium">No hay diseños DTF disponibles por el momento</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Explora las herramientas DTF mientras añadimos nuevos recursos.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {taxonomy?.content_bottom && (
+              <section className="mb-8 rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
+                <div className="prose prose-slate max-w-none">
+                  <RichText content={taxonomy.content_bottom} />
+                </div>
+              </section>
+            )}
+
+            <section className="mb-10 rounded-2xl border border-primary/20 bg-primary/5 p-6 sm:p-8">
+              <h2 className="text-2xl font-bold tracking-tight">Herramientas DTF gratuitas</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+                También puedes consultar nuestras nuevas herramientas para configuración de prensa y tamaños de transferencia DTF.
               </p>
-            </div>
-          )}
-        </section>
-
-        {taxonomy?.content_bottom && (
-          <section className="mb-8 rounded-2xl border border-border/60 bg-card p-6 sm:p-8">
-            <div className="prose prose-slate max-w-none">
-              <RichText content={taxonomy.content_bottom} />
-            </div>
-          </section>
-        )}
-
-        <section className="mb-10 rounded-2xl border border-primary/20 bg-primary/5 p-6 sm:p-8">
-          <h2 className="text-2xl font-bold tracking-tight">Herramientas DTF gratuitas</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-            También puedes consultar nuestras nuevas herramientas para configuración de prensa y tamaños de transferencia DTF.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link href="/en/tools/dtf-press-settings/" className="font-semibold text-primary hover:underline">
-              DTF Heat Press Settings →
-            </Link>
-            <Link href="/en/tools/dtf-size-guide/" className="font-semibold text-primary hover:underline">
-              DTF Size Guide →
-            </Link>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link href="/en/tools/dtf-press-settings/" className="font-semibold text-primary hover:underline">
+                  DTF Heat Press Settings →
+                </Link>
+                <Link href="/en/tools/dtf-size-guide/" className="font-semibold text-primary hover:underline">
+                  DTF Size Guide →
+                </Link>
+              </div>
+            </section>
           </div>
-        </section>
+
+          <aside className="hidden lg:block">
+            <StickySidebar popularCategories={popularCategories} tags={allTags.slice(0, 20)} />
+          </aside>
+        </div>
       </div>
     </>
   )
