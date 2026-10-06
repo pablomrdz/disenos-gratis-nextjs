@@ -3,7 +3,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import AdUnit from '@/components/AdUnit'
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import { StickySidebar } from '@/components/sticky-sidebar'
 import { getActiveMockupTemplates } from '@/lib/mockup-data'
+import { getAllTags, getPopularCategories } from '@/lib/data'
 
 export const revalidate = 604800
 
@@ -14,7 +16,11 @@ export const metadata: Metadata = {
 }
 
 export default async function MockupsPage() {
-  const mockups = await getActiveMockupTemplates()
+  const [mockups, popularCategories, allTags] = await Promise.all([
+    getActiveMockupTemplates(),
+    getPopularCategories(6),
+    getAllTags(),
+  ])
 
   return (
     <main>
@@ -87,20 +93,8 @@ export default async function MockupsPage() {
             </section>
           </div>
 
-          <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-xl border bg-card p-5">
-              <h2 className="text-lg font-bold">Antes de crear tu mockup</h2>
-              <ul className="mt-3 space-y-3 text-sm leading-6 text-muted-foreground">
-                <li>Usa PNG con fondo transparente para un acabado más natural.</li>
-                <li>Verifica que tu diseño tenga buena resolución antes de imprimir.</li>
-                <li>La guía azul te ayuda a posicionar el arte y no aparece en la descarga.</li>
-              </ul>
-            </div>
-            <div className="rounded-xl border bg-muted/40 p-5">
-              <h2 className="text-lg font-bold">¿También necesitas diseños?</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">Encuentra archivos listos para personalizar e imprimir en playeras.</p>
-              <Link href="/dtf/" className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline">Explorar diseños DTF →</Link>
-            </div>
+          <aside className="hidden lg:block">
+            <StickySidebar popularCategories={popularCategories} tags={allTags.slice(0, 20)} />
           </aside>
         </div>
       </div>

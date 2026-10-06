@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import AdUnit from '@/components/AdUnit'
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import { DesignGrid } from '@/components/design-grid'
 import { MockupEditor } from '@/components/mockup/MockupEditor'
+import { getDesigns } from '@/lib/data'
 import { getMockupTemplateBySlug } from '@/lib/mockup-data'
 
 export const revalidate = 604800
@@ -38,6 +40,8 @@ export default async function MockupPage({ params }: MockupPageProps) {
   const mockup = await getMockupTemplateBySlug(slug)
 
   if (!mockup) notFound()
+
+  const relatedDesigns = await getDesigns({ category: 'dtf', contentType: 'asset', limit: 4 })
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -104,6 +108,15 @@ export default async function MockupPage({ params }: MockupPageProps) {
         </div>
 
         <div className="rounded-xl border bg-muted/30 p-6">
+          <h2 className="text-2xl font-bold">Consejos para que tu mockup se vea mejor</h2>
+          <ul className="mt-4 space-y-3 leading-7 text-muted-foreground">
+            <li>Usa un PNG con fondo transparente para que el diseño se integre mejor con la playera.</li>
+            <li>Revisa que el archivo tenga buena resolución antes de enviarlo a impresión.</li>
+            <li>La guía azul sirve para acomodar tu diseño y no aparece en la imagen que descargas.</li>
+          </ul>
+        </div>
+
+        <div className="rounded-xl border bg-muted/30 p-6">
           <h2 className="text-2xl font-bold">¿Para qué puedes usar este mockup?</h2>
           <p className="mt-3 leading-7 text-muted-foreground">
             Úsalo para presentar diseños DTF, logos, ilustraciones y prendas personalizadas antes de imprimirlas.
@@ -122,6 +135,19 @@ export default async function MockupPage({ params }: MockupPageProps) {
             ))}
           </div>
         </div>
+
+        {relatedDesigns.length > 0 && (
+          <section className="border-t pt-10" aria-labelledby="related-designs-heading">
+            <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 id="related-designs-heading" className="text-2xl font-bold">Diseños relacionados para personalizar</h2>
+                <p className="mt-2 text-muted-foreground">Encuentra recursos DTF que puedes probar en este mockup.</p>
+              </div>
+              <Link href="/dtf/" className="text-sm font-semibold text-primary hover:underline">Ver diseños DTF →</Link>
+            </div>
+            <DesignGrid designs={relatedDesigns} showAds={false} columns={4} />
+          </section>
+        )}
       </section>
     </main>
   )

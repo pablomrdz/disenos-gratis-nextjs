@@ -3,15 +3,18 @@ import { twMerge } from 'tailwind-merge'
 import React from 'react'
 import {
   Printer,
-  Scissors,
   Type,
   Box,
-  Palette,
-  Layout,
   Video,
-  Zap,
   FolderOpen,
-  Image as ImageIcon
+  Image as ImageIcon,
+  PanelsTopLeft,
+  ScanLine,
+  Shapes,
+  Shirt,
+  Spline,
+  Thermometer,
+  WandSparkles,
 } from 'lucide-react'
 
 export function cn(...inputs: ClassValue[]) {
@@ -45,14 +48,17 @@ export function decodeHtml(html: string) {
 export const getCategoryIcon = (slug: string, className = "h-8 w-8") => {
   const s = normalizeText(slug)
   if (s.includes('dtf') || s.includes('impresion')) return React.createElement(Printer, { className: `${className} text-blue-500` })
-  if (s.includes('vinil') || s.includes('corte')) return React.createElement(Scissors, { className: `${className} text-purple-500` })
+  if (s.includes('corte') || s.includes('laser')) return React.createElement(ScanLine, { className: `${className} text-rose-500` })
+  if (s.includes('vinil')) return React.createElement(Shirt, { className: `${className} text-purple-500` })
   if (s.includes('tipografia') || s.includes('fuente')) return React.createElement(Type, { className: `${className} text-amber-500` })
   if (s.includes('3d')) return React.createElement(Box, { className: `${className} text-indigo-500` })
-  if (s.includes('recurso') || s.includes('vector')) return React.createElement(Palette, { className: `${className} text-pink-500` })
-  if (s.includes('plantilla')) return React.createElement(Layout, { className: `${className} text-emerald-500` })
+  if (s.includes('vector')) return React.createElement(Spline, { className: `${className} text-pink-500` })
+  if (s.includes('recurso')) return React.createElement(Shapes, { className: `${className} text-pink-500` })
+  if (s.includes('plantilla')) return React.createElement(PanelsTopLeft, { className: `${className} text-emerald-500` })
   if (s.includes('blog') || s.includes('tutorial')) return React.createElement(Video, { className: `${className} text-red-500` })
-  if (s.includes('sublimacion')) return React.createElement(Zap, { className: `${className} text-orange-500` })
+  if (s.includes('sublimacion')) return React.createElement(Thermometer, { className: `${className} text-orange-500` })
   if (s.includes('fondo') || s.includes('textura')) return React.createElement(ImageIcon, { className: `${className} text-cyan-500` })
+  if (s.includes('mockup')) return React.createElement(WandSparkles, { className: `${className} text-sky-500` })
   return React.createElement(FolderOpen, { className: `${className} text-primary` })
 }
 
