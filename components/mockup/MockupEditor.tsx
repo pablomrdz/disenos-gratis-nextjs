@@ -4,13 +4,13 @@ import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import * as fabric from 'fabric'
 import { Download, ImagePlus, RotateCcw, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { MockupPreset } from './mockup-presets'
+import type { MockupTemplate } from '@/lib/types'
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp'])
 
 interface MockupEditorProps {
-  preset: MockupPreset
+  preset: MockupTemplate
 }
 
 export function MockupEditor({ preset }: MockupEditorProps) {
@@ -248,16 +248,7 @@ export function MockupEditor({ preset }: MockupEditorProps) {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-7 max-w-3xl">
-        <p className="text-sm font-semibold text-primary">Generador de mockups</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{preset.title}</h1>
-        <p className="mt-3 text-muted-foreground">
-          Sube tu diseño, ajústalo sobre la playera y descarga tu mockup en PNG. Tu archivo se procesa sólo en este navegador.
-        </p>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+    <section aria-label="Editor de mockup" className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
         <section className="h-fit rounded-xl border bg-card p-5 shadow-sm">
           <h2 className="font-semibold">Personaliza tu mockup</h2>
           <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-primary/40 bg-primary/5 px-4 py-7 text-center transition-colors hover:bg-primary/10">
@@ -306,6 +297,6 @@ export function MockupEditor({ preset }: MockupEditorProps) {
           </p>
         </section>
       </div>
-    </main>
+    </section>
   )
 }
