@@ -6,6 +6,7 @@ const footerLinks = {
     { name: 'Etiquetas y temas', href: '/tags' },
     { name: 'Blog', href: '/blog' },
     { name: 'Plantillas', href: '/plantillas' },
+    { name: 'Mockups', href: '/mockups/' },
   ],
   categories: [
     { name: 'DTF', href: '/dtf' },

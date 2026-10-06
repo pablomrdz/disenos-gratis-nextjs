@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, WandSparkles } from 'lucide-react'
 import { getTopCategories } from '@/lib/data'
 import { slugify, getCategoryIcon } from '@/lib/utils'
 
@@ -47,6 +47,15 @@ const topCategories = (await getTopCategories(12))
               </span>
             </Link>
           ))}
+          <Link
+            href="/mockups/"
+            className="group flex flex-none items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 shadow-sm transition-all hover:bg-primary/10 hover:shadow-md sm:px-4 sm:py-2"
+          >
+            <WandSparkles className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
+            <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary sm:text-sm">
+              Mockups
+            </span>
+          </Link>
         </div>
       </div>
     </section>

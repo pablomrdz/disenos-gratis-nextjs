@@ -5,6 +5,7 @@ import {
   Sparkles,
   Type,
   ImageIcon,
+  WandSparkles,
 } from 'lucide-react'
 
 const hubs = [
@@ -56,6 +57,25 @@ export function PrimaryHubsSection() {
             organizados por el tipo de proyecto que quieres crear.
           </p>
         </div>
+
+        <article className="mb-6 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-sky-50 to-background p-6 shadow-sm sm:flex sm:items-center sm:justify-between sm:gap-8">
+          <div className="max-w-2xl">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <WandSparkles className="h-5 w-5" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground">Crea mockups de playeras en línea</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Sube tu diseño, pruébalo sobre una playera con modelo y descarga una imagen PNG para tu catálogo o redes sociales.
+            </p>
+          </div>
+          <Link
+            href="/mockups/"
+            className="mt-5 inline-flex shrink-0 items-center gap-1 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:mt-0"
+          >
+            Crear un mockup
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </article>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {hubs.map((hub) => {

@@ -17,6 +17,11 @@ const megaMenuCategories = [
         href: '/dtf',
         description: 'Imágenes PNG y diseños DTF listos para imprimir en playeras y proyectos textiles.'
       },
+      {
+        name: 'Generador de mockups',
+        href: '/mockups/',
+        description: 'Prueba tu diseño sobre una playera con modelo y descarga el mockup en PNG.'
+      },
       { 
         name: 'Sublimación', 
         href: '/sublimacion/', 
@@ -201,6 +206,15 @@ export function Header() {
 
             <li>
               <Link
+                href="/mockups/"
+                className="text-sm font-medium text-foreground transition-colors hover:text-black"
+              >
+                Mockups
+              </Link>
+            </li>
+
+            <li>
+              <Link
                 href="/blog/"
                 className="text-sm font-medium text-foreground transition-colors hover:text-black"
               >
@@ -323,6 +337,13 @@ export function Header() {
             </div>
 
             <div className="space-y-1 pt-6 border-t border-gray-100 mt-4">
+              <Link
+                href="/mockups/"
+                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Mockups
+              </Link>
               <Link
                 href="/blog/"
                 className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"

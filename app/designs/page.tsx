@@ -5,7 +5,8 @@ import { DesignGrid } from '@/components/design-grid'
 import { StickySidebar } from '@/components/sticky-sidebar'
 import AdUnit from '@/components/AdUnit'
 import { getDesigns, getCategories, getPopularCategories, getAllTags } from '@/lib/data'
-import { cn } from '@/lib/utils'
+import { getCategoryIcon } from '@/lib/utils'
+import { WandSparkles } from 'lucide-react'
 import { LegacyQueryHandler } from './legacy-query-handler'
 
 // ISR: Cachear en CDN por 24 horas
@@ -26,11 +27,6 @@ export default async function DesignsPage() {
   ])
 
   // Filtros de categoría para las pills
-  const categoryFilters = [
-    { name: 'Todos', slug: 'all' },
-    ...categories,
-  ]
-
   return (
     <>
       {/* Manejador de redirecciones heredadas en el cliente sin romper SSG */}
@@ -48,31 +44,29 @@ export default async function DesignsPage() {
             Explora nuestra colección completa de plantillas y recursos
           </p>
 
-          {/* Category Filters (Pills) */}
+          {/* Category links: the same visual language as the home category explorer. */}
           <div className="mt-6">
-            <h3 className="mb-3 text-sm font-medium text-muted-foreground">Filtrar por categoría:</h3>
-            <div className="flex flex-wrap gap-2 pb-2">
-              {categoryFilters.map((cat) => {
-                const isActive = cat.slug === 'all'
-                return (
-                  <Link
-                    key={cat.slug}
-                    href={cat.slug === 'all' ? '/designs' : `/${cat.slug}`}
-                    scroll={false}
-                  >
-                    <div
-                      className={cn(
-                        "rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 border cursor-pointer select-none whitespace-nowrap",
-                        isActive
-                          ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                          : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                      )}
-                    >
-                      {cat.name}
-                    </div>
-                  </Link>
-                )
-              })}
+            <h2 className="mb-3 text-sm font-medium text-muted-foreground">Explora por categoría:</h2>
+            <div className="flex gap-2 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide sm:flex-wrap sm:justify-start sm:gap-3">
+              {categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/${cat.slug}/`}
+                  className="group flex flex-none items-center gap-1.5 rounded-full border border-border/50 bg-card px-3 py-1.5 shadow-sm transition-all hover:bg-accent hover:shadow-md sm:px-4 sm:py-2"
+                >
+                  <span className="text-muted-foreground transition-colors group-hover:text-primary">
+                    {getCategoryIcon(cat.name, 'h-3.5 w-3.5 sm:h-4 sm:w-4')}
+                  </span>
+                  <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary sm:text-sm">{cat.name}</span>
+                </Link>
+              ))}
+              <Link
+                href="/mockups/"
+                className="group flex flex-none items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 shadow-sm transition-all hover:bg-primary/10 hover:shadow-md sm:px-4 sm:py-2"
+              >
+                <WandSparkles className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
+                <span className="text-xs font-medium text-foreground transition-colors group-hover:text-primary sm:text-sm">Mockups</span>
+              </Link>
             </div>
           </div>
         </div>

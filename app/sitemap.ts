@@ -26,6 +26,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.9,
         },
         {
+            url: canonicalUrl('mockups'),
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
+        {
             url: canonicalUrl('blog'),
             lastModified: new Date(),
             changeFrequency: 'weekly',
@@ -112,9 +118,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     let designRoutes: MetadataRoute.Sitemap = []
     let blogRoutes: MetadataRoute.Sitemap = []
+    let mockupRoutes: MetadataRoute.Sitemap = []
 
     try {
         const supabase = createServerSupabaseClient()
+
+        const { data: mockups, error: mockupsError } = await supabase
+            .from('mockup_templates')
+            .select('slug, updated_at')
+            .eq('is_active', true)
+            .order('sort_order', { ascending: true })
+
+        if (mockupsError) {
+            console.error('[Sitemap] Error fetching mockups:', mockupsError.message)
+        }
+
+        if (mockups && mockups.length > 0) {
+            mockupRoutes = mockups.map((mockup) => ({
+                url: canonicalUrl(`mockups/${mockup.slug}`),
+                lastModified: new Date(mockup.updated_at || new Date()),
+                changeFrequency: 'monthly' as const,
+                priority: 0.8,
+            }))
+        }
 
         const { data: assets, error: assetsError } = await supabase
             .from('designs')
@@ -168,6 +194,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...staticRoutes,
         ...categoryRoutes,
         ...tagRoutes,
+        ...mockupRoutes,
         ...designRoutes,
         ...blogRoutes,
     ]
