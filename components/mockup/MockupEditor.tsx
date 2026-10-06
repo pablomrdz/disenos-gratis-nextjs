@@ -30,7 +30,7 @@ export function MockupEditor({ preset }: MockupEditorProps) {
     const canvas = canvasRef.current
     if (!design || !canvas) return
 
-    const { left, top, width, height } = preset.printArea
+    const { left, top, width, height } = preset.print_area
     const scale = Math.min(width / (design.width || width), height / (design.height || height)) * 0.78
 
     design.set({
@@ -45,7 +45,7 @@ export function MockupEditor({ preset }: MockupEditorProps) {
     design.setCoords()
     canvas.setActiveObject(design)
     canvas.renderAll()
-  }, [preset.printArea])
+  }, [preset.print_area])
 
   const resizeForPreview = useCallback(() => {
     const canvas = canvasRef.current
@@ -78,10 +78,10 @@ export function MockupEditor({ preset }: MockupEditorProps) {
     resizeForPreview()
 
     const guide = new fabric.Rect({
-      left: preset.printArea.left,
-      top: preset.printArea.top,
-      width: preset.printArea.width,
-      height: preset.printArea.height,
+      left: preset.print_area.left,
+      top: preset.print_area.top,
+      width: preset.print_area.width,
+      height: preset.print_area.height,
       originX: 'left',
       originY: 'top',
       fill: 'rgba(37, 99, 235, 0.08)',
@@ -99,13 +99,13 @@ export function MockupEditor({ preset }: MockupEditorProps) {
         // Hetzner must permit CORS for this path to keep canvas exportable.
         let background: fabric.FabricImage
         try {
-          background = await fabric.FabricImage.fromURL(preset.backgroundUrl, {
+          background = await fabric.FabricImage.fromURL(preset.background_url, {
             crossOrigin: 'anonymous',
           })
           if (!cancelled) setCanExport(true)
         } catch {
           // Preserve an interactive preview even if bucket CORS is pending.
-          background = await fabric.FabricImage.fromURL(preset.backgroundUrl)
+          background = await fabric.FabricImage.fromURL(preset.background_url)
           if (!cancelled) setCanExport(false)
         }
 
@@ -175,10 +175,10 @@ export function MockupEditor({ preset }: MockupEditorProps) {
       if (designRef.current) canvas.remove(designRef.current)
 
       const clipPath = new fabric.Rect({
-        left: preset.printArea.left,
-        top: preset.printArea.top,
-        width: preset.printArea.width,
-        height: preset.printArea.height,
+        left: preset.print_area.left,
+        top: preset.print_area.top,
+        width: preset.print_area.width,
+        height: preset.print_area.height,
         originX: 'left',
         originY: 'top',
       })
