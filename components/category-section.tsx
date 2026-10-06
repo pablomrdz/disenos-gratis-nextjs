@@ -25,10 +25,10 @@ const topCategories = (await getTopCategories(12))
           </h2>
           <Link
             href="/designs/"
-            className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            className="group flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/5 hover:shadow-sm"
           >
             Ver todo
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
         </div>
 

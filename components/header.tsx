@@ -155,7 +155,7 @@ export function Header() {
         <nav className="hidden lg:flex lg:flex-1 lg:justify-center">
           <ul className="flex items-center gap-6">
             <li className="group relative py-4">
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground transition-colors hover:text-black focus:outline-none">
+              <button className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30">
                 Categorías
                 <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
               </button>
@@ -196,7 +196,7 @@ export function Header() {
                 <div className="mt-6 border-t border-slate-100 pt-4 text-center">
                   <Link
                     href="/tags/"
-                    className="text-xs font-bold text-primary hover:underline"
+                    className="inline-flex rounded-full px-3 py-1.5 text-xs font-bold text-primary transition-all duration-200 hover:bg-primary/5 hover:shadow-sm"
                   >
                     Explorar todas las etiquetas y temas →
                   </Link>
@@ -207,7 +207,7 @@ export function Header() {
             <li>
               <Link
                 href="/mockups/"
-                className="text-sm font-medium text-foreground transition-colors hover:text-black"
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               >
                 Mockups
               </Link>
@@ -216,7 +216,7 @@ export function Header() {
             <li>
               <Link
                 href="/blog/"
-                className="text-sm font-medium text-foreground transition-colors hover:text-black"
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               >
                 Blog
               </Link>
@@ -225,7 +225,7 @@ export function Header() {
             <li>
               <Link
                 href="/plantillas/"
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-blue-800 px-4 py-1.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.03] active:scale-[0.97]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Edita y Descarga Online
@@ -286,15 +286,15 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="border-t border-border/40 bg-white lg:hidden h-[calc(100vh-64px)] overflow-y-auto">
           <div className="mx-auto max-w-7xl space-y-1 px-4 py-4">
-            <form onSubmit={handleMobileSearch} className="mb-6 flex gap-2">
+            <form onSubmit={handleMobileSearch} className="mb-6 flex gap-2 rounded-2xl border border-border/60 bg-muted/30 p-2">
               <Input
                 type="search"
                 placeholder="Buscar diseños..."
-                className="flex-1 bg-white text-black border-slate-300"
+                className="flex-1 border-border/70 bg-white text-black shadow-sm focus-visible:border-primary/60 focus-visible:ring-primary/20"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button type="submit" size="sm" disabled={searchQuery.trim().length < 2}>
+              <Button type="submit" size="sm" className="bg-primary text-primary-foreground shadow-sm hover:bg-primary/90" disabled={searchQuery.trim().length < 2}>
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -306,7 +306,7 @@ export function Header() {
                   <div key={group.title} className="border-b border-gray-100 last:border-0">
                     <button
                       onClick={() => toggleMobileSection(group.title)}
-                      className="flex w-full items-center justify-between py-3 text-sm font-bold text-black"
+                      className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                     >
                       {group.title}
                       {isExpanded ? (
@@ -322,7 +322,7 @@ export function Header() {
                           <Link
                             key={item.name}
                             href={item.href}
-                            className="flex items-center justify-between rounded-md py-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50 px-2"
+                            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-primary/5 hover:text-link-accent"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <span>{item.name}</span>
@@ -339,28 +339,28 @@ export function Header() {
             <div className="space-y-1 pt-6 border-t border-gray-100 mt-4">
               <Link
                 href="/mockups/"
-                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                className="block rounded-xl px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Mockups
               </Link>
               <Link
                 href="/blog/"
-                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                className="block rounded-xl px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
               </Link>
               <Link
                 href="/tags/"
-                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                className="block rounded-xl px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Etiquetas y temas
               </Link>
               <Link
                 href="/plantillas/"
-                className="flex items-center gap-2 rounded-xl mx-3 mt-2 px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-primary to-blue-800 shadow-md"
+                className="flex items-center gap-2 rounded-xl mx-3 mt-2 px-4 py-3 text-sm font-bold text-primary-foreground bg-primary shadow-md shadow-primary/20 transition-all duration-200 hover:bg-primary/90"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Sparkles className="h-4 w-4" />

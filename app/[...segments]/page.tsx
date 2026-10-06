@@ -13,7 +13,8 @@ import {
   ArrowLeft,
   ChevronRight,
   Type,
-Play
+  Play,
+  Shuffle
 } from 'lucide-react'
 
 // Components
@@ -95,32 +96,39 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
   const description = rawDescription.replace(/<[^>]*>/g, '').slice(0, 160)
   const tags = Array.isArray(design.tags) ? design.tags : []
   const ogImage = design.image_url || design.thumbnail_url || ''
+  const isLoteria = normalizeText(slug).includes('loteria') || design.editor_type === 'loteria'
+  const pageTitle = isLoteria
+    ? 'Plantilla de Lotería Mexicana para Imprimir y Editar'
+    : title
+  const pageDescription = isLoteria
+    ? 'Crea una tabla de Lotería Mexicana gratis: genera 16 cartas al azar, personalízala y descarga tu diseño listo para imprimir o sublimar.'
+    : description
 
   return {
-    title,
-    description,
+    title: pageTitle,
+    description: pageDescription,
     keywords: tags,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
-      title,
-      description,
+      title: pageTitle,
+      description: pageDescription,
       url: canonicalUrl,
       siteName: 'Diseños Gratis',
       images: ogImage ? [{
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: title,
+        alt: pageTitle,
       }] : [],
       type: 'article',
       locale: 'es_MX',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
+      title: pageTitle,
+      description: pageDescription,
       images: ogImage ? [ogImage] : [],
     },
   }
@@ -370,6 +378,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
 
   const contentType = detectContentType(design)
   const isBlog = contentType === 'blog'
+  const isLoteria = design.editor_type === 'loteria' || normalizeText(slug).includes('loteria')
 
   const externalLink = extractDownloadLink(description)
   const finalDownloadUrl = externalLink || design.download_url || design.external_url
@@ -518,6 +527,42 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                     />
                   </div>
                 </div>
+              )}
+
+              {isLoteria && (
+                <section
+                  aria-labelledby="loteria-editor-benefit"
+                  className="my-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-amber-50 p-6 shadow-sm sm:p-8"
+                >
+                  <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="max-w-2xl">
+                      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-primary">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+                          <Shuffle className="h-4 w-4" />
+                        </span>
+                        Editor de Lotería Mexicana
+                      </div>
+                      <h2 id="loteria-editor-benefit" className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                        Crea una tabla de Lotería diferente en segundos
+                      </h2>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base">
+                        Genera una combinación aleatoria de 16 cartas, cambia las imágenes que quieras y descarga tu tabla lista para imprimir o sublimar.
+                      </p>
+                      <ul className="mt-4 grid gap-2 text-sm text-foreground/80 sm:grid-cols-3">
+                        <li>✓ Una tabla nueva con un clic</li>
+                        <li>✓ Personaliza carta por carta</li>
+                        <li>✓ Descarga en PDF o PNG</li>
+                      </ul>
+                    </div>
+                    <Link
+                      href={`/edit/${design.slug || slug}/`}
+                      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      Generar tabla aleatoria
+                      <Shuffle className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </section>
               )}
 
               {!isBlog && (

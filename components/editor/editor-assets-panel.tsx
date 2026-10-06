@@ -364,20 +364,25 @@ export function EditorAssetsPanel({
     return (
         <div className="space-y-3">
             {isLoteria && (
-                <Button
-                    type="button"
-                    onClick={generateRandomBoard}
-                    disabled={!canvas || isGenerating || assets.length < 16}
-                    className="w-full gap-2 rounded-xl"
-                    variant="outline"
-                >
-                    {isGenerating ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                        <Shuffle className="h-4 w-4" />
-                    )}
-                    {isGenerating ? 'Generando tabla...' : 'Generar tabla aleatoria'}
-                </Button>
+                <div className="space-y-2">
+                    <Button
+                        type="button"
+                        onClick={generateRandomBoard}
+                        disabled={!canvas || isGenerating || assets.length < 16}
+                        className="w-full gap-2 rounded-xl"
+                        variant="outline"
+                    >
+                        {isGenerating ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <Shuffle className="h-4 w-4" />
+                        )}
+                        {isGenerating ? 'Generando tabla...' : 'Generar tabla aleatoria'}
+                    </Button>
+                    <p className="px-2 text-center text-[11px] leading-4 text-muted-foreground">
+                        Crea una combinación nueva de 16 cartas en un clic. Después puedes cambiar cualquier carta.
+                    </p>
+                </div>
             )}
 
             {isPlaceholderSelected ? (

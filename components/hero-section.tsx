@@ -12,9 +12,8 @@ export function HeroSection() {
 
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault()
-    if (searchQuery.trim().length >= 2) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-    }
+    const query = searchQuery.trim()
+    router.push(query.length >= 2 ? `/search?q=${encodeURIComponent(query)}` : '/search/')
   }, [searchQuery, router])
 
   return (
@@ -45,12 +44,12 @@ export function HeroSection() {
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="w-full mt-4 sm:mt-5">
           <div className="flex max-w-2xl mx-auto gap-2">
-            <div className="relative flex-1">
+            <div className="group relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Buscar diseños por título..."
-                className="h-10 pl-9 pr-4 text-sm bg-background/80 backdrop-blur-sm"
+                className="h-10 border-border/70 bg-background/80 pl-9 pr-4 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:bg-background hover:shadow-md focus-visible:border-primary/60 focus-visible:ring-primary/20 focus-visible:shadow-md"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -58,8 +57,7 @@ export function HeroSection() {
             <Button
               type="submit"
               size="sm"
-              className="h-10 px-5 bg-primary-dark hover:bg-primary shadow-sm hidden sm:flex gap-2"
-              disabled={searchQuery.trim().length < 2}
+              className="hidden h-10 gap-2 bg-primary px-5 text-primary-foreground shadow-md shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0 focus-visible:ring-2 focus-visible:ring-primary/30 sm:flex"
             >
               Buscar
               <ArrowRight className="h-4 w-4" />
@@ -67,8 +65,7 @@ export function HeroSection() {
             <Button
               type="submit"
               size="icon"
-              className="h-10 w-10 sm:hidden bg-primary-dark hover:bg-primary shrink-0"
-              disabled={searchQuery.trim().length < 2}
+              className="h-10 w-10 shrink-0 bg-primary text-primary-foreground shadow-md shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0 focus-visible:ring-2 focus-visible:ring-primary/30 sm:hidden"
             >
               <Search className="h-4 w-4" />
             </Button>

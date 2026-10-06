@@ -105,10 +105,10 @@ export function PrimaryHubsSection() {
 
                 <Link
                   href={hub.href}
-                  className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+                  className="group mt-5 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/5 hover:shadow-sm"
                 >
                   {hub.cta}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </Link>
               </article>
             )
