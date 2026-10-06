@@ -286,15 +286,15 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="border-t border-border/40 bg-white lg:hidden h-[calc(100vh-64px)] overflow-y-auto">
           <div className="mx-auto max-w-7xl space-y-1 px-4 py-4">
-            <form onSubmit={handleMobileSearch} className="mb-6 flex gap-2">
+            <form onSubmit={handleMobileSearch} className="mb-6 flex gap-2 rounded-2xl border border-border/60 bg-muted/30 p-2">
               <Input
                 type="search"
                 placeholder="Buscar diseños..."
-                className="flex-1 bg-white text-black border-slate-300"
+                className="flex-1 border-border/70 bg-white text-black shadow-sm focus-visible:border-primary/60 focus-visible:ring-primary/20"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button type="submit" size="sm" disabled={searchQuery.trim().length < 2}>
+              <Button type="submit" size="sm" className="bg-primary text-primary-foreground shadow-sm hover:bg-primary/90" disabled={searchQuery.trim().length < 2}>
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -306,7 +306,7 @@ export function Header() {
                   <div key={group.title} className="border-b border-gray-100 last:border-0">
                     <button
                       onClick={() => toggleMobileSection(group.title)}
-                      className="flex w-full items-center justify-between py-3 text-sm font-bold text-black"
+                      className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                     >
                       {group.title}
                       {isExpanded ? (
@@ -322,7 +322,7 @@ export function Header() {
                           <Link
                             key={item.name}
                             href={item.href}
-                            className="flex items-center justify-between rounded-md py-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50 px-2"
+                            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-primary/5 hover:text-link-accent"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <span>{item.name}</span>
@@ -339,21 +339,21 @@ export function Header() {
             <div className="space-y-1 pt-6 border-t border-gray-100 mt-4">
               <Link
                 href="/mockups/"
-                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                className="block rounded-xl px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Mockups
               </Link>
               <Link
                 href="/blog/"
-                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                className="block rounded-xl px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
               </Link>
               <Link
                 href="/tags/"
-                className="block rounded-md px-3 py-3 text-sm font-bold text-black hover:bg-slate-50"
+                className="block rounded-xl px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/5 hover:text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Etiquetas y temas

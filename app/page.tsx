@@ -83,7 +83,7 @@ async function getHomepageGroups() {
 
 function HomeAd({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={compact ? 'my-8' : 'bg-brand-black pt-6'}>
+    <div className={compact ? 'my-8' : 'bg-background pt-6'}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className={
@@ -118,17 +118,17 @@ function SectionHeading({
   return (
     <div className="mb-8 flex items-end justify-between">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-brand-white sm:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           {title}
-          <span className="text-brand-cyan">.</span>
+          <span className="text-link-accent">.</span>
         </h2>
-        <p className="mt-2 text-brand-gray">{description}</p>
+        <p className="mt-2 text-muted-foreground">{description}</p>
       </div>
 
       {href && (
         <Link
           href={href}
-          className="group hidden items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold text-brand-cyan transition-all duration-200 hover:bg-brand-white/10 hover:shadow-sm sm:flex"
+          className="group hidden items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold text-link-accent transition-all duration-200 hover:bg-primary/5 hover:shadow-sm sm:flex"
         >
           {linkLabel}
           <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -155,7 +155,7 @@ export default async function HomePage() {
       {/* ATF: after search/hero and categories */}
       <HomeAd />
 
-      <section className="bg-brand-black pb-16 pt-8 text-brand-white sm:pt-12">
+      <section className="bg-background pb-16 pt-8 sm:pt-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <section>
             <SectionHeading
