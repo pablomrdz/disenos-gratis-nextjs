@@ -296,7 +296,6 @@ export function MockupEditor({ preset }: MockupEditorProps) {
             Arrastra, escala desde las esquinas y rota desde el control superior. La guía azul no aparece en la descarga.
           </p>
         </section>
-      </div>
     </section>
   )
 }
