@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import AdUnit from '@/components/AdUnit'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { MockupEditor } from '@/components/mockup/MockupEditor'
 import { getMockupTemplateBySlug } from '@/lib/mockup-data'
 
@@ -37,17 +39,29 @@ export default async function MockupPage({ params }: MockupPageProps) {
 
   if (!mockup) notFound()
 
-  const howToJsonLd = {
+  const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    name: mockup.h1,
-    description: mockup.meta_description,
-    totalTime: 'PT2M',
-    step: mockup.seo_content.steps.map((text, index) => ({
-      '@type': 'HowToStep',
-      position: index + 1,
-      text,
-    })),
+    '@graph': [
+      {
+        '@type': 'HowTo',
+        name: mockup.h1,
+        description: mockup.meta_description,
+        totalTime: 'PT2M',
+        step: mockup.seo_content.steps.map((text, index) => ({
+          '@type': 'HowToStep',
+          position: index + 1,
+          text,
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://disenosgratis.com/' },
+          { '@type': 'ListItem', position: 2, name: 'Mockups', item: 'https://disenosgratis.com/mockups/' },
+          { '@type': 'ListItem', position: 3, name: mockup.title },
+        ],
+      },
+    ],
   }
 
   return (
@@ -55,14 +69,24 @@ export default async function MockupPage({ params }: MockupPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(howToJsonLd).replace(/</g, '\\u003c'),
+          __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
         }}
       />
+      <Breadcrumbs items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Mockups', href: '/mockups/' },
+        { label: mockup.title },
+      ]} />
       <header className="mb-8 max-w-3xl">
         <p className="text-sm font-semibold text-primary">Generador de mockups</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{mockup.h1}</h1>
         <p className="mt-3 text-lg text-muted-foreground">{mockup.intro}</p>
       </header>
+
+      <div className="mb-8">
+        <p className="mb-2 text-center text-xs text-muted-foreground">Anuncio</p>
+        <AdUnit slot="9549519747" format="auto" style={{ display: 'block', minHeight: '120px' }} />
+      </div>
 
       <MockupEditor preset={mockup} />
 
