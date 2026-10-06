@@ -25,7 +25,7 @@ export default async function MockupsPage() {
             <p className="text-sm font-semibold text-primary">Herramientas para personalización</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Generador de mockups de playeras gratis</h1>
             <p className="mt-4 text-lg leading-8 text-muted-foreground">
-              Crea una vista previa profesional de tus diseños DTF, logos e ilustraciones sobre playeras con modelo. Todo se procesa directamente en tu navegador.
+              Sube tu diseño, míralo sobre una playera con modelo y descarga gratis una imagen lista para compartir con clientes, publicar en redes o mostrar en tu catálogo.
             </p>
           </header>
         </div>
@@ -82,7 +82,7 @@ export default async function MockupsPage() {
                 Un mockup de playera te permite mostrar cómo lucirá un diseño antes de imprimirlo. Es útil para enviar propuestas a clientes, publicar catálogos, preparar contenido para Instagram o validar la escala de un logo y de un diseño DTF.
               </p>
               <p className="leading-7 text-muted-foreground">
-                Empieza por el formato que corresponda a tu publicación: vertical para historias y reels, o cuadrado para publicaciones del feed. Puedes arrastrar, escalar y girar el archivo dentro del área de impresión. El resultado se descarga como PNG y tu archivo no se sube a nuestros servidores.
+                Empieza por el formato que corresponda a tu publicación: vertical para historias y reels, o cuadrado para publicaciones del feed. Ajusta el tamaño y la posición de tu diseño dentro del área de impresión y descarga un PNG listo para compartir. Es una forma rápida de presentar tu trabajo sin necesidad de hacer montajes complicados.
               </p>
             </section>
           </div>
