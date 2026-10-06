@@ -8,7 +8,7 @@ import {
   Video,
   FolderOpen,
   Image as ImageIcon,
-  PanelsTopLeft,
+  LayoutTemplate,
   ScanLine,
   Shapes,
   Shirt,
@@ -54,7 +54,7 @@ export const getCategoryIcon = (slug: string, className = "h-8 w-8") => {
   if (s.includes('3d')) return React.createElement(Box, { className: `${className} text-indigo-500` })
   if (s.includes('vector')) return React.createElement(Spline, { className: `${className} text-pink-500` })
   if (s.includes('recurso')) return React.createElement(Shapes, { className: `${className} text-pink-500` })
-  if (s.includes('plantilla')) return React.createElement(PanelsTopLeft, { className: `${className} text-emerald-500` })
+  if (s.includes('plantilla')) return React.createElement(LayoutTemplate, { className: `${className} text-emerald-500` })
   if (s.includes('blog') || s.includes('tutorial')) return React.createElement(Video, { className: `${className} text-red-500` })
   if (s.includes('sublimacion')) return React.createElement(Thermometer, { className: `${className} text-orange-500` })
   if (s.includes('fondo') || s.includes('textura')) return React.createElement(ImageIcon, { className: `${className} text-cyan-500` })
