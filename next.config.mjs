@@ -18,6 +18,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'fsn1.your-objectstorage.com',
+        port: '',
+        pathname: '/disenosgratis/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'disenosgratis.com',
       },
       {
