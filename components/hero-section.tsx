@@ -45,12 +45,12 @@ export function HeroSection() {
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="w-full mt-4 sm:mt-5">
           <div className="flex max-w-2xl mx-auto gap-2">
-            <div className="relative flex-1">
+            <div className="group relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Buscar diseños por título..."
-                className="h-10 pl-9 pr-4 text-sm bg-background/80 backdrop-blur-sm"
+                className="h-10 border-border/70 bg-background/80 pl-9 pr-4 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/35 hover:shadow-md focus-visible:border-primary/45 focus-visible:shadow-md"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -58,7 +58,7 @@ export function HeroSection() {
             <Button
               type="submit"
               size="sm"
-              className="h-10 px-5 bg-primary-dark hover:bg-primary shadow-sm hidden sm:flex gap-2"
+              className="hidden h-10 gap-2 bg-primary-dark px-5 shadow-sm transition-all duration-200 hover:-translate-y-px hover:bg-primary hover:shadow-md active:translate-y-0 sm:flex"
               disabled={searchQuery.trim().length < 2}
             >
               Buscar
@@ -67,7 +67,7 @@ export function HeroSection() {
             <Button
               type="submit"
               size="icon"
-              className="h-10 w-10 sm:hidden bg-primary-dark hover:bg-primary shrink-0"
+              className="h-10 w-10 shrink-0 bg-primary-dark transition-all duration-200 hover:-translate-y-px hover:bg-primary hover:shadow-md active:translate-y-0 sm:hidden"
               disabled={searchQuery.trim().length < 2}
             >
               <Search className="h-4 w-4" />

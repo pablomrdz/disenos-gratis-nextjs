@@ -155,7 +155,7 @@ export function Header() {
         <nav className="hidden lg:flex lg:flex-1 lg:justify-center">
           <ul className="flex items-center gap-6">
             <li className="group relative py-4">
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground transition-colors hover:text-black focus:outline-none">
+              <button className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30">
                 Categorías
                 <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
               </button>
@@ -196,7 +196,7 @@ export function Header() {
                 <div className="mt-6 border-t border-slate-100 pt-4 text-center">
                   <Link
                     href="/tags/"
-                    className="text-xs font-bold text-primary hover:underline"
+                    className="inline-flex rounded-full px-3 py-1.5 text-xs font-bold text-primary transition-all duration-200 hover:bg-primary/5 hover:shadow-sm"
                   >
                     Explorar todas las etiquetas y temas →
                   </Link>
@@ -207,7 +207,7 @@ export function Header() {
             <li>
               <Link
                 href="/mockups/"
-                className="text-sm font-medium text-foreground transition-colors hover:text-black"
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               >
                 Mockups
               </Link>
@@ -216,7 +216,7 @@ export function Header() {
             <li>
               <Link
                 href="/blog/"
-                className="text-sm font-medium text-foreground transition-colors hover:text-black"
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               >
                 Blog
               </Link>

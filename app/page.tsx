@@ -128,10 +128,10 @@ function SectionHeading({
       {href && (
         <Link
           href={href}
-          className="hidden items-center gap-1 text-sm font-bold text-brand-cyan hover:underline sm:flex"
+          className="group hidden items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold text-brand-cyan transition-all duration-200 hover:bg-brand-white/10 hover:shadow-sm sm:flex"
         >
           {linkLabel}
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
         </Link>
       )}
     </div>
