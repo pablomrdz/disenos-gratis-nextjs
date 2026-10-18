@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { loadCustomFontFromSupabase } from '@/lib/font-loader'
+import { trackEvent } from '@/lib/analytics'
 
 interface FontPreviewInteractiveProps {
     className?: string
@@ -20,6 +21,7 @@ export function FontPreviewInteractive({
     const [previewText, setPreviewText] = useState(initialText)
     const [loadedFontFamily, setLoadedFontFamily] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const hasTrackedPreviewStart = useRef(false)
 
     console.log("🔍 PROBADOR DETALLE - Prop fontFamilyName recibido:", fontFamilyName);
 
@@ -104,6 +106,13 @@ export function FontPreviewInteractive({
                     type="text"
                     value={previewText}
                     onChange={(e) => setPreviewText(e.target.value)}
+                    onFocus={() => {
+                        if (hasTrackedPreviewStart.current) return
+                        hasTrackedPreviewStart.current = true
+                        trackEvent('font_preview_start', {
+                            font_family: fontFamilyName || 'unknown',
+                        })
+                    }}
                     placeholder="Escribe aquí para probar la fuente..."
                     className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     style={{ fontFamily: appliedFontFamily }}

@@ -19,7 +19,7 @@ function getStorageKey(slug: string): string {
 
 function saveCanvasState(slug: string, canvas: fabric.Canvas) {
     try {
-        const json = canvas.toJSON(['isPlaceholder', 'placeholderIndex', 'hasCard', 'isLoteriaCard', 'editorFieldId', 'isEditorBackground'])
+        const json = canvas.toObject(['isPlaceholder', 'placeholderIndex', 'hasCard', 'isLoteriaCard', 'editorFieldId', 'isEditorBackground'])
         localStorage.setItem(getStorageKey(slug), JSON.stringify(json))
     } catch (err) {
         console.warn('[DesignEditor] Failed to save state:', err)
@@ -61,6 +61,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
 
     const slug = design.slug || design.id
     const isLoteria = design.editor_type === 'loteria' || isLoteriaSlug(design.slug)
+    const allowTextOnLoteria = isLoteriaPersonalizableSlug(design.slug)
     const isInvitation = design.editor_type === 'invitation' && Boolean(design.editor_config)
     const totalSlots = isLoteria ? 16 : undefined
 
@@ -220,6 +221,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                             designSlug={design.slug}
                             designCategory={design.category}
                             isLoteria={isLoteria}
+                            allowTextOnLoteria={allowTextOnLoteria}
                         />
                     )}
                 </div>
@@ -270,6 +272,7 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
                                     designSlug={design.slug}
                                     designCategory={design.category}
                                     isLoteria={isLoteria}
+                                    allowTextOnLoteria={allowTextOnLoteria}
                                 />
                             )}
                         </div>
@@ -284,4 +287,13 @@ export function DesignEditor({ design, returnHref }: DesignEditorProps) {
 function isLoteriaSlug(slug?: string): boolean {
     if (!slug) return false
     return slug.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes('loteria')
+}
+
+function isLoteriaPersonalizableSlug(slug?: string): boolean {
+    if (!slug) return false
+    return slug
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .includes('loteria-mexicana-personalizada')
 }

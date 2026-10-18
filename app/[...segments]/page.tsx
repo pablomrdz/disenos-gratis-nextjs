@@ -97,10 +97,11 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
   const tags = Array.isArray(design.tags) ? design.tags : []
   const ogImage = design.image_url || design.thumbnail_url || ''
   const isLoteria = normalizeText(slug).includes('loteria') || design.editor_type === 'loteria'
-  const pageTitle = isLoteria
+  const isPersonalizableLoteria = normalizeText(slug).includes('loteria mexicana personalizada')
+  const pageTitle = isLoteria && !isPersonalizableLoteria
     ? 'Plantilla de Lotería Mexicana para Imprimir y Editar'
     : title
-  const pageDescription = isLoteria
+  const pageDescription = isLoteria && !isPersonalizableLoteria
     ? 'Crea una tabla de Lotería Mexicana gratis: genera 16 cartas al azar, personalízala y descarga tu diseño listo para imprimir o sublimar.'
     : description
 
@@ -577,7 +578,7 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
                 </div>
               )}
 
-              <ImageGallery images={design.gallery_urls} />
+              <ImageGallery images={design.gallery_urls} designSlug={design.slug} />
 
               {isFont && (
                 <div className="my-6 rounded-2xl border border-dashed border-primary/20 bg-primary/5 p-6 sm:p-8">

@@ -27,6 +27,7 @@ interface EditorToolbarProps {
     designSlug?: string
     designCategory?: string
     isLoteria?: boolean
+    allowTextOnLoteria?: boolean
 }
 
 const PRESET_COLORS = [
@@ -47,9 +48,11 @@ export function EditorToolbar({
     designSlug,
     designCategory,
     isLoteria = false,
+    allowTextOnLoteria = false,
 }: EditorToolbarProps) {
+    const loteriaTextEnabled = isLoteria && allowTextOnLoteria
     const [activeTab, setActiveTab] = useState<ToolTab>(
-        isLoteria && designSlug ? 'assets' : 'text'
+        isLoteria && designSlug && !loteriaTextEnabled ? 'assets' : 'text'
     )
     const [isFontLoading, setIsFontLoading] = useState(false)
     const [, setRevision] = useState(0)
@@ -69,17 +72,17 @@ export function EditorToolbar({
     }, [isLoteria])
 
     useEffect(() => {
-        if (isLoteria && (activeTab === 'text' || activeTab === 'shapes')) {
+        if (isLoteria && !loteriaTextEnabled && (activeTab === 'text' || activeTab === 'shapes')) {
             setActiveTab('assets')
         }
 
         if (activeTab === 'properties' && !canEditSelected) {
-            setActiveTab(isLoteria && designSlug ? 'assets' : 'text')
+            setActiveTab(isLoteria && designSlug && !loteriaTextEnabled ? 'assets' : 'text')
         }
-    }, [activeTab, canEditSelected, designSlug, isLoteria])
+    }, [activeTab, canEditSelected, designSlug, isLoteria, loteriaTextEnabled])
 
     const addText = () => {
-        if (!canvas || isLoteria) return
+        if (!canvas || (isLoteria && !loteriaTextEnabled)) return
 
         const text = new fabric.IText('Tu texto aquí', {
             fontFamily: defaultFontFamily,
@@ -180,7 +183,7 @@ export function EditorToolbar({
         canvas.discardActiveObject()
         canvas.renderAll()
         onSelectionChange(null)
-        setActiveTab(isLoteria && designSlug ? 'assets' : 'text')
+        setActiveTab(isLoteria && designSlug && !loteriaTextEnabled ? 'assets' : 'text')
     }
 
     const updateProperty = async (prop: string, value: any) => {
@@ -211,7 +214,7 @@ export function EditorToolbar({
     return (
         <div className="flex h-full w-full flex-col overflow-y-auto bg-background">
             <div className="flex border-b border-border/50">
-                {!isLoteria && (
+                {(!isLoteria || loteriaTextEnabled) && (
                     <>
                         <button
                             onClick={() => setActiveTab('text')}
@@ -269,7 +272,7 @@ export function EditorToolbar({
             </div>
 
             <div className="flex-1 space-y-4 p-4">
-                {!isLoteria && activeTab === 'text' && (
+                {(!isLoteria || loteriaTextEnabled) && activeTab === 'text' && (
                     <>
                         <Button onClick={addText} className="w-full gap-2 rounded-xl" size="lg">
                             <Type className="h-5 w-5" />
@@ -325,7 +328,7 @@ export function EditorToolbar({
                 )}
 
                 {activeTab === 'properties' && canEditSelected && (
-                    isLoteria ? (
+                    isLoteria && !loteriaTextEnabled ? (
                         <div className="space-y-4">
                             <div className="rounded-xl border border-primary/20 bg-primary/5 p-3">
                                 <p className="text-sm font-semibold text-foreground">Carta seleccionada</p>

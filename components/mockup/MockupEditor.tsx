@@ -5,6 +5,7 @@ import * as fabric from 'fabric'
 import { Download, ImagePlus, RotateCcw, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { MockupTemplate } from '@/lib/types'
+import { trackEvent } from '@/lib/analytics'
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp'])
@@ -23,6 +24,13 @@ export function MockupEditor({ preset }: MockupEditorProps) {
   const [isReady, setIsReady] = useState(false)
   const [hasDesign, setHasDesign] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
+
+  useEffect(() => {
+    trackEvent('mockup_open', {
+      mockup_slug: preset.slug,
+      format: preset.format_label,
+    })
+  }, [preset.format_label, preset.slug])
 
   const centerDesign = useCallback(() => {
     const design = designRef.current
@@ -231,6 +239,11 @@ export function MockupEditor({ preset }: MockupEditorProps) {
       link.download = `mockup-${preset.slug}.png`
       link.href = dataUrl
       link.click()
+      trackEvent('mockup_export', {
+        mockup_slug: preset.slug,
+        format: preset.format_label,
+        file_type: 'png',
+      })
     } catch {
       setError(
         'No pudimos preparar la descarga. Actualiza la página e inténtalo de nuevo.',
