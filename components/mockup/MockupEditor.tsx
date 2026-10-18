@@ -24,7 +24,6 @@ export function MockupEditor({ preset }: MockupEditorProps) {
   const [isReady, setIsReady] = useState(false)
   const [hasDesign, setHasDesign] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
-
   useEffect(() => {
     trackEvent('mockup_open', {
       mockup_slug: preset.slug,
