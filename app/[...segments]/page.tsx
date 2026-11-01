@@ -87,6 +87,16 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
     return { title: 'Design Not Found' }
   }
 
+  // Blog records only have one public URL. The dynamic asset route must not
+  // advertise an alternate canonical for articles.
+  if (design.content_type === 'blog') {
+    return {
+      title: design.title || 'Blog - Diseños Gratis',
+      alternates: { canonical: `https://disenosgratis.com/blog/${design.slug}/` },
+      robots: { index: false, follow: true },
+    }
+  }
+
   // Ensure canonical URL uses clean slugified segments (no accents)
   const cleanSegments = segments.map(s => slugify(decodeURIComponent(s)))
   const canonicalUrl = `https://disenosgratis.com/${cleanSegments.join('/')}/`
@@ -343,6 +353,12 @@ export default async function DynamicRoutePage({ params }: DynamicPageProps) {
   // Retorna nulo/404 inmediatamente si no existe, evadiendo loops
   if (!design) {
     notFound()
+  }
+
+  // The catch-all route is for downloadable assets, never articles.
+  // Resolve duplicates through a permanent redirect, preserving the blog URL.
+  if (design.content_type === 'blog') {
+    permanentRedirect(`/blog/${design.slug}/`)
   }
 
   const title = design.title || 'Untitled Design'
