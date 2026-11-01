@@ -183,6 +183,11 @@ export async function getDesignBySlug(slug: string): Promise<Design | null> {
     if (error.code !== 'PGRST116') {
       console.error('Error fetching design:', error.message || error)
     }
+    // A missing row is a valid 404; other database failures must not be cached
+    // or surfaced to search engines as nonexistent content.
+    if (error.code !== 'PGRST116') {
+      throw new Error(`Supabase design lookup failed for slug "${slug}": ${error.message || error.code}`)
+    }
     return null
   }
 
